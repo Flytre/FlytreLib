@@ -16,6 +16,7 @@ import java.util.Set;
 
 /*
 A filtered inventory - blacklist and whitelist options!
+This comment is to try and get jitpack to work!
  */
 public class FilterInventory implements Inventory {
 
