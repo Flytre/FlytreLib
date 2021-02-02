@@ -18,8 +18,14 @@ public class FilterInventory implements Inventory {
 
     public DefaultedList<ItemStack> items;
     private int filterType;
+    private int height;
 
     public FilterInventory(CompoundTag items_tag, int filterType) {
+        this(items_tag, filterType, 1);
+    }
+
+    public FilterInventory(CompoundTag items_tag, int filterType, int height) {
+        this.height = height;
         this.fromTag(items_tag);
         this.filterType = filterType;
     }
@@ -37,7 +43,7 @@ public class FilterInventory implements Inventory {
     }
 
     public int getInventoryHeight() {
-        return 1;
+        return height;
     }
 
 
@@ -82,11 +88,11 @@ public class FilterInventory implements Inventory {
     }
 
     private void fixItems() {
-        DefaultedList<ItemStack> fixed = DefaultedList.ofSize(this.items.size(),ItemStack.EMPTY);
+        DefaultedList<ItemStack> fixed = DefaultedList.ofSize(this.items.size(), ItemStack.EMPTY);
         int index = 0;
-        for(ItemStack stack : this.items) {
-            if(!stack.isEmpty()) {
-                fixed.set(index++,stack);
+        for (ItemStack stack : this.items) {
+            if (!stack.isEmpty()) {
+                fixed.set(index++, stack);
             }
         }
         this.items = fixed;
@@ -94,7 +100,7 @@ public class FilterInventory implements Inventory {
 
     public Set<Item> getFilterItems() {
         HashSet<Item> res = new HashSet<>();
-        for(ItemStack item : items)
+        for (ItemStack item : items)
             res.add(item.getItem());
         res.remove(Items.AIR);
         return res;
@@ -102,10 +108,10 @@ public class FilterInventory implements Inventory {
 
     public boolean passFilterTest(ItemStack stack) {
         Set<Item> filterItems = getFilterItems();
-        if(filterItems == null)
+        if (filterItems == null)
             return true;
         //0 =  whitelist, 1 = blacklist
-        if(filterType == 0)
+        if (filterType == 0)
             return filterItems.contains(stack.getItem());
         else
             return !filterItems.contains(stack.getItem());
@@ -119,8 +125,9 @@ public class FilterInventory implements Inventory {
 
 
     private void fromTag(CompoundTag tag) {
-        this.items = DefaultedList.ofSize(9, ItemStack.EMPTY);
+        this.items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
         this.filterType = tag.getInt("type");
+        this.height = tag.getInt("height");
         Inventories.fromTag(tag, this.items);
     }
 
@@ -128,12 +135,15 @@ public class FilterInventory implements Inventory {
         return filterType;
     }
 
-
+    public void setFilterType(int filterType) {
+        this.filterType = filterType;
+    }
 
     public CompoundTag toTag() {
         CompoundTag tag = new CompoundTag();
         Inventories.toTag(tag, this.items);
-        tag.putInt("type",this.filterType);
+        tag.putInt("type", this.filterType);
+        tag.putInt("height", this.height);
         return tag;
     }
 
@@ -144,9 +154,5 @@ public class FilterInventory implements Inventory {
     public void onClose(PlayerEntity player) {
         player.playSound(SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.PLAYERS, 1f, 1f);
         player.playSound(SoundEvents.BLOCK_METAL_HIT, SoundCategory.PLAYERS, 1f, 1f);
-    }
-
-    public void setFilterType(int filterType) {
-        this.filterType = filterType;
     }
 }
