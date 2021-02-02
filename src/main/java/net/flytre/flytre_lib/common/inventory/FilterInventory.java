@@ -16,7 +16,6 @@ import java.util.Set;
 
 /*
 A filtered inventory - blacklist and whitelist options!
-This comment is to try and get jitpack to work!
  */
 public class FilterInventory implements Inventory {
 
@@ -30,8 +29,8 @@ public class FilterInventory implements Inventory {
         this.height = height;
     }
 
-    public static FilterInventory fromTag(CompoundTag tag) {
-        int height = tag.getInt("height");
+    public static FilterInventory fromTag(CompoundTag tag, int defaultHeight) {
+        int height = tag.contains("height") ? tag.getInt("height") : defaultHeight;
         int filterType = tag.getInt("type");
         DefaultedList<ItemStack> items = DefaultedList.ofSize(height * 9, ItemStack.EMPTY);
         Inventories.fromTag(tag, items);
