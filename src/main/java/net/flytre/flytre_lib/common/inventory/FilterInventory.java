@@ -14,6 +14,9 @@ import net.minecraft.util.collection.DefaultedList;
 import java.util.HashSet;
 import java.util.Set;
 
+/*
+A filtered inventory - blacklist and whitelist options!
+ */
 public class FilterInventory implements Inventory {
 
     private final int height;
