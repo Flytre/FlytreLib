@@ -127,7 +127,7 @@ public class FilterInventory implements Inventory {
     private void fromTag(CompoundTag tag) {
         this.items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
         this.filterType = tag.getInt("type");
-        this.height = tag.getInt("height");
+        this.height = tag.contains("height") ? tag.getInt("height") : this.height;
         Inventories.fromTag(tag, this.items);
     }
 
