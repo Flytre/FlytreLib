@@ -74,7 +74,7 @@ public class FilterInventory implements Inventory {
     public boolean put(ItemStack stack) {
 
         ItemStack copy = stack.copy();
-        stack.setCount(1);
+        copy.setCount(1);
 
         if(!matchNbt && this.containsAny(Collections.singleton(stack.getItem())))
             return false;
