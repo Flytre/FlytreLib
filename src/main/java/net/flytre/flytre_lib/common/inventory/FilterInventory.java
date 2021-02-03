@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,10 +71,17 @@ public class FilterInventory implements Inventory {
         return this.items.stream().allMatch(ItemStack::isEmpty);
     }
 
-    public boolean put(Item item) {
+    public boolean put(ItemStack stack) {
+
+        ItemStack copy = stack.copy();
+        stack.setCount(1);
+
+        if(!matchNbt && this.containsAny(Collections.singleton(stack.getItem())))
+            return false;
+
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).isEmpty()) {
-                items.set(i, new ItemStack(item));
+                items.set(i, copy);
                 return true;
             }
         }
