@@ -9,10 +9,13 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.registry.Registry;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
 A filtered inventory - blacklist and whitelist options!
@@ -21,20 +24,26 @@ public class FilterInventory implements Inventory {
 
     private final int height;
     public DefaultedList<ItemStack> items;
+    private boolean matchNbt;
+    private boolean matchMod;
     private int filterType;
 
-    public FilterInventory(DefaultedList<ItemStack> items, int filterType, int height) {
+    public FilterInventory(DefaultedList<ItemStack> items, int filterType, int height, boolean matchNbt, boolean matchMod) {
         this.items = items;
         this.filterType = filterType;
         this.height = height;
+        this.matchNbt = matchNbt;
+        this.matchMod = matchMod;
     }
 
     public static FilterInventory fromTag(CompoundTag tag, int defaultHeight) {
         int height = tag.contains("height") ? tag.getInt("height") : defaultHeight;
         int filterType = tag.getInt("type");
+        boolean matchNbt = tag.getBoolean("nbtMatch");
+        boolean matchMod = tag.getBoolean("modMatch");
         DefaultedList<ItemStack> items = DefaultedList.ofSize(height * 9, ItemStack.EMPTY);
         Inventories.fromTag(tag, items);
-        return new FilterInventory(items, filterType, height);
+        return new FilterInventory(items, filterType, height, matchNbt, matchMod);
     }
 
     public int getMaxCountPerStack() {
@@ -113,13 +122,29 @@ public class FilterInventory implements Inventory {
 
     public boolean passFilterTest(ItemStack stack) {
         Set<Item> filterItems = getFilterItems();
-        if (filterItems == null)
-            return true;
-        //0 =  whitelist, 1 = blacklist
-        if (filterType == 0)
-            return filterItems.contains(stack.getItem());
-        else
-            return !filterItems.contains(stack.getItem());
+
+        if (matchMod) {
+            Set<String> mods = filterItems.stream().map(Registry.ITEM::getId).map(Identifier::getNamespace).collect(Collectors.toSet());
+            String itemId = Registry.ITEM.getId(stack.getItem()).getNamespace();
+            return (filterType == 0) == mods.contains(itemId);
+        }
+
+        boolean bl = (filterType == 0) == filterItems.contains(stack.getItem());
+        if (!matchNbt) {
+            return bl;
+        }
+
+        //match nbt and item
+        if (!bl)
+            return false;
+
+        Set<ItemStack> stacks = items.stream().filter(i -> !i.isEmpty()).collect(Collectors.toSet());
+        for (ItemStack test : stacks) {
+            if (test.getItem() == stack.getItem() && ItemStack.areTagsEqual(test, stack))
+                return true;
+        }
+
+        return false;
 
     }
 
@@ -135,11 +160,29 @@ public class FilterInventory implements Inventory {
         this.filterType = filterType;
     }
 
+    public boolean isMatchNbt() {
+        return matchNbt;
+    }
+
+    public void setMatchNbt(boolean matchNbt) {
+        this.matchNbt = matchNbt;
+    }
+
+    public boolean isMatchMod() {
+        return matchMod;
+    }
+
+    public void setMatchMod(boolean matchMod) {
+        this.matchMod = matchMod;
+    }
+
     public CompoundTag toTag() {
         CompoundTag tag = new CompoundTag();
         Inventories.toTag(tag, this.items);
         tag.putInt("type", this.filterType);
         tag.putInt("height", this.height);
+        tag.putBoolean("nbtMatch", this.matchNbt);
+        tag.putBoolean("modMatch", this.matchMod);
         return tag;
     }
 
