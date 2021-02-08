@@ -30,8 +30,8 @@ public abstract class Hud {
         final ItemRenderer itemRenderer = client.getItemRenderer();
 
 
-        int x = client.getWindow().getScaledWidth() - 100;
-        int y = client.getWindow().getScaledHeight() - 70;
+        int x = client.getWindow().getScaledWidth();
+        int y = client.getWindow().getScaledHeight();
 
         if (player == null || player.inventory == null)
             return;
