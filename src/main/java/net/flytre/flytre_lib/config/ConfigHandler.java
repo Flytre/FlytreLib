@@ -21,7 +21,7 @@ public class ConfigHandler<T> {
 
     }
 
-    void handle() {
+    public void handle() {
         Path location = FabricLoader.getInstance().getConfigDir();
         File config = location.toFile();
         File configFile = null;
