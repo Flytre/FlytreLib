@@ -46,7 +46,7 @@ public abstract class Hud {
     }
 
     protected void drawBundle(MatrixStack matrixStack, int x, int y, ItemStack stack, Text text, ItemRenderer itemRenderer, TextRenderer textRenderer, int backgroundColor, int textColor, int width) {
-        int w = width == -1 ? textRenderer.getWidth(text) + 10 : width;
+        int w = width == -1 ? textRenderer.getWidth(text) + 30 : width;
         DrawableHelper.fill(matrixStack, x - 5, y - 5, x + w, y + 20, backgroundColor);
         itemRenderer.renderGuiItemIcon(stack, x, y);
         itemRenderer.renderGuiItemOverlay(textRenderer, stack, x, y);
@@ -58,7 +58,7 @@ public abstract class Hud {
     }
 
     protected void drawTwoLineBundle(MatrixStack matrixStack, int x, int y, ItemStack stack, Text text, Text text2, ItemRenderer itemRenderer, TextRenderer textRenderer, int backgroundColor, int textColor, int width) {
-        int w = width == -1 ? Math.max(textRenderer.getWidth(text),textRenderer.getWidth(text2)) + 10 : width;
+        int w = width == -1 ? Math.max(textRenderer.getWidth(text),textRenderer.getWidth(text2)) + 30 : width;
         DrawableHelper.fill(matrixStack, x - 5, y - 5, x + w, y + 25, backgroundColor);
         itemRenderer.renderGuiItemIcon(stack, x, y);
         itemRenderer.renderGuiItemOverlay(textRenderer, stack, x, y);
