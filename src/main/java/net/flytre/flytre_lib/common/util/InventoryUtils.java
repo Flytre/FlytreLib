@@ -7,8 +7,10 @@ import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +19,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class InventoryUtils {
@@ -93,4 +98,22 @@ public class InventoryUtils {
         return inventory;
     }
 
+    public static List<ItemStack> getCombinedInventory(PlayerInventory inv) {
+        List<ItemStack> result = new ArrayList<>(inv.main);
+        result.addAll(inv.offHand);
+        result.addAll(inv.armor);
+        return result;
+    }
+
+    public static Map<Item, Integer> countInventoryContents(Inventory inventory) {
+        Map<Item, Integer> result = new HashMap<>();
+        for (int i = 0; i < inventory.size(); i++) {
+            ItemStack stack = inventory.getStack(i);
+            if (result.containsKey(stack.getItem())) {
+                result.put(stack.getItem(), stack.getCount() + result.get(stack.getItem()));
+            } else
+                result.put(stack.getItem(), stack.getCount());
+        }
+        return result;
+    }
 }
