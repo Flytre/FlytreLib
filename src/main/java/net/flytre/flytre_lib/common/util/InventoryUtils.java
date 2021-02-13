@@ -116,4 +116,44 @@ public class InventoryUtils {
         }
         return result;
     }
+
+    public static ItemStack putStackInInventory(ItemStack stack, Inventory inventory) {
+        return putStackInInventory(stack, inventory, 0, inventory.size());
+    }
+
+    /*
+    MAX SLOT IS EXCLUSIVE, MIN IS INCLUSIVE
+     */
+    private static ItemStack putStackInInventory(ItemStack stack, Inventory inventory, int minSlot, int maxSlot) {
+        for (int i = minSlot; i < maxSlot && !stack.isEmpty(); i++)
+            stack = mergeStackIntoSlot(stack, inventory, i);
+        return stack;
+    }
+
+    /*
+    Merge a stack into an inventory and return the remainder
+     */
+    public static ItemStack mergeStackIntoSlot(ItemStack stack, Inventory inventory, int slot) {
+        ItemStack itemStack = inventory.getStack(slot);
+        boolean bl = false;
+
+        if (itemStack.isEmpty()) {
+            inventory.setStack(slot, stack);
+            stack = ItemStack.EMPTY;
+            bl = true;
+        } else if (canMergeItems(itemStack, stack)) {
+            int i = stack.getMaxCount() - itemStack.getCount();
+            int j = Math.min(stack.getCount(), i);
+            stack.decrement(j);
+            itemStack.increment(j);
+            bl = j > 0;
+        }
+
+        if (bl) {
+            inventory.markDirty();
+        }
+
+
+        return stack;
+    }
 }
