@@ -124,7 +124,7 @@ public class InventoryUtils {
     /*
     MAX SLOT IS EXCLUSIVE, MIN IS INCLUSIVE
      */
-    private static ItemStack putStackInInventory(ItemStack stack, Inventory inventory, int minSlot, int maxSlot) {
+    public static ItemStack putStackInInventory(ItemStack stack, Inventory inventory, int minSlot, int maxSlot) {
         for (int i = minSlot; i < maxSlot && !stack.isEmpty(); i++)
             stack = mergeStackIntoSlot(stack, inventory, i);
         return stack;
