@@ -2,10 +2,7 @@ package net.flytre.flytre_lib.common.util;
 
 import net.minecraft.network.PacketByteBuf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -19,9 +16,25 @@ public class PacketUtils {
         }
     }
 
+    public static <T> void toPacket(PacketByteBuf buf, Set<T> list, BiConsumer<T, PacketByteBuf> func) {
+        buf.writeInt(list.size());
+        for (T element : list) {
+            func.accept(element, buf);
+        }
+    }
+
     public static <T> List<T> listFromPacket(PacketByteBuf buf, Function<PacketByteBuf, T> func) {
         int size = buf.readInt();
         List<T> result = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            result.add(func.apply(buf));
+        }
+        return result;
+    }
+
+    public static <T> Set<T> setFromPacket(PacketByteBuf buf, Function<PacketByteBuf, T> func) {
+        int size = buf.readInt();
+        Set<T> result = new HashSet<>();
         for (int i = 0; i < size; i++) {
             result.add(func.apply(buf));
         }
