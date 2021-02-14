@@ -16,9 +16,9 @@ public class PacketUtils {
         }
     }
 
-    public static <T> void toPacket(PacketByteBuf buf, Set<T> list, BiConsumer<T, PacketByteBuf> func) {
-        buf.writeInt(list.size());
-        for (T element : list) {
+    public static <T> void toPacket(PacketByteBuf buf, Set<T> set, BiConsumer<T, PacketByteBuf> func) {
+        buf.writeInt(set.size());
+        for (T element : set) {
             func.accept(element, buf);
         }
     }

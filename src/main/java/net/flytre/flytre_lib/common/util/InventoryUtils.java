@@ -7,6 +7,7 @@ import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public class InventoryUtils {
@@ -154,6 +156,17 @@ public class InventoryUtils {
         }
 
 
+        return stack;
+    }
+
+
+    public static @Nullable ItemStack getHoldingStack(LivingEntity entity, Predicate<ItemStack> condition) {
+        ItemStack stack = entity.getOffHandStack();
+        if (!condition.test(stack))
+            stack = entity.getMainHandStack();
+
+        if (!condition.test(stack))
+            return null;
         return stack;
     }
 }
