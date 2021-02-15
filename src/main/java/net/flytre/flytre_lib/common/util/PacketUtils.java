@@ -23,6 +23,14 @@ public class PacketUtils {
         }
     }
 
+    public static <T, K> void toPacket(PacketByteBuf buf, Map<T, K> map, BiConsumer<T, PacketByteBuf> keyToPacket, BiConsumer<K, PacketByteBuf> valToPacket) {
+        buf.writeInt(map.keySet().size());
+        for (T key : map.keySet()) {
+            keyToPacket.accept(key, buf);
+            valToPacket.accept(map.get(key), buf);
+        }
+    }
+
     public static <T> List<T> listFromPacket(PacketByteBuf buf, Function<PacketByteBuf, T> func) {
         int size = buf.readInt();
         List<T> result = new ArrayList<>();
@@ -39,14 +47,6 @@ public class PacketUtils {
             result.add(func.apply(buf));
         }
         return result;
-    }
-
-    public static <T, K> void toPacket(PacketByteBuf buf, Map<T, K> map, BiConsumer<T, PacketByteBuf> keyToPacket, BiConsumer<K, PacketByteBuf> valToPacket) {
-        buf.writeInt(map.keySet().size());
-        for (T key : map.keySet()) {
-            keyToPacket.accept(key, buf);
-            valToPacket.accept(map.get(key), buf);
-        }
     }
 
     public static <T, K> Map<T, K> mapFromPacket(PacketByteBuf buf, Function<PacketByteBuf, T> packetToKey, Function<PacketByteBuf, K> packetToVal) {
