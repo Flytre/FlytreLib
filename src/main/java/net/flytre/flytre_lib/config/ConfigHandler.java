@@ -22,13 +22,13 @@ public class ConfigHandler<T> {
     }
 
 
-    public void save() {
+    public void save(T config) {
         Path location = FabricLoader.getInstance().getConfigDir();
         Path path = Paths.get(location.toString(), name + ".json");
         Writer writer;
         try {
             writer = new FileWriter(path.toFile());
-            GSON.toJson(assumed, writer);
+            GSON.toJson(config, writer);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class ConfigHandler<T> {
         }
 
         if (configFile == null) {
-            save();
+            save(assumed);
             this.config = assumed;
         } else {
             try (Reader reader = new FileReader(configFile)) {
@@ -57,6 +57,10 @@ public class ConfigHandler<T> {
             }
         }
 
+    }
+
+    public T getAssumed() {
+        return assumed;
     }
 
     public T getConfig() {
