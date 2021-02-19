@@ -21,6 +21,20 @@ public class ConfigHandler<T> {
 
     }
 
+
+    public void save() {
+        Path location = FabricLoader.getInstance().getConfigDir();
+        Path path = Paths.get(location.toString(), name + ".json");
+        Writer writer;
+        try {
+            writer = new FileWriter(path.toFile());
+            GSON.toJson(assumed, writer);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void handle() {
         Path location = FabricLoader.getInstance().getConfigDir();
         File config = location.toFile();
@@ -33,15 +47,7 @@ public class ConfigHandler<T> {
         }
 
         if (configFile == null) {
-            Path path = Paths.get(location.toString(), name + ".json");
-            Writer writer;
-            try {
-                writer = new FileWriter(path.toFile());
-                GSON.toJson(assumed, writer);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            save();
             this.config = assumed;
         } else {
             try (Reader reader = new FileReader(configFile)) {
