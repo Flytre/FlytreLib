@@ -76,7 +76,7 @@ public class FilterInventory implements Inventory {
         ItemStack copy = stack.copy();
         copy.setCount(1);
 
-        if(!matchNbt && this.containsAny(Collections.singleton(stack.getItem())))
+        if (!matchNbt && this.containsAny(Collections.singleton(stack.getItem())))
             return false;
 
         for (int i = 0; i < items.size(); i++) {
@@ -182,6 +182,18 @@ public class FilterInventory implements Inventory {
 
     public void setMatchMod(boolean matchMod) {
         this.matchMod = matchMod;
+    }
+
+    public void toggleNbtMatch() {
+        this.matchNbt = !this.matchNbt;
+    }
+
+    public void toggleModMatch() {
+        this.matchMod = !this.matchMod;
+    }
+
+    public void toggleFilterType() {
+        this.filterType = (this.filterType == 1 ? 0 : 1);
     }
 
     public CompoundTag toTag() {

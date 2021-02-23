@@ -1,5 +1,7 @@
 package net.flytre.flytre_lib.client.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.model.ModelPart;
@@ -23,12 +25,13 @@ public class RenderUtils {
 
     /**
      * Get the color of a fluid, except doesn't actually work very well but hey it might just so why not try it!
-     *
+     * NOT STABLE AT ALL ~ DO NOT USE
      * @param world the world
      * @param pos   the pos
      * @param fluid the fluid
      * @return the int
      */
+
     public static int color(World world, BlockPos pos, Fluid fluid) {
         int c = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(world, pos, fluid.getDefaultState());
         if (fluid.isIn(FluidTags.WATER))
@@ -44,6 +47,7 @@ public class RenderUtils {
      * @param fluid the fluid
      * @return the sprite
      */
+    @Environment(EnvType.CLIENT)
     public static Sprite textureName(World world, BlockPos pos, Fluid fluid) {
         FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
         Sprite[] sprites = handler.getFluidSprites(world, pos, fluid.getDefaultState());
@@ -67,7 +71,7 @@ public class RenderUtils {
     }
 
     /**
-     * Same as other renderBlockSprite but for a full block instead of a specificed box.
+     * Same as other renderBlockSprite but for a full block instead of a specified box.
      *
      * @param builder the builder
      * @param stack   the stack
@@ -76,6 +80,8 @@ public class RenderUtils {
      * @param overlay the overlay
      * @param color   the color
      */
+
+    @Environment(EnvType.CLIENT)
     public static void renderBlockSprite(VertexConsumer builder, MatrixStack stack, Sprite sprite, int light, int overlay, int[] color) {
 
         renderBlockSprite(builder, stack.peek().getModel(), sprite, light, overlay, 0f, 1f, 0f, 1f, 0f, 1f, color);
@@ -97,6 +103,8 @@ public class RenderUtils {
      * @param z2      z2
      * @param color   unpacked color
      */
+
+    @Environment(EnvType.CLIENT)
     public static void renderBlockSprite(VertexConsumer builder, Matrix4f pos, Sprite sprite, int light, int overlay, float x1, float x2, float y1, float y2, float z1, float z2, int[] color) {
         renderSpriteSide(builder, pos, sprite, Direction.DOWN, light, overlay, x1, x2, y1, y2, z1, z2, color);
         renderSpriteSide(builder, pos, sprite, Direction.UP, light, overlay, x1, x2, y1, y2, z1, z2, color);
@@ -106,6 +114,7 @@ public class RenderUtils {
         renderSpriteSide(builder, pos, sprite, Direction.EAST, light, overlay, x1, x2, y1, y2, z1, z2, color);
     }
 
+    @Environment(EnvType.CLIENT)
     private static void renderSpriteSide(VertexConsumer builder, Matrix4f pos, Sprite sprite, Direction side, int light, int overlay, float x1, float x2, float y1, float y2, float z1, float z2, int[] color) {
         // Convert block size to pixel size
         final double px1 = x1 * 16;
@@ -192,6 +201,7 @@ public class RenderUtils {
      * @param light           the light
      * @param overlay         the overlay
      */
+    @Environment(EnvType.CLIENT)
     public static void render(Identifier id, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         matrices.push();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getBlockBreaking(id));
@@ -203,7 +213,7 @@ public class RenderUtils {
 
 
     /**
-     * Overlay a texture on the specificed side of a block
+     * Overlay a texture on the specified side of a block
      *
      * @param id              the texture path
      * @param matrices        the matrix stack
@@ -212,6 +222,7 @@ public class RenderUtils {
      * @param overlay         the overlay
      * @param dir             the side
      */
+    @Environment(EnvType.CLIENT)
     public static void renderSide(Identifier id, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Direction dir) {
         matrices.push();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getBlockBreaking(id));

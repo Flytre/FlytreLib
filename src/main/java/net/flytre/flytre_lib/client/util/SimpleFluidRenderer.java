@@ -1,6 +1,8 @@
 package net.flytre.flytre_lib.client.util;
 
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -18,6 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Renders a fluid in a GUI
+ */
+
+@Environment(EnvType.CLIENT)
 public final class SimpleFluidRenderer {
     private static final Map<Fluid, FluidRenderingData> FLUID_DATA = new HashMap<>();
 
@@ -28,6 +35,7 @@ public final class SimpleFluidRenderer {
     public static FluidRenderingData fromFluid(Fluid fluid) {
         return FLUID_DATA.computeIfAbsent(fluid, FluidRenderingDataImpl::from);
     }
+
 
     public static void render(Fluid fluid, MatrixStack matrices, int x0, int y0, int width, int height, int zOffset) {
         FluidRenderingData renderingData = SimpleFluidRenderer.fromFluid(fluid);

@@ -10,6 +10,9 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+/**
+ * Translucent button from Biome Locator
+ */
 public class TranslucentButton extends ButtonWidget {
     public TranslucentButton(int x, int y, int width, int height, Text message, PressAction onPress) {
         super(x, y, width, height, message, onPress);

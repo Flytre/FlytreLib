@@ -12,6 +12,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+/**
+ * A custom HUD overlay, like Flytre's Gun mods gun overlay, or the vanilla armor bar
+ */
+@Environment(EnvType.CLIENT)
 public abstract class Hud {
 
     protected final MinecraftClient client;
@@ -22,7 +26,6 @@ public abstract class Hud {
     }
 
 
-    @Environment(EnvType.CLIENT)
     private void render() {
         final PlayerEntity player = client.player;
         final TextRenderer textRenderer = client.textRenderer;
@@ -38,6 +41,10 @@ public abstract class Hud {
         draw(matrixStack, player, textRenderer, itemRenderer, x, y);
     }
 
+
+    /**
+     * Abstract method defining how the hud is actually drawn
+     */
     public abstract void draw(MatrixStack matrixStack, PlayerEntity player, TextRenderer textRenderer, ItemRenderer itemRenderer, int maxX, int maxY);
 
 
@@ -45,6 +52,9 @@ public abstract class Hud {
         drawBundle(matrixStack, x, y, stack, text, itemRenderer, textRenderer, 0x88101747, 11250603, 90);
     }
 
+    /**
+     * Draws a rectangle with an item and a line of text inside - See Flytre's Gun mod for example
+     */
     protected void drawBundle(MatrixStack matrixStack, int x, int y, ItemStack stack, Text text, ItemRenderer itemRenderer, TextRenderer textRenderer, int backgroundColor, int textColor, int width) {
         int w = width == -1 ? textRenderer.getWidth(text) + 30 : width;
         DrawableHelper.fill(matrixStack, x - 5, y - 5, x + w, y + 20, backgroundColor);
@@ -57,6 +67,9 @@ public abstract class Hud {
         drawTwoLineBundle(matrixStack, x, y, stack, text, text2, itemRenderer, textRenderer, 0x88101747, 11250603, 90);
     }
 
+    /**
+     * Draws a rectangle with an item and two lines of text inside
+     */
     protected void drawTwoLineBundle(MatrixStack matrixStack, int x, int y, ItemStack stack, Text text, Text text2, ItemRenderer itemRenderer, TextRenderer textRenderer, int backgroundColor, int textColor, int width) {
         int w = width == -1 ? Math.max(textRenderer.getWidth(text), textRenderer.getWidth(text2)) + 30 : width;
         DrawableHelper.fill(matrixStack, x - 5, y - 5, x + w, y + 25, backgroundColor);

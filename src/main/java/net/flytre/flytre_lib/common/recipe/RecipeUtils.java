@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 
 public class RecipeUtils {
 
-    private static HashMap<Item, List<CraftingRecipe>> cache;
+    private static final HashMap<Item, List<CraftingRecipe>> cache;
 
     static {
         cache = new HashMap<>();
