@@ -19,7 +19,7 @@ import java.util.concurrent.Executor;
 public class ReloadableResourceManagerImplMixin {
 
     @Inject(method = "beginMonitoredReload", at = @At("RETURN"))
-    public void food_highlight$reloadClientConfig(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReloadMonitor> cir) {
+    public void flytre_lib$reloadClientConfig(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReloadMonitor> cir) {
         ConfigRegistry.reloadClientConfigs();
     }
 }
