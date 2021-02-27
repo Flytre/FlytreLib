@@ -141,7 +141,6 @@ public class Formatter {
 
 
     /**
-     *
      * @param modid the mod to get the name of
      * @return Human-readable name of the mod
      */
@@ -157,7 +156,6 @@ public class Formatter {
     }
 
     /**
-     *
      * @param modid the mod to get the name of
      * @return Human-readable text formatted name of the mod
      */
@@ -169,7 +167,6 @@ public class Formatter {
 
 
     /**
-     *
      * @param arr an int[3] array storing the position of the block pos
      * @return The block pos representing the position
      */
@@ -179,7 +176,6 @@ public class Formatter {
 
 
     /**
-     *
      * @param pos The block pos
      * @return An int array tag representing the block pos
      */
@@ -209,8 +205,8 @@ public class Formatter {
         return Math.max(Formatter.unsplit(new int[]{propertyDelegate.get(5), propertyDelegate.get(6)}), 1);
     }
 
-    /*
-    Convert Mechanix -> TR and vice versa
+    /**
+     * Convert Mechanix -> TR and vice versa
      */
     public static double joulesEU(double joules) {
         return joules / 10;
@@ -218,5 +214,20 @@ public class Formatter {
 
     public static double EUjoules(double EU) {
         return EU * 10;
+    }
+
+
+    /**
+     * Convert an integer to a formatted readable hex string, i.e. #45AC2B
+     */
+    public static String intToHexString(int i) {
+        return "#" + String.format("0x%06X", i).substring(2);
+    }
+
+    /**
+     * Convert a formatted hex string to an int
+     */
+    public static int fromHexString(String hex) {
+        return Integer.decode(hex);
     }
 }

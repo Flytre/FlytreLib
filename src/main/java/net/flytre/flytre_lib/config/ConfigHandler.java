@@ -10,15 +10,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ConfigHandler<T> {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson;
     private final T assumed;
     private final String name;
     private T config;
 
     public ConfigHandler(T assumed, String name) {
+        this(assumed, name, new GsonBuilder().setPrettyPrinting().create());
+    }
+
+    public ConfigHandler(T assumed, String name, Gson gson) {
         this.assumed = assumed;
         this.name = name;
-
+        this.gson = gson;
     }
 
 
@@ -28,7 +32,7 @@ public class ConfigHandler<T> {
         Writer writer;
         try {
             writer = new FileWriter(path.toFile());
-            GSON.toJson(config, writer);
+            gson.toJson(config, writer);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,7 +55,7 @@ public class ConfigHandler<T> {
             this.config = assumed;
         } else {
             try (Reader reader = new FileReader(configFile)) {
-                this.config = GSON.fromJson(reader, (Type) assumed.getClass());
+                this.config = gson.fromJson(reader, (Type) assumed.getClass());
             } catch (IOException e) {
                 e.printStackTrace();
             }
