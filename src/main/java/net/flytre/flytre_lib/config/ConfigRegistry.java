@@ -1,5 +1,8 @@
 package net.flytre.flytre_lib.config;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +26,17 @@ public class ConfigRegistry {
         return SERVER_CONFIGS.size();
     }
 
+
+    @Environment(EnvType.CLIENT)
     public static void registerClientConfig(ConfigHandler<?> handler) {
         CLIENT_CONFIGS.add(handler);
+        handler.handle();
     }
 
-    public static int reloadClientConfigs() {
+    @Environment(EnvType.CLIENT)
+    public static void reloadClientConfigs() {
         for (ConfigHandler<?> configHandler : CLIENT_CONFIGS) {
             configHandler.handle();
         }
-        return CLIENT_CONFIGS.size();
     }
 }
