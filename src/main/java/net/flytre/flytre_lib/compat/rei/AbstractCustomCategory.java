@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractCustomCategory<R extends Recipe<?>> implements RecipeCategory<AbstractRecipeDisplay<R>> {
+public abstract class AbstractCustomCategory<R extends Recipe<?>> implements RecipeCategory<AbstractRecipeDisplay<R>> {
     private final RecipeType<R> recipeType;
 
     public AbstractCustomCategory(RecipeType<R> recipeType) {
@@ -33,6 +33,12 @@ public class AbstractCustomCategory<R extends Recipe<?>> implements RecipeCatego
         return I18n.translate(getIdentifier().toString());
     }
 
+    @Override
+    public abstract @NotNull EntryStack getLogo();
+
+    public RecipeType<R> getRecipeType() {
+        return recipeType;
+    }
 
     @Override
     public @NotNull RecipeEntry getSimpleRenderer(AbstractRecipeDisplay<R> recipe) {
