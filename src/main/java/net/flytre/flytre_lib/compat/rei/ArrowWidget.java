@@ -40,7 +40,6 @@ public final class ArrowWidget extends Arrow {
         return bounds;
     }
 
-    @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient.getInstance().getTextureManager().bindTexture(REIHelper.getInstance().getDefaultDisplayTexture());
         drawTexture(matrices, getX(), getY(), 82, 60, 24, 17);
@@ -50,7 +49,6 @@ public final class ArrowWidget extends Arrow {
         }
     }
 
-    @Override
     public List<? extends Element> children() {
         return Collections.emptyList();
     }
