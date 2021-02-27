@@ -7,6 +7,7 @@
     "MinecraftServerMixin"
   ],
   "client": [
+    "ReloadableResourceManagerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1
