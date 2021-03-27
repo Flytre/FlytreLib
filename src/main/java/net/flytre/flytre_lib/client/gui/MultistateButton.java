@@ -101,7 +101,7 @@ public class MultistateButton extends ButtonWidget {
      */
     public void cycleState() {
         this.state++;
-        this.state /= states;
+        this.state %= states;
     }
 
     @Override
