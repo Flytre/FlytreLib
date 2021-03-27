@@ -1,5 +1,6 @@
 package net.flytre.flytre_lib.client.gui;
 
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -18,7 +19,7 @@ public class MultistateButton extends ButtonWidget {
     private final Identifier texture;
     private final String id;
     private int state;
-    private int states;
+    private final int states;
     private Text[] tooltips;
     private ButtonTooltipRenderer tooltipRenderer;
 
@@ -56,7 +57,7 @@ public class MultistateButton extends ButtonWidget {
         this.textureHeight = height * 4;
         this.textureWidth = width;
         this.texture = texture;
-        this.state = state * 2;
+        this.state = state;
         this.id = id;
         this.states = states;
     }
@@ -115,7 +116,7 @@ public class MultistateButton extends ButtonWidget {
     }
 
     /**
-     * Gets the state (0 for frame 1, 1 for frme 2).
+     * Gets the state (0 for frame 1, 1 for frame 2).
      *
      * @return the state
      */
