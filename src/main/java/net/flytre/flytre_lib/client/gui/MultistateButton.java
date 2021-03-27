@@ -18,8 +18,8 @@ public class MultistateButton extends ButtonWidget {
     private final int textureHeight;
     private final Identifier texture;
     private final String id;
-    private int state;
     private final int states;
+    private int state;
     private Text[] tooltips;
     private ButtonTooltipRenderer tooltipRenderer;
 
@@ -54,7 +54,7 @@ public class MultistateButton extends ButtonWidget {
      */
     public MultistateButton(int x, int y, int width, int height, int state, int states, Identifier texture, PressAction onPress, String id) {
         super(x, y, width, height, LiteralText.EMPTY, onPress);
-        this.textureHeight = height * 4;
+        this.textureHeight = height * states * 2;
         this.textureWidth = width;
         this.texture = texture;
         this.state = state;
