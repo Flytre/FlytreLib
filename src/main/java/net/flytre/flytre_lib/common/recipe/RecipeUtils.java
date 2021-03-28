@@ -101,6 +101,10 @@ public class RecipeUtils {
         }
     }
 
+
+    /**
+     * Check whether a set of output providers can be placed between slots [lower, upper) in an inventory
+     */
     public static boolean matches(Inventory inv, int lower, int upper, OutputProvider[] outputProviders) {
         int blanks = 0; //number of empty slots
         for (int i = lower; i < upper; i++) {
@@ -162,7 +166,7 @@ public class RecipeUtils {
             for (int i = lower; i < upper; i++)
                 if (ingredient.test(inv.getStack(i))) {
                     ItemStack stack = inv.getStack(i);
-                    if(stack.getCount() == 1 && stack.getItem().hasRecipeRemainder()) {
+                    if (stack.getCount() == 1 && stack.getItem().hasRecipeRemainder()) {
                         inv.setStack(i, new ItemStack(stack.getItem().getRecipeRemainder(), 1));
                     } else
                         stack.decrement(1);
@@ -188,19 +192,40 @@ public class RecipeUtils {
     }
 
 
-
-    public static OutputProvider[] getOutputProviders(JsonObject json, String key) {
+    /**
+     * Get the array of output providers from a Json recipe object
+     */
+    public static OutputProvider[] getOutputProviders(JsonObject json, String pluralKey, String singularKey) {
         OutputProvider[] result;
-        if(JsonHelper.hasArray(json, key)) {
-            JsonArray array = JsonHelper.getArray(json, key);
+        if (JsonHelper.hasArray(json, pluralKey)) {
+            JsonArray array = JsonHelper.getArray(json, pluralKey);
             result = new OutputProvider[array.size()];
-            for(int i = 0; i < array.size(); i++)
+            for (int i = 0; i < array.size(); i++)
                 result[i] = OutputProvider.fromJson(array.get(i));
         } else {
-            result = new OutputProvider[]{OutputProvider.fromJson(json.get(key))};
+            result = new OutputProvider[]{OutputProvider.fromJson(json.get(singularKey))};
         }
 
         return result;
     }
+
+    /**
+     * Get the array of quantified ingredients from a Json recipe object
+     *
+     * @return
+     */
+    public static QuantifiedIngredient[] getQuantifiedIngredients(JsonObject json, String pluralKey, String singularKey) {
+        QuantifiedIngredient[] ingredients;
+        if (JsonHelper.hasArray(json, pluralKey)) {
+            JsonArray array = JsonHelper.getArray(json, pluralKey);
+            ingredients = new QuantifiedIngredient[array.size()];
+            for (int i = 0; i < array.size(); i++)
+                ingredients[i] = QuantifiedIngredient.fromJson(array.get(i));
+        } else {
+            ingredients = new QuantifiedIngredient[]{QuantifiedIngredient.fromJson(json.get(singularKey))};
+        }
+        return ingredients;
+    }
+
 
 }
