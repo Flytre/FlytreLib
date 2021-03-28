@@ -32,6 +32,7 @@ public class Formatter {
      * @param hash the hash
      * @return the int
      */
+    @Deprecated
     public static int hashToInt(HashMap<Direction, Boolean> hash) {
         boolean[] array = new boolean[]{
                 hash.get(Direction.NORTH),
@@ -49,6 +50,7 @@ public class Formatter {
      * @param n the n
      * @return the hash map
      */
+    @Deprecated
     public static HashMap<Direction, Boolean> intToHash(int n) {
         boolean[] array = intsToBoolean(n, 6);
         HashMap<Direction, Boolean> result = new HashMap<>();
@@ -59,6 +61,21 @@ public class Formatter {
         result.put(Direction.DOWN, array[4]);
         result.put(Direction.SOUTH, array[5]);
         return result;
+    }
+
+    public static int mapToInt(Map<Direction, Boolean> map) {
+        boolean[] array = new boolean[]{
+                map.get(Direction.NORTH),
+                map.get(Direction.WEST),
+                map.get(Direction.EAST),
+                map.get(Direction.UP),
+                map.get(Direction.DOWN),
+                map.get(Direction.SOUTH)};
+        return booleansToInt(array);
+    }
+
+    public static Map<Direction, Boolean> intToMap(int n) {
+        return intToHash(n);
     }
 
     /**
