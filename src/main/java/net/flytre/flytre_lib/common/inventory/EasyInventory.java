@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
  * Highly recommended over default inventory unless you need absolutely crazy
  * behavior!
  */
-public interface EasyInventory extends SidedInventory, IOMode {
+public interface EasyInventory extends SidedInventory, IOTypeProvider {
     static boolean canMergeItems(ItemStack first, ItemStack second) {
         if (first.getItem() != second.getItem()) {
             return false;
@@ -32,6 +32,10 @@ public interface EasyInventory extends SidedInventory, IOMode {
     DefaultedList<ItemStack> getItems();
 
     Map<Direction, IOType> getItemIO();
+
+    default Map<Direction, IOType> getIOType() {
+        return getItemIO();
+    }
 
     @Override
     default int size() {
