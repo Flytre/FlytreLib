@@ -211,8 +211,6 @@ public class RecipeUtils {
 
     /**
      * Get the array of quantified ingredients from a Json recipe object
-     *
-     * @return
      */
     public static QuantifiedIngredient[] getQuantifiedIngredients(JsonObject json, String pluralKey, String singularKey) {
         QuantifiedIngredient[] ingredients;
