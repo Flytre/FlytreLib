@@ -141,8 +141,12 @@ public class MultistateButton extends ButtonWidget {
         OrderedText orderedText = Text.of(id + "").asOrderedText();
         renderer.draw(matrices, orderedText, (float) (x + width / 2 - renderer.getWidth(orderedText) / 2) + 0.5f, (float) this.y + 4.5f, 0);
 
-        if (isHovering(mouseX, mouseY))
+        if (isHovering(mouseX, mouseY)) {
+            int zOffset = getZOffset();
+            setZOffset(zOffset + 100);
             renderToolTip(matrices, mouseX, mouseY);
+            setZOffset(zOffset);
+        }
     }
 
 }

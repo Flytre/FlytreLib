@@ -8,7 +8,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
@@ -31,7 +31,7 @@ public interface EasyInventory extends SidedInventory, IOMode {
 
     DefaultedList<ItemStack> getItems();
 
-    HashMap<Direction, Boolean> getItemIO();
+    Map<Direction, IOType> getItemIO();
 
     @Override
     default int size() {
@@ -94,12 +94,12 @@ public interface EasyInventory extends SidedInventory, IOMode {
 
     @Override
     default boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
-        return this.isValid(slot, stack) && !getItemIO().get(dir);
+        return this.isValid(slot, stack) && getItemIO().get(dir).canInsert();
     }
 
     @Override
     default boolean canExtract(int slot, ItemStack stack, Direction dir) {
-        return getItemIO().get(dir);
+        return getItemIO().get(dir).canExtract();
     }
 
     default ItemStack addStack(ItemStack stack, Direction dir) {
