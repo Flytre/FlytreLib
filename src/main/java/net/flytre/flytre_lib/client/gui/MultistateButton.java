@@ -22,6 +22,7 @@ public class MultistateButton extends ButtonWidget {
     private int state;
     private Text[] tooltips;
     private ButtonTooltipRenderer tooltipRenderer;
+    private boolean renderTooltipWithButton;
 
     /**
      * Instantiates a new Multistate button.
@@ -60,6 +61,7 @@ public class MultistateButton extends ButtonWidget {
         this.state = state;
         this.id = id;
         this.states = states;
+        this.renderTooltipWithButton = true;
     }
 
 
@@ -67,6 +69,10 @@ public class MultistateButton extends ButtonWidget {
         return mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
     }
 
+
+    public void setRenderTooltipWithButton(boolean renderTooltipWithButton) {
+        this.renderTooltipWithButton = renderTooltipWithButton;
+    }
 
     /**
      * Sets tooltips, make sure you set the renderer. See the ButtonTooltipRenderer for the easiest way
@@ -141,7 +147,7 @@ public class MultistateButton extends ButtonWidget {
         OrderedText orderedText = Text.of(id + "").asOrderedText();
         renderer.draw(matrices, orderedText, (float) (x + width / 2 - renderer.getWidth(orderedText) / 2) + 0.5f, (float) this.y + 4.5f, 0);
 
-        if (isHovering(mouseX, mouseY)) {
+        if (isHovering(mouseX, mouseY) && renderTooltipWithButton) {
             int zOffset = getZOffset();
             setZOffset(zOffset + 100);
             renderToolTip(matrices, mouseX, mouseY);
