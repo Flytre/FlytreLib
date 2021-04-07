@@ -26,6 +26,7 @@ public class RenderUtils {
     /**
      * Get the color of a fluid, except doesn't actually work very well but hey it might just so why not try it!
      * NOT STABLE AT ALL ~ DO NOT USE
+     *
      * @param world the world
      * @param pos   the pos
      * @param fluid the fluid
@@ -115,7 +116,7 @@ public class RenderUtils {
     }
 
     @Environment(EnvType.CLIENT)
-    private static void renderSpriteSide(VertexConsumer builder, Matrix4f pos, Sprite sprite, Direction side, int light, int overlay, float x1, float x2, float y1, float y2, float z1, float z2, int[] color) {
+    public static void renderSpriteSide(VertexConsumer builder, Matrix4f pos, Sprite sprite, Direction side, int light, int overlay, float x1, float x2, float y1, float y2, float z1, float z2, int[] color) {
         // Convert block size to pixel size
         final double px1 = x1 * 16;
         final double px2 = x2 * 16;
