@@ -5,6 +5,8 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Collection;
@@ -27,6 +29,23 @@ public class ParticleUtils {
             for (ServerPlayerEntity playerEntity : players)
                 world.spawnParticles(playerEntity, particle, force, x, y, z, count, 0, 0, 0, 0);
         }
+    }
+
+
+    public static Vec3d caretToAbsolute(Vec3d caretValues, Vec2f rotation, Vec3d anchorPosition) {
+        float f = MathHelper.cos((rotation.y + 90.0F) * 0.017453292F);
+        float g = MathHelper.sin((rotation.y + 90.0F) * 0.017453292F);
+        float h = MathHelper.cos(-rotation.x * 0.017453292F);
+        float i = MathHelper.sin(-rotation.x * 0.017453292F);
+        float j = MathHelper.cos((-rotation.x + 90.0F) * 0.017453292F);
+        float k = MathHelper.sin((-rotation.x + 90.0F) * 0.017453292F);
+        Vec3d vec3d2 = new Vec3d(f * h, i, g * h);
+        Vec3d vec3d3 = new Vec3d(f * j, k, g * j);
+        Vec3d vec3d4 = vec3d2.crossProduct(vec3d3).multiply(-1.0D);
+        double d = vec3d2.x * caretValues.z + vec3d3.x * caretValues.y + vec3d4.x * caretValues.x;
+        double e = vec3d2.y * caretValues.z + vec3d3.y * caretValues.y + vec3d4.y * caretValues.x;
+        double l = vec3d2.z * caretValues.z + vec3d3.z * caretValues.y + vec3d4.z * caretValues.x;
+        return new Vec3d(anchorPosition.x + d, anchorPosition.y + e, anchorPosition.z + l);
     }
 
 

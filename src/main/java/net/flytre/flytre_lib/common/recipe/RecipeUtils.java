@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.tag.ServerTagManagerHolder;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -175,16 +176,22 @@ public class RecipeUtils {
     }
 
 
+    /**
+     * Filters out special crafting recipes
+     */
     public static List<CraftingRecipe> craftingRecipesWithOutput(Item item, World world) {
 
         if (cache.containsKey(item))
             return cache.get(item);
 
-        List<CraftingRecipe> recipes = world.getRecipeManager().listAllOfType(RecipeType.CRAFTING).stream().filter(i -> i.getOutput().getItem() == item).collect(Collectors.toList());
+        List<CraftingRecipe> recipes = world.getRecipeManager().listAllOfType(RecipeType.CRAFTING).stream().filter(i -> !(i instanceof SpecialCraftingRecipe)).filter(i -> i.getOutput().getItem() == item).collect(Collectors.toList());
         cache.put(item, recipes);
         return recipes;
     }
 
+    /**
+     * Filters out special crafting recipes
+     */
     public static @Nullable CraftingRecipe getFirstCraftingMatch(Item item, Inventory inv, World world, int lower, int upper) {
         List<CraftingRecipe> outputs = craftingRecipesWithOutput(item, world);
         Optional<CraftingRecipe> result = outputs.stream().filter(i -> craftingInputMatch(i, inv, lower, upper)).findFirst();
