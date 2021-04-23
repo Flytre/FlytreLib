@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "net.flytre.flytre_lib.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": ["EulaReaderMixin", "MinecraftServerMixin", "PlayerEntityMixin", "ServerPropertiesHandlerMixin"],
+  "mixins": ["EulaReaderMixin", "MinecraftServerMixin", "ServerPropertiesHandlerMixin"],
   "client": [
     "ReloadableResourceManagerImplMixin"
   ],
