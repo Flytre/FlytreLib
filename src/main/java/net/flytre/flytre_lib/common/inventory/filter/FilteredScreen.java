@@ -35,7 +35,8 @@ public abstract class FilteredScreen<T extends ScreenHandler> extends HandledScr
     protected void sendPacket(ToggleButton button, Identifier channel, @Nullable BlockPos pos) {
         button.toggleState();
         PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-        passedData.writeBlockPos(pos);
+        if (pos != null)
+            passedData.writeBlockPos(pos);
         passedData.writeInt(button.getState());
         ClientPlayNetworking.send(channel, passedData);
     }
