@@ -17,6 +17,7 @@ public class FlytreLib implements ModInitializer {
         filterPackets();
     }
 
+    //INITIALIZE BLOCK ENTITY FILTER PACKETS
     private void filterPackets() {
         ServerPlayNetworking.registerGlobalReceiver(Filtered.BLOCK_FILTER_MODE, (server, player, handler, attachedData, responseSender) -> {
 

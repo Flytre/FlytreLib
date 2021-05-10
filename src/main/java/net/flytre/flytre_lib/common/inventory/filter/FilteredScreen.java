@@ -1,7 +1,6 @@
 package net.flytre.flytre_lib.common.inventory.filter;
 
 import io.netty.buffer.Unpooled;
-import jdk.internal.jline.internal.Nullable;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.flytre.flytre_lib.client.gui.CoordinateProvider;
 import net.flytre.flytre_lib.client.gui.ToggleButton;
@@ -12,6 +11,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
