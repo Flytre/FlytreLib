@@ -17,9 +17,9 @@ import java.util.function.Supplier;
 
 public abstract class FilteredScreen<T extends ScreenHandler> extends HandledScreen<T> implements CoordinateProvider {
 
-    private static final Identifier MODE_BUTTON = new Identifier("flytre_lib:textures/gui/button/check_ex.png");
-    private static final Identifier MOD_BUTTON = new Identifier("flytre_lib:textures/gui/button/mod.png");
-    private static final Identifier NBT_BUTTON = new Identifier("flytre_lib:textures/gui/button/nbt.png");
+    protected static final Identifier MODE_BUTTON = new Identifier("flytre_lib:textures/gui/button/check_ex.png");
+    protected static final Identifier MOD_BUTTON = new Identifier("flytre_lib:textures/gui/button/mod.png");
+    protected static final Identifier NBT_BUTTON = new Identifier("flytre_lib:textures/gui/button/nbt.png");
 
 
     public FilteredScreen(T handler, PlayerInventory inventory, Text title) {
