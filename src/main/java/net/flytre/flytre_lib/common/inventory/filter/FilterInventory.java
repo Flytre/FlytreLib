@@ -1,4 +1,4 @@
-package net.flytre.flytre_lib.common.inventory;
+package net.flytre.flytre_lib.common.inventory.filter;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
 A filtered inventory - blacklist and whitelist options!
  */
 public class FilterInventory implements Inventory {
+
+
+
+
 
     private final int height;
     public DefaultedList<ItemStack> items;
