@@ -7,7 +7,7 @@ public class EnchantmentUtils {
 
     //DO NOT USE player's totalExperience variable
     public static int calculateTotalXp(PlayerEntity player) {
-        return (int) (EnchantmentUtils.getExperienceForLevel(player.experienceLevel) + (player.experienceProgress * player.getNextLevelExperience()));
+        return (int) (EnchantmentUtils.getExperienceFromLevel(player.experienceLevel) + (player.experienceProgress * player.getNextLevelExperience()));
     }
 
     public static int nextLevelExperience(int level) {
@@ -24,7 +24,7 @@ public class EnchantmentUtils {
         return n * (2 * a0 + (n - 1) * d) / 2;
     }
 
-    public static int getExperienceForLevel(int level) {
+    public static int getExperienceFromLevel(int level) {
         if (level == 0) return 0;
         if (level <= 15) return sum(level, 7, 2);
         if (level <= 30) return 315 + sum(level - 15, 37, 5);
@@ -32,7 +32,7 @@ public class EnchantmentUtils {
 
     }
 
-    public static int getLevelForExperience(int targetXp) {
+    public static int getExperienceLevel(int targetXp) {
         int level = 0;
         while (true) {
             final int xpToNextLevel = nextLevelExperience(level);
