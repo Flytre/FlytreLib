@@ -1,5 +1,6 @@
 package net.flytre.flytre_lib.common.inventory;
 
+import net.flytre.flytre_lib.common.util.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
@@ -9,24 +10,19 @@ import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.BiPredicate;
 import java.util.stream.IntStream;
 
 /**
- * Implemented inventory to prevent errors when creating your custom machine!
+ * Implemented inventory to prevent errors when creating your custom containers!
  * Highly recommended over default inventory unless you need absolutely crazy
  * behavior!
  */
 public interface EasyInventory extends SidedInventory, IOTypeProvider {
+
+    @Deprecated
     static boolean canMergeItems(ItemStack first, ItemStack second) {
-        if (first.getItem() != second.getItem()) {
-            return false;
-        } else if (first.getDamage() != second.getDamage()) {
-            return false;
-        } else if (first.getCount() > first.getMaxCount()) {
-            return false;
-        } else {
-            return first.getCount() + second.getCount() <= first.getMaxCount() && ItemStack.areTagsEqual(first, second);
-        }
+        return InventoryUtils.canMergeItems(first, second);
     }
 
     DefaultedList<ItemStack> getItems();
@@ -107,44 +103,19 @@ public interface EasyInventory extends SidedInventory, IOTypeProvider {
     }
 
     default ItemStack addStack(ItemStack stack, Direction dir) {
-        int[] slots = getAvailableSlots(dir);
-        for (int i : slots) {
-            ItemStack currentStack = getStack(i);
-            if (canInsert(i, stack, dir)) {
-                if (currentStack.isEmpty()) {
-                    setStack(i, stack);
-                    markDirty();
-                    stack = ItemStack.EMPTY;
-                } else if (canMergeItems(currentStack, stack)) {
-                    if (currentStack.getCount() < currentStack.getMaxCount()) {
-                        int p = stack.getMaxCount() - currentStack.getCount();
-                        int j = Math.min(stack.getCount(), p);
-                        stack.decrement(j);
-                        currentStack.increment(j);
-                    }
-                }
-            }
-        }
-        return stack;
+        return customAddStack(stack, getAvailableSlots(dir), (i, stk) -> canExtract(i, stk, dir));
     }
 
     default ItemStack addStackInternal(ItemStack stack) {
-        for (int i : IntStream.range(0, size()).toArray()) {
-            ItemStack currentStack = getStack(i);
-            if (isValid(i, stack)) {
-                if (currentStack.isEmpty()) {
-                    setStack(i, stack);
-                    markDirty();
-                    stack = ItemStack.EMPTY;
-                } else if (canMergeItems(currentStack, stack)) {
-                    if (currentStack.getCount() < currentStack.getMaxCount()) {
-                        int p = stack.getMaxCount() - currentStack.getCount();
-                        int j = Math.min(stack.getCount(), p);
-                        stack.decrement(j);
-                        currentStack.increment(j);
-                    }
-                }
-            }
+        return customAddStack(stack, IntStream.range(0, size()).toArray(), this::isValid);
+    }
+
+
+    default ItemStack customAddStack(ItemStack stack, int[] slots, BiPredicate<Integer, ItemStack> condition) {
+        for (int i : slots) {
+            stack = InventoryUtils.mergeStackIntoSlot(stack, this, i);
+            if (stack.isEmpty())
+                break;
         }
         return stack;
     }

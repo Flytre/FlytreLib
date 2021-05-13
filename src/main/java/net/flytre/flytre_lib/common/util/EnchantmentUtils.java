@@ -20,6 +20,15 @@ public class EnchantmentUtils {
         return 7 + level * 2;
     }
 
+    /**
+     * Arithmetic sum of first n elements
+     * Experience formula
+     *
+     * @param n  the number of terms to sum
+     * @param a0 the base value of each term in the series
+     * @param d  the common difference
+     * @return a0 * n (base amount of experience for each level) + d * sum(i=1, n, i) (the total amount of experience added from the experience increase from each level)
+     */
     private static int sum(int n, int a0, int d) {
         return n * (2 * a0 + (n - 1) * d) / 2;
     }
