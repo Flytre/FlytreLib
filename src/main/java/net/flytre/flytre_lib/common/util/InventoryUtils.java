@@ -9,11 +9,14 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -168,5 +171,20 @@ public class InventoryUtils {
         if (!condition.test(stack))
             return null;
         return stack;
+    }
+
+
+    public static CompoundTag toTag(CompoundTag tag, DefaultedList<ItemStack> stacks, String key) {
+        CompoundTag temp = new CompoundTag();
+        Inventories.toTag(temp, stacks);
+        tag.put(key, temp.get("Items"));
+        return tag;
+    }
+
+    public static CompoundTag fromTag(CompoundTag tag, DefaultedList<ItemStack> stacks, String key) {
+        CompoundTag temp = new CompoundTag();
+        temp.put("Items", tag.get(key));
+        Inventories.fromTag(temp, stacks);
+        return tag;
     }
 }
