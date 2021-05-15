@@ -146,14 +146,14 @@ public class Formatter {
             suffixIndex++;
             num /= 1000.0;
         }
-        if (suffix.equals("J"))
-            suffixIndex++;
 
         String prefix = PREFIX_VALUES[suffixIndex];
 
-        if (num < 1) {
+        if (num == 0)
+            prefix = PREFIX_VALUES[0];
+        else if (num < 1) {
             num *= 1000;
-            prefix = suffix.equals("J") ? "" : "m";
+            prefix = "m";
         }
 
         int format = num >= 100 ? 1 : 2;
