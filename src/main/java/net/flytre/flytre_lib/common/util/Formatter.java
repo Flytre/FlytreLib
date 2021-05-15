@@ -137,6 +137,10 @@ public class Formatter {
      * @return the string
      */
     public static String formatNumber(double num, String suffix) {
+        return formatNumber(num, suffix, false);
+    }
+
+    public static String formatNumber(double num, String suffix, boolean space) {
         int suffixIndex = 0;
         while (num >= 1000.0) {
             suffixIndex++;
@@ -153,9 +157,8 @@ public class Formatter {
         }
 
         int format = num >= 100 ? 1 : 2;
-        return String.format("%." + format + "f", num) + prefix + suffix;
+        return String.format("%." + format + "f", num) + (space ? " " : "") + prefix + suffix;
     }
-
 
     /**
      * @param modid the mod to get the name of
@@ -225,11 +228,11 @@ public class Formatter {
     /**
      * Convert Mechanix -> TR and vice versa
      */
-    public static double joulesEU(double joules) {
+    public static double sigmasEU(double joules) {
         return joules / 10;
     }
 
-    public static double EUjoules(double EU) {
+    public static double EUsigmas(double EU) {
         return EU * 10;
     }
 
