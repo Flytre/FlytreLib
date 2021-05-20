@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+
 public class RecipeUtils {
 
     private static final HashMap<Item, List<CraftingRecipe>> cache;
@@ -216,17 +217,22 @@ public class RecipeUtils {
         return result;
     }
 
+
+    public static QuantifiedIngredient[] getQuantifiedIngredients(JsonObject json, String pluralKey, String singularKey) {
+        return getQuantifiedIngredients(json, pluralKey, singularKey, false);
+    }
+
     /**
      * Get the array of quantified ingredients from a Json recipe object
      */
-    public static QuantifiedIngredient[] getQuantifiedIngredients(JsonObject json, String pluralKey, String singularKey) {
-        QuantifiedIngredient[] ingredients;
+    public static QuantifiedIngredient[] getQuantifiedIngredients(JsonObject json, String pluralKey, String singularKey, boolean opt) {
+        QuantifiedIngredient[] ingredients = new QuantifiedIngredient[0];
         if (JsonHelper.hasArray(json, pluralKey)) {
             JsonArray array = JsonHelper.getArray(json, pluralKey);
             ingredients = new QuantifiedIngredient[array.size()];
             for (int i = 0; i < array.size(); i++)
                 ingredients[i] = QuantifiedIngredient.fromJson(array.get(i));
-        } else {
+        } else if (JsonHelper.hasElement(json, singularKey) || !opt) {
             ingredients = new QuantifiedIngredient[]{QuantifiedIngredient.fromJson(json.get(singularKey))};
         }
         return ingredients;
