@@ -9,7 +9,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.JsonHelper;
 
-public class QuantifiedIngredient {
+import java.util.function.Predicate;
+
+public class QuantifiedIngredient implements Predicate<ItemStack> {
 
     private final Ingredient ingredient;
     private final int quantity;
@@ -19,26 +21,27 @@ public class QuantifiedIngredient {
         this.quantity = quantity;
     }
 
+    public static QuantifiedIngredient fromJson(JsonElement json) {
+        Ingredient ingredient = RecipeUtils.fromJson(json);
+        int quantity = 1;
+        if (json.isJsonObject() && JsonHelper.hasPrimitive((JsonObject) json, "count")) {
+            quantity = JsonHelper.getInt((JsonObject) json, "count");
+        }
+        return new QuantifiedIngredient(ingredient, quantity);
+    }
+
+    public static QuantifiedIngredient fromPacket(PacketByteBuf buf) {
+        Ingredient ingredient = Ingredient.fromPacket(buf);
+        int quantity = buf.readInt();
+        return new QuantifiedIngredient(ingredient, quantity);
+    }
+
     public Ingredient getIngredient() {
         return ingredient;
     }
 
     public int getQuantity() {
         return quantity;
-    }
-
-    public static QuantifiedIngredient fromJson(JsonElement json) {
-        Ingredient ingredient = RecipeUtils.fromJson(json);
-        int quantity = 1;
-        if(json.isJsonObject() && JsonHelper.hasPrimitive((JsonObject)json,"count")) {
-            quantity = JsonHelper.getInt((JsonObject)json,"count");
-        }
-        return new QuantifiedIngredient(ingredient,quantity);
-    }
-    public static QuantifiedIngredient fromPacket(PacketByteBuf buf) {
-        Ingredient ingredient = Ingredient.fromPacket(buf);
-        int quantity = buf.readInt();
-        return new QuantifiedIngredient(ingredient,quantity);
     }
 
     public void toPacket(PacketByteBuf packet) {
@@ -57,7 +60,7 @@ public class QuantifiedIngredient {
     @Environment(EnvType.CLIENT)
     public ItemStack[] getMatchingStacksClient() {
         ItemStack[] result = ingredient.getMatchingStacksClient();
-        for(ItemStack stack : result) {
+        for (ItemStack stack : result) {
             stack.setCount(quantity);
         }
         return result;
