@@ -3,7 +3,7 @@ package net.flytre.flytre_lib.common.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.flytre.flytre_lib.common.inventory.EasyInventory;
+import net.flytre.flytre_lib.common.util.InventoryUtils;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -86,7 +86,7 @@ public class RecipeUtils {
         for (OutputProvider output : providers) {
             boolean matched = false;
             for (int i = lower; i < upper; i++)
-                if (!checked.contains(i) && EasyInventory.canMergeItems(output.getStack(), inv.getStack(i))) {
+                if (!checked.contains(i) && InventoryUtils.canUnifyStacks(output.getStack(), inv.getStack(i))) {
                     matched = true;
                     checked.add(i);
                     inv.getStack(i).increment(output.getStack().getCount());
@@ -117,7 +117,7 @@ public class RecipeUtils {
         for (OutputProvider output : outputProviders) {
             boolean matched = false;
             for (int i = lower; i < upper; i++)
-                if (!checked.contains(i) && EasyInventory.canMergeItems(output.getStack(), inv.getStack(i))) {
+                if (!checked.contains(i) && InventoryUtils.canUnifyStacks(output.getStack(), inv.getStack(i))) {
                     matched = true;
                     checked.add(i);
                     break;
