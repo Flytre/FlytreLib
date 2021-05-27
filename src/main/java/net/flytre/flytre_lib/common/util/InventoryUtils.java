@@ -42,6 +42,10 @@ public class InventoryUtils {
         return inventory instanceof SidedInventory ? IntStream.of(((SidedInventory) inventory).getAvailableSlots(side)) : IntStream.range(0, inventory.size());
     }
 
+
+    /**
+     * Whether two stacks could be merged at all, ie. 33 stone and 34 stone into 64 stone and 3 stone
+     */
     public static boolean canMergeItems(ItemStack first, ItemStack second) {
         if (first.getItem() != second.getItem()) {
             return false;
@@ -52,6 +56,13 @@ public class InventoryUtils {
         } else {
             return ItemStack.areTagsEqual(first, second);
         }
+    }
+
+    /**
+     * Whether two stacks  can be fully combined into one stack
+     */
+    public static boolean canUnifyStacks(ItemStack first, ItemStack second) {
+        return canMergeItems(first, second) && first.getCount() + second.getCount() <= first.getMaxCount();
     }
 
     public static boolean canInsert(Inventory inventory, ItemStack stack, int slot, @Nullable Direction side) {
