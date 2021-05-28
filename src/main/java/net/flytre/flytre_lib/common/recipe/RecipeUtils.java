@@ -3,6 +3,7 @@ package net.flytre.flytre_lib.common.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.flytre.flytre_lib.common.util.InventoryUtils;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
@@ -72,7 +73,7 @@ public class RecipeUtils {
                 return !Registry.ITEM.getIds().contains(id);
             } else if (json.has("tag")) {
                 identifier2 = new Identifier(JsonHelper.getString(json, "tag"));
-                Tag<Item> tag = ServerTagManagerHolder.getTagManager().getItems().getTag(identifier2);
+                Tag<Item> tag = ServerTagManagerHolder.getTagManager().getTag(Registry.ITEM_KEY,identifier2,(exc) -> new JsonSyntaxException("Unknown item tag '" + exc + "'"));
                 return tag == null;
             } else {
                 return true;
@@ -134,7 +135,7 @@ public class RecipeUtils {
 
     public static boolean craftingInputMatch(CraftingRecipe recipe, Inventory inv, int lower, int upper) {
         //Get only non-empty ingredients
-        DefaultedList<Ingredient> ingredients = recipe.getPreviewInputs();
+        DefaultedList<Ingredient> ingredients = recipe.getIngredients();
         List<Ingredient> actual = ingredients.stream().filter(i -> !i.isEmpty()).collect(Collectors.toList());
 
         //Copy the inventory and use that for parsing as u can decrement
@@ -161,7 +162,7 @@ public class RecipeUtils {
 
     public static void actuallyCraft(CraftingRecipe recipe, Inventory inv, int lower, int upper) {
         //Get only non-empty ingredients
-        DefaultedList<Ingredient> ingredients = recipe.getPreviewInputs();
+        DefaultedList<Ingredient> ingredients = recipe.getIngredients();
         List<Ingredient> actual = ingredients.stream().filter(i -> !i.isEmpty()).collect(Collectors.toList());
 
         for (Ingredient ingredient : actual)

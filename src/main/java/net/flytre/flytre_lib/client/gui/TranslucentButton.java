@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -59,9 +60,9 @@ public class TranslucentButton extends ButtonWidget {
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        RenderSystem.color4f(red, green, blue, alpha);
+        RenderSystem.setShaderColor(red, green, blue, alpha);
 
-        buffer.begin(7, VertexFormats.POSITION);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         buffer.vertex(left, bottom, 0.0D).next();
         buffer.vertex(right, bottom, 0.0D).next();
         buffer.vertex(right, top, 0.0D).next();

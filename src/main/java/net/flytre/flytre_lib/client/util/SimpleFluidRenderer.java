@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -55,7 +56,7 @@ public final class SimpleFluidRenderer {
                 for (int i = 0; i < times; i++) {
                     int newY0 = y0 + i * width;
                     int newY1 = Math.min(newY0 + width, y0 + height);
-                    bb.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+                    bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
                     bb.vertex(matrix, x0 + width, newY0, zOffset).texture(sprite.getMaxU(), sprite.getMinV()).color(r, g, b, a).next();
                     bb.vertex(matrix, x0, newY0, zOffset).texture(sprite.getMinU(), sprite.getMinV()).color(r, g, b, a).next();
                     bb.vertex(matrix, x0, newY1, zOffset).texture(sprite.getMinU(), sprite.getMaxV()).color(r, g, b, a).next();
@@ -67,7 +68,7 @@ public final class SimpleFluidRenderer {
                 for (int i = 0; i < times; i++) {
                     int newX0 = x0 + i * Math.max(height, width / 3);
                     int newX1 = Math.min(newX0 + Math.max(height, width / 3 + 1), x0 + width);
-                    bb.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+                    bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
                     bb.vertex(matrix, newX1, y0, zOffset).texture(sprite.getMaxU(), sprite.getMinV()).color(r, g, b, a).next();
                     bb.vertex(matrix, newX0, y0, zOffset).texture(sprite.getMinU(), sprite.getMinV()).color(r, g, b, a).next();
                     bb.vertex(matrix, newX0, y0 + height, zOffset).texture(sprite.getMinU(), sprite.getMaxV()).color(r, g, b, a).next();

@@ -18,6 +18,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Some stuff to make rendering easier, which is great cuz rendering SUCKS.
  */
@@ -206,8 +209,8 @@ public class RenderUtils {
     public static void render(Identifier id, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         matrices.push();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getBlockBreaking(id));
-        ModelPart model = new ModelPart(16, 16, 0, 0);
-        model.addCuboid(-0.01F, -0.01F, -0.01F, 16.02F, 16.02F, 16.02F);
+        List<ModelPart.Cuboid> cuboids = List.of(new ModelPart.Cuboid(0, 0, -0.01F, -0.01F, -0.01F, 16.02F, 16.02F, 16.02F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+        ModelPart model = new ModelPart(cuboids, new HashMap<>());
         model.render(matrices, vertexConsumer, light, overlay);
         matrices.pop();
     }
@@ -227,27 +230,15 @@ public class RenderUtils {
     public static void renderSide(Identifier id, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Direction dir) {
         matrices.push();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getBlockBreaking(id));
-        ModelPart model = new ModelPart(16, 16, 0, 0);
-        switch (dir) {
-            case WEST:
-                model.addCuboid(-0.01F, -0.01F, -0.01F, 0.00F, 16.02F, 16.02F);
-                break;
-            case EAST:
-                model.addCuboid(16.01F, -0.01F, -0.01F, 0.00F, 16.02F, 16.02F);
-                break;
-            case NORTH:
-                model.addCuboid(-0.01F, -0.01F, -0.01F, 16.02F, 16.02F, 0.00F);
-                break;
-            case SOUTH:
-                model.addCuboid(-0.01F, -0.01F, 16.01F, 16.02F, 16.02F, 0.00F);
-                break;
-            case UP:
-                model.addCuboid(-0.01F, 16.01F, -0.01F, 16.02F, 0.00F, 16.02F);
-                break;
-            case DOWN:
-                model.addCuboid(-0.01F, -0.01F, -0.01F, 16.02F, 0.00F, 16.02F);
-                break;
-        }
+        List<ModelPart.Cuboid> cuboids = switch (dir) {
+            case WEST -> List.of(new ModelPart.Cuboid(0, 0, -0.01F, -0.01F, -0.01F, 0.00F, 16.02F, 16.02F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+            case EAST -> List.of(new ModelPart.Cuboid(0, 0, 16.01F, -0.01F, -0.01F, 0.00F, 16.02F, 16.02F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+            case NORTH -> List.of(new ModelPart.Cuboid(0, 0, -0.01F, -0.01F, -0.01F, 16.02F, 16.02F, 0.00F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+            case SOUTH -> List.of(new ModelPart.Cuboid(0, 0, -0.01F, -0.01F, 16.01F, 16.02F, 16.02F, 0.00F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+            case UP -> List.of(new ModelPart.Cuboid(0, 0, -0.01F, 16.01F, -0.01F, 16.02F, 0.00F, 16.02F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+            case DOWN -> List.of(new ModelPart.Cuboid(0, 0, -0.01F, -0.01F, -0.01F, 16.02F, 0.00F, 16.02F, 0.0F, 0.0F, 0.0F, false, 16, 16));
+        };
+        ModelPart model = new ModelPart(cuboids, new HashMap<>());
         model.render(matrices, vertexConsumer, light, overlay);
         matrices.pop();
     }

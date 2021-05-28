@@ -50,7 +50,7 @@ public abstract class FilteredScreen<T extends ScreenHandler> extends HandledScr
         button.setTooltips(tooltip1, tooltip2);
         button.setTooltipRenderer(this::renderTooltip);
 
-        this.addButton(button);
+        this.addDrawableChild(button);
     }
 
 

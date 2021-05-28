@@ -6,7 +6,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -41,13 +41,13 @@ public class FilterInventory implements Inventory {
         this.matchMod = matchMod;
     }
 
-    public static FilterInventory fromTag(CompoundTag tag, int defaultHeight) {
+    public static FilterInventory readNbt(NbtCompound tag, int defaultHeight) {
         int height = tag.contains("height") ? tag.getInt("height") : defaultHeight;
         int filterType = tag.getInt("type");
         boolean matchNbt = tag.getBoolean("nbtMatch");
         boolean matchMod = tag.getBoolean("modMatch");
         DefaultedList<ItemStack> items = DefaultedList.ofSize(height * 9, ItemStack.EMPTY);
-        Inventories.fromTag(tag, items);
+        Inventories.readNbt(tag, items);
         return new FilterInventory(items, filterType, height, matchNbt, matchMod);
     }
 
@@ -200,9 +200,9 @@ public class FilterInventory implements Inventory {
         this.filterType = (this.filterType == 1 ? 0 : 1);
     }
 
-    public CompoundTag toTag() {
-        CompoundTag tag = new CompoundTag();
-        Inventories.toTag(tag, this.items);
+    public NbtCompound writeNbt() {
+        NbtCompound tag = new NbtCompound();
+        Inventories.writeNbt(tag, this.items);
         tag.putInt("type", this.filterType);
         tag.putInt("height", this.height);
         tag.putBoolean("nbtMatch", this.matchNbt);

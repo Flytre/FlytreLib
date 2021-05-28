@@ -8,46 +8,46 @@ import java.util.Map;
 
 public class JsonNbtConverter {
 
-    public static Tag toNbt(JsonElement json) {
+    public static NbtElement toNbt(JsonElement json) {
 
         // JSON Primitive
         if (json instanceof JsonPrimitive) {
             JsonPrimitive primitive = (JsonPrimitive) json;
 
             if (primitive.isBoolean()) {
-                return ByteTag.of(primitive.getAsBoolean());
+                return NbtByte.of(primitive.getAsBoolean());
 
 
             } else if (primitive.isNumber()) {
                 Number number = primitive.getAsNumber();
 
                 if (number instanceof Byte) {
-                    return ByteTag.of(number.byteValue());
+                    return NbtByte.of(number.byteValue());
                 } else if (number instanceof Short) {
-                    return ShortTag.of(number.shortValue());
+                    return NbtShort.of(number.shortValue());
                 } else if (number instanceof Integer) {
-                    return IntTag.of(number.intValue());
+                    return NbtInt.of(number.intValue());
                 } else if (number instanceof Long) {
-                    return LongTag.of(number.longValue());
+                    return NbtLong.of(number.longValue());
                 } else if (number instanceof Float) {
-                    return FloatTag.of(number.floatValue());
+                    return NbtFloat.of(number.floatValue());
                 } else if (number instanceof Double) {
-                    return DoubleTag.of(number.doubleValue());
+                    return NbtDouble.of(number.doubleValue());
                 } else if (number instanceof LazilyParsedNumber) {
                     double val = number.doubleValue();
                     if (Math.abs(val - Math.floor(val)) < 0.001)
-                        return IntTag.of((int) Math.round(val));
-                    return DoubleTag.of(val);
+                        return NbtInt.of((int) Math.round(val));
+                    return NbtDouble.of(val);
                 }
 
             } else if (primitive.isString()) {
-                return StringTag.of(primitive.getAsString());
+                return NbtString.of(primitive.getAsString());
             }
 
             // JSON Array
         } else if (json instanceof JsonArray) {
             JsonArray jsonArray = (JsonArray) json;
-            ListTag list = new ListTag();
+            NbtList list = new NbtList();
 
             for (JsonElement element : jsonArray) {
                 list.add(toNbt(element));
@@ -58,7 +58,7 @@ public class JsonNbtConverter {
             // JSON Object
         } else if (json instanceof JsonObject) {
             JsonObject jsonObject = (JsonObject) json;
-            CompoundTag compound = new CompoundTag();
+            NbtCompound compound = new NbtCompound();
 
             for (Map.Entry<String, JsonElement> jsonEntry : jsonObject.entrySet()) {
                 compound.put(jsonEntry.getKey(), toNbt(jsonEntry.getValue()));
@@ -75,22 +75,22 @@ public class JsonNbtConverter {
         throw new AssertionError("JSON to NBT f*cked up.");
     }
 
-    public static JsonElement toJson(Tag nbtElement) {
+    public static JsonElement toJson(NbtElement nbtElement) {
         return toJson(nbtElement, ConversionMode.RAW);
     }
 
 
-    public static JsonElement toJson(Tag element, ConversionMode mode) {
+    public static JsonElement toJson(NbtElement element, ConversionMode mode) {
 
         // Numbers
-        if (element instanceof AbstractNumberTag) {
-            AbstractNumberTag nbtNumber = (AbstractNumberTag) element;
+        if (element instanceof AbstractNbtNumber) {
+            AbstractNbtNumber nbtNumber = (AbstractNbtNumber) element;
 
             switch (mode) {
                 case JSON: {
-                    if (nbtNumber instanceof ByteTag) {
-                        ByteTag nbtByte = (ByteTag) nbtNumber;
-                        byte value = nbtByte.getByte();
+                    if (nbtNumber instanceof NbtByte) {
+                        NbtByte nbtByte = (NbtByte) nbtNumber;
+                        byte value = nbtByte.byteValue();
                         switch (value) {
                             case 0:
                                 return new JsonPrimitive(false);
@@ -102,26 +102,26 @@ public class JsonNbtConverter {
                 }
 
                 case RAW: {
-                    return new JsonPrimitive(nbtNumber.getNumber());
+                    return new JsonPrimitive(nbtNumber.numberValue());
                 }
             }
 
-        } else if (element instanceof StringTag) {
+        } else if (element instanceof NbtString) {
             return new JsonPrimitive(element.asString());
 
-        } else if (element instanceof ListTag) {
-            ListTag list = (ListTag) element;
+        } else if (element instanceof NbtList) {
+            NbtList list = (NbtList) element;
             JsonArray jsonArray = new JsonArray();
 
-            for (Tag tag : list) {
+            for (NbtElement tag : list) {
                 jsonArray.add(toJson(tag, mode));
             }
 
             return jsonArray;
 
             // Compound tag
-        } else if (element instanceof CompoundTag) {
-            CompoundTag compound = (CompoundTag) element;
+        } else if (element instanceof NbtCompound) {
+            NbtCompound compound = (NbtCompound) element;
             JsonObject jsonObject = new JsonObject();
 
             for (String key : compound.getKeys()) {
@@ -131,7 +131,7 @@ public class JsonNbtConverter {
             return jsonObject;
 
             // Nbt termination tag. Should not be encountered.
-        } else if (element instanceof EndTag) {
+        } else if (element instanceof NbtNull) {
             throw new AssertionError("Should not encounter end tag");
         }
 

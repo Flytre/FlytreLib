@@ -1,9 +1,6 @@
 package net.flytre.flytre_lib.common.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.InventoryProvider;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.Entity;
@@ -14,7 +11,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -94,7 +91,7 @@ public class InventoryUtils {
         Block block = blockState.getBlock();
         if (block instanceof InventoryProvider) {
             inventory = ((InventoryProvider) block).getInventory(blockState, world, blockPos);
-        } else if (block.hasBlockEntity()) {
+        } else if (block instanceof BlockEntityProvider) {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof Inventory) {
                 inventory = (Inventory) blockEntity;
@@ -185,17 +182,17 @@ public class InventoryUtils {
     }
 
 
-    public static CompoundTag toTag(CompoundTag tag, DefaultedList<ItemStack> stacks, String key) {
-        CompoundTag temp = new CompoundTag();
-        Inventories.toTag(temp, stacks);
+    public static NbtCompound writeNbt(NbtCompound tag, DefaultedList<ItemStack> stacks, String key) {
+        NbtCompound temp = new NbtCompound();
+        Inventories.writeNbt(temp, stacks);
         tag.put(key, temp.get("Items"));
         return tag;
     }
 
-    public static CompoundTag fromTag(CompoundTag tag, DefaultedList<ItemStack> stacks, String key) {
-        CompoundTag temp = new CompoundTag();
+    public static NbtCompound readNbt(NbtCompound tag, DefaultedList<ItemStack> stacks, String key) {
+        NbtCompound temp = new NbtCompound();
         temp.put("Items", tag.get(key));
-        Inventories.fromTag(temp, stacks);
+        Inventories.readNbt(temp, stacks);
         return tag;
     }
 }

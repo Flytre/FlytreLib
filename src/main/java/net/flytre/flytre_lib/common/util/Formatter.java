@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
@@ -200,8 +200,8 @@ public class Formatter {
      * @return An int array tag representing the block pos
      */
 
-    public static IntArrayTag posToTag(BlockPos pos) {
-        return new IntArrayTag(new int[]{pos.getX(), pos.getY(), pos.getZ()});
+    public static NbtIntArray poswriteNbt(BlockPos pos) {
+        return new NbtIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ()});
     }
 
 

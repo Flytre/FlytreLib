@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 /**
  * A custom HUD overlay, like Flytre's Gun mods gun overlay, or the vanilla armor bar
  */
+@SuppressWarnings("SameParameterValue")
 @Environment(EnvType.CLIENT)
 public abstract class Hud {
 
@@ -36,7 +37,7 @@ public abstract class Hud {
         int x = client.getWindow().getScaledWidth();
         int y = client.getWindow().getScaledHeight();
 
-        if (player == null || player.inventory == null)
+        if (player == null || player.getInventory() == null)
             return;
         draw(matrixStack, player, textRenderer, itemRenderer, x, y);
     }
