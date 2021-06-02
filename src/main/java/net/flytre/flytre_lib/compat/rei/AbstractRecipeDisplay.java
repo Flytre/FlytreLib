@@ -1,7 +1,8 @@
 package net.flytre.flytre_lib.compat.rei;
 
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -11,11 +12,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class AbstractRecipeDisplay<R extends Recipe<?>> implements RecipeDisplay {
+public abstract class AbstractRecipeDisplay<R extends Recipe<?>> implements Display {
 
     protected final R recipe;
-    protected final List<List<EntryStack>> inputs;
-    protected final List<List<EntryStack>> outputs;
+    protected final List<EntryIngredient> inputs;
+    protected final List<EntryIngredient> outputs;
 
     public AbstractRecipeDisplay(R recipe) {
         this.recipe = recipe;
@@ -25,36 +26,31 @@ public abstract class AbstractRecipeDisplay<R extends Recipe<?>> implements Reci
 
 
     @Override
-    public @NotNull Optional<Identifier> getRecipeLocation() {
+    public @NotNull Optional<Identifier> getDisplayLocation() {
         return Optional.ofNullable(recipe).map(Recipe::getId);
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getInputEntries() {
+    public @NotNull List<EntryIngredient> getInputEntries() {
         return inputs;
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getRequiredEntries() {
-        return inputs;
-    }
-
-    @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
+    public @NotNull List<EntryIngredient> getOutputEntries() {
         return outputs;
     }
 
     @Override
-    public @NotNull Identifier getRecipeCategory() {
-        return Objects.requireNonNull(Registry.RECIPE_TYPE.getId(recipe.getType()));
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return CategoryIdentifier.of(Objects.requireNonNull(Registry.RECIPE_TYPE.getId(recipe.getType())));
     }
 
     public R getRecipe() {
         return recipe;
     }
 
-    public abstract List<List<EntryStack>> createOutputs();
+    public abstract List<EntryIngredient> createOutputs();
 
-    public abstract List<List<EntryStack>> createInputs();
+    public abstract List<EntryIngredient> createInputs();
 
 }

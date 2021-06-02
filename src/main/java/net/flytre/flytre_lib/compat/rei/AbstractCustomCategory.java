@@ -1,21 +1,22 @@
 package net.flytre.flytre_lib.compat.rei;
 
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.gui.entries.RecipeEntry;
-import me.shedaniel.rei.gui.entries.SimpleRecipeEntry;
-import net.minecraft.client.resource.language.I18n;
+import me.shedaniel.rei.api.client.gui.DisplayRenderer;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.SimpleDisplayRenderer;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractCustomCategory<R extends Recipe<?>> implements RecipeCategory<AbstractRecipeDisplay<R>> {
+public abstract class AbstractCustomCategory<R extends Recipe<?>> implements DisplayCategory<AbstractRecipeDisplay<R>> {
     private final RecipeType<R> recipeType;
 
     public AbstractCustomCategory(RecipeType<R> recipeType) {
@@ -24,37 +25,37 @@ public abstract class AbstractCustomCategory<R extends Recipe<?>> implements Rec
 
 
     @Override
-    public @NotNull Identifier getIdentifier() {
-        return Objects.requireNonNull(Registry.RECIPE_TYPE.getId(recipeType));
+    public CategoryIdentifier<? extends AbstractRecipeDisplay<R>> getCategoryIdentifier() {
+        return CategoryIdentifier.of(Objects.requireNonNull(Registry.RECIPE_TYPE.getId(recipeType)));
     }
 
     @Override
-    public @NotNull String getCategoryName() {
-        return I18n.translate(getIdentifier().toString());
+    public @NotNull Text getTitle() {
+        return new TranslatableText(getIdentifier().toString());
     }
 
     @Override
-    public abstract @NotNull EntryStack getLogo();
+    public abstract @NotNull Renderer getIcon();
 
     public RecipeType<R> getRecipeType() {
         return recipeType;
     }
 
     @Override
-    public @NotNull RecipeEntry getSimpleRenderer(AbstractRecipeDisplay<R> recipe) {
-        return SimpleRecipeEntry.from(recipe.getInputEntries(), recipe.getResultingEntries());
+    public @NotNull DisplayRenderer getDisplayRenderer(AbstractRecipeDisplay<R> recipe) {
+        return SimpleDisplayRenderer.from(recipe.getInputEntries(), recipe.getOutputEntries());
     }
 
-    public List<EntryStack> getInput(AbstractRecipeDisplay<R> recipeDisplay, int index) {
-        List<List<EntryStack>> inputs = recipeDisplay.getInputEntries();
-        return inputs.size() > index ? inputs.get(index) : Collections.emptyList();
+    public EntryIngredient getInput(AbstractRecipeDisplay<R> recipeDisplay, int index) {
+        List<EntryIngredient> inputs = recipeDisplay.getInputEntries();
+        return inputs.size() > index ? inputs.get(index) : EntryIngredient.empty();
     }
 
 
 
-    public List<EntryStack> getOutput(AbstractRecipeDisplay<R> recipeDisplay, int index) {
-        List<List<EntryStack>> outputs = recipeDisplay.getResultingEntries();
-        return outputs.size() > index ? outputs.get(index) : Collections.emptyList();
+    public EntryIngredient getOutput(AbstractRecipeDisplay<R> recipeDisplay, int index) {
+        List<EntryIngredient> outputs = recipeDisplay.getOutputEntries();
+        return outputs.size() > index ? outputs.get(index) : EntryIngredient.empty();
     }
 
 

@@ -1,8 +1,8 @@
 package net.flytre.flytre_lib.compat.rei;
 
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.REIHelper;
-import me.shedaniel.rei.api.widgets.Arrow;
+import me.shedaniel.rei.api.client.REIRuntime;
+import me.shedaniel.rei.api.client.gui.widgets.Arrow;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
@@ -41,7 +41,7 @@ public final class ArrowWidget extends Arrow {
     }
 
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        MinecraftClient.getInstance().getTextureManager().bindTexture(REIHelper.getInstance().getDefaultDisplayTexture());
+        MinecraftClient.getInstance().getTextureManager().bindTexture(REIRuntime.getInstance().getDefaultDisplayTexture());
         drawTexture(matrices, getX(), getY(), 82, 60, 24, 17);
         if (getAnimationDuration() > 0) {
             int width = MathHelper.ceil((System.currentTimeMillis() / (animationDuration / 24) % 24d));
