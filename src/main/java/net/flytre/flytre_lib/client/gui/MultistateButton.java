@@ -1,9 +1,11 @@
 package net.flytre.flytre_lib.client.gui;
 
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
@@ -135,12 +137,19 @@ public class MultistateButton extends ButtonWidget {
             return;
 
         MinecraftClient mc = MinecraftClient.getInstance();
-        mc.getTextureManager().bindTexture(texture);
+
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, texture);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+
         this.hovered = isHovering(mouseX, mouseY);
         int y = this.height * state * 2;
         if (hovered)
             y += this.height;
 
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
         drawTexture(matrices, x, this.y, 0, y, width, height, textureWidth, textureHeight);
 
         TextRenderer renderer = mc.textRenderer;
