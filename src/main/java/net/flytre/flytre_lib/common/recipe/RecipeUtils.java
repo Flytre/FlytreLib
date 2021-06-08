@@ -73,8 +73,12 @@ public class RecipeUtils {
                 return !Registry.ITEM.getIds().contains(id);
             } else if (json.has("tag")) {
                 identifier2 = new Identifier(JsonHelper.getString(json, "tag"));
-                Tag<Item> tag = ServerTagManagerHolder.getTagManager().getTag(Registry.ITEM_KEY,identifier2,(exc) -> new JsonSyntaxException("Unknown item tag '" + exc + "'"));
-                return tag == null;
+                try {
+                    Tag<Item> tag = ServerTagManagerHolder.getTagManager().getTag(Registry.ITEM_KEY, identifier2, (exc) -> new JsonSyntaxException("Unknown item tag '" + exc + "'"));
+                    return tag == null;
+                } catch (JsonSyntaxException e) {
+                    return true;
+                }
             } else {
                 return true;
             }
