@@ -3,9 +3,9 @@ package net.flytre.flytre_lib.client.option;
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.flytre.flytre_lib.client.gui.TranslucentCyclingButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.OrderedText;
@@ -22,10 +22,10 @@ public class TranslucentCyclingOption<T> extends Option {
 
     private final TranslucentCyclingOption.Setter<T> setter;
     private final Function<GameOptions, T> getter;
-    private final Supplier<CyclingButtonWidget.Builder<T>> buttonBuilderFactory;
-    private Function<MinecraftClient, CyclingButtonWidget.TooltipFactory<T>> tooltips = (client) -> (value) -> ImmutableList.of();
+    private final Supplier<TranslucentCyclingButtonWidget.Builder<T>> buttonBuilderFactory;
+    private Function<MinecraftClient, TranslucentCyclingButtonWidget.TooltipFactory<T>> tooltips = (client) -> (value) -> ImmutableList.of();
 
-    private TranslucentCyclingOption(String key, Function<GameOptions, T> getter, TranslucentCyclingOption.Setter<T> setter, Supplier<CyclingButtonWidget.Builder<T>> buttonBuilderFactory) {
+    private TranslucentCyclingOption(String key, Function<GameOptions, T> getter, TranslucentCyclingOption.Setter<T> setter, Supplier<TranslucentCyclingButtonWidget.Builder<T>> buttonBuilderFactory) {
         super(key);
         this.getter = getter;
         this.setter = setter;
@@ -33,43 +33,43 @@ public class TranslucentCyclingOption<T> extends Option {
     }
 
     public static <T> TranslucentCyclingOption<T> create(String key, List<T> values, Function<T, Text> valueToText, Function<GameOptions, T> getter, TranslucentCyclingOption.Setter<T> setter) {
-        return new TranslucentCyclingOption<>(key, getter, setter, () -> CyclingButtonWidget.builder(valueToText).values(values));
+        return new TranslucentCyclingOption<>(key, getter, setter, () -> TranslucentCyclingButtonWidget.builder(valueToText).values(values));
     }
 
     public static <T> TranslucentCyclingOption<T> create(String key, Supplier<List<T>> valuesSupplier, Function<T, Text> valueToText, Function<GameOptions, T> getter, TranslucentCyclingOption.Setter<T> setter) {
-        return new TranslucentCyclingOption<>(key, getter, setter, () -> CyclingButtonWidget.builder(valueToText).values(valuesSupplier.get()));
+        return new TranslucentCyclingOption<>(key, getter, setter, () -> TranslucentCyclingButtonWidget.builder(valueToText).values(valuesSupplier.get()));
     }
 
     public static <T> TranslucentCyclingOption<T> create(String key, List<T> defaults, List<T> alternatives, BooleanSupplier alternativeToggle, Function<T, Text> valueToText, Function<GameOptions, T> getter, TranslucentCyclingOption.Setter<T> setter) {
-        return new TranslucentCyclingOption<>(key, getter, setter, () -> CyclingButtonWidget.builder(valueToText).values(alternativeToggle, defaults, alternatives));
+        return new TranslucentCyclingOption<>(key, getter, setter, () -> TranslucentCyclingButtonWidget.builder(valueToText).values(alternativeToggle, defaults, alternatives));
     }
 
     public static <T> TranslucentCyclingOption<T> create(String key, T[] values, Function<T, Text> valueToText, Function<GameOptions, T> getter, TranslucentCyclingOption.Setter<T> setter) {
-        return new TranslucentCyclingOption<>(key, getter, setter, () -> CyclingButtonWidget.builder(valueToText).values(values));
+        return new TranslucentCyclingOption<>(key, getter, setter, () -> TranslucentCyclingButtonWidget.builder(valueToText).values(values));
     }
 
     public static TranslucentCyclingOption<Boolean> create(String key, Text on, Text off, Function<GameOptions, Boolean> getter, TranslucentCyclingOption.Setter<Boolean> setter) {
-        return new TranslucentCyclingOption<>(key, getter, setter, () -> CyclingButtonWidget.onOffBuilder(on, off));
+        return new TranslucentCyclingOption<>(key, getter, setter, () -> TranslucentCyclingButtonWidget.onOffBuilder(on, off));
     }
 
     public static TranslucentCyclingOption<Boolean> create(String key, Function<GameOptions, Boolean> getter, TranslucentCyclingOption.Setter<Boolean> setter) {
-        return new TranslucentCyclingOption<Boolean>(key, getter, setter, CyclingButtonWidget::onOffBuilder);
+        return new TranslucentCyclingOption<Boolean>(key, getter, setter, TranslucentCyclingButtonWidget::onOffBuilder);
     }
 
     public static TranslucentCyclingOption<Boolean> create(String key, Text tooltip, Function<GameOptions, Boolean> getter, TranslucentCyclingOption.Setter<Boolean> setter) {
         return create(key, getter, setter).tooltip((client) -> {
             List<OrderedText> list = client.textRenderer.wrapLines(tooltip, 200);
             return (value) -> list;
-        });
+        });\
     }
 
-    public TranslucentCyclingOption<T> tooltip(Function<MinecraftClient, CyclingButtonWidget.TooltipFactory<T>> tooltips) {
+    public TranslucentCyclingOption<T> tooltip(Function<MinecraftClient, TranslucentCyclingButtonWidget.TooltipFactory<T>> tooltips) {
         this.tooltips = tooltips;
         return this;
     }
 
     public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
-        CyclingButtonWidget.TooltipFactory<T> tooltipFactory = this.tooltips.apply(MinecraftClient.getInstance());
+        TranslucentCyclingButtonWidget.TooltipFactory<T> tooltipFactory = this.tooltips.apply(MinecraftClient.getInstance());
         return this.buttonBuilderFactory.get().tooltip(tooltipFactory).initially(this.getter.apply(options)).build(x, y, width, 20, this.getDisplayPrefix(), (button, value) -> {
             this.setter.accept(options, this, value);
             options.write();
