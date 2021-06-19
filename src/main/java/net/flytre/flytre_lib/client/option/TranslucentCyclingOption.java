@@ -60,7 +60,7 @@ public class TranslucentCyclingOption<T> extends Option {
         return create(key, getter, setter).tooltip((client) -> {
             List<OrderedText> list = client.textRenderer.wrapLines(tooltip, 200);
             return (value) -> list;
-        });\
+        });
     }
 
     public TranslucentCyclingOption<T> tooltip(Function<MinecraftClient, TranslucentCyclingButtonWidget.TooltipFactory<T>> tooltips) {
