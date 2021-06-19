@@ -1,6 +1,5 @@
 package net.flytre.flytre_lib.client.util;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -270,14 +269,13 @@ public class RenderUtils {
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
-        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        RenderSystem.setShaderColor(red, green, blue, alpha);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        buffer.vertex(left, bottom, 0.0D).next();
-        buffer.vertex(right, bottom, 0.0D).next();
-        buffer.vertex(right, top, 0.0D).next();
-        buffer.vertex(left, top, 0.0D).next();
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.vertex(left, bottom, 0.0D).color(red,green,blue,alpha).next();
+        buffer.vertex(right, bottom, 0.0D).color(red,green,blue,alpha).next();
+        buffer.vertex(right, top, 0.0D).color(red,green,blue,alpha).next();
+        buffer.vertex(left, top, 0.0D).color(red,green,blue,alpha).next();
         tessellator.draw();
 
         RenderSystem.enableTexture();
