@@ -128,9 +128,9 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
 
     @Environment(EnvType.CLIENT)
     protected static class ButtonEntry<K extends ClickableWidget> extends ElementListWidget.Entry<ButtonEntry<K>> {
-        final K button;
-        final Option option;
-        final int padding;
+        public final K button;
+        public final Option option;
+        public final int padding;
 
 
         protected ButtonEntry(K button, int padding) {
