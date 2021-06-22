@@ -34,9 +34,9 @@ public class ConfigRegistry {
     }
 
     @Environment(EnvType.CLIENT)
-    public static void reloadClientConfigs() {
-        for (ConfigHandler<?> configHandler : CLIENT_CONFIGS) {
+    public static int reloadClientConfigs() {
+        for (ConfigHandler<?> configHandler : CLIENT_CONFIGS)
             configHandler.handle();
-        }
+        return CLIENT_CONFIGS.size();
     }
 }

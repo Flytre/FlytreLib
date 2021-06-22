@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 public final class ArrowWidget extends Arrow {
     @NotNull
     private final Rectangle bounds;

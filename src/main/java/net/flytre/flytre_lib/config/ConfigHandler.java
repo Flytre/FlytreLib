@@ -61,6 +61,9 @@ public class ConfigHandler<T> {
             }
         }
 
+        if(this.config instanceof ConfigEventAcceptor)
+            ((ConfigEventAcceptor) this.config).onReload();
+
     }
 
     public T getAssumed() {

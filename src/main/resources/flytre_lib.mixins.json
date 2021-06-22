@@ -4,7 +4,7 @@
   "package": "net.flytre.flytre_lib.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": ["EulaReaderMixin", "MinecraftServerMixin", "ServerPropertiesHandlerMixin"],
-  "client": ["EntryListWidgetAccessor", "ReloadableResourceManagerImplMixin"],
+  "client": ["EntryListWidgetAccessor", "KeyboardMixin", "ReloadableResourceManagerImplMixin"],
   "injectors": {
     "defaultRequire": 1
   }
