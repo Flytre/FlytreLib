@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class GsonHelper {
 
-    private static final Gson GSON = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(Identifier.class, new Identifier.Serializer())
             .registerTypeAdapter(Set.class, new IdentifierSetDeserializer())
