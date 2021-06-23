@@ -21,14 +21,21 @@ public class ItemUtils {
     public static final Random RANDOM = new Random();
 
 
+    public static float getHardness(ItemStack stack) {
+        assert stack.getItem() instanceof BlockItem;
+        return ((BlockItem) stack.getItem()).getBlock().getHardness();
+    }
+
+    public static float getResistance(ItemStack stack) {
+        assert stack.getItem() instanceof BlockItem;
+        return ((AbstractBlockAccessor) ((BlockItem) stack.getItem()).getBlock()).getResistance();
+    }
+
     /**
      * Whether the Block this BlockItem represents is flammable
      */
     public static boolean getFlammable(ItemStack stack) {
-
-        if (!(stack.getItem() instanceof BlockItem))
-            return false;
-
+        assert stack.getItem() instanceof BlockItem;
         return ((AbstractBlockAccessor) ((BlockItem) stack.getItem()).getBlock()).getMaterial().isBurnable();
     }
 
