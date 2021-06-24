@@ -13,7 +13,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,7 +51,7 @@ public class GsonHelper {
         private final Function<Identifier, T> fromId;
         private final Function<T, Identifier> toId;
 
-        private IdentifierBasedSerializer(Function<Identifier, T> fromId, Function<T, Identifier> toId) {
+        public IdentifierBasedSerializer(Function<Identifier, T> fromId, Function<T, Identifier> toId) {
             this.fromId = fromId;
             this.toId = toId;
             GSON_BUILDER.registerTypeAdapter(new TypeToken<Set<T>>() {
@@ -72,7 +74,7 @@ public class GsonHelper {
 
         private final Function<Identifier, T> fromId;
 
-        private SetDeserializer(Function<Identifier, T> fromId) {
+        public SetDeserializer(Function<Identifier, T> fromId) {
             this.fromId = fromId;
         }
 
@@ -81,6 +83,27 @@ public class GsonHelper {
             Set<Identifier> ids = GSON.fromJson(json, new TypeToken<HashSet<Identifier>>() {
             }.getType());
             return ids.stream().map(fromId).collect(Collectors.toSet());
+        }
+    }
+
+    public static class MapDeserializer<K, V> implements JsonDeserializer<Map<K, V>> {
+
+        private final Function<Identifier, K> keyFromId;
+
+        public MapDeserializer(Function<Identifier, K> fromId) {
+            this.keyFromId = fromId;
+        }
+
+        @Override
+        public Map<K, V> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            Map<Identifier, V> identifierVMap = GSON.fromJson(json, new TypeToken<HashMap<Identifier, V>>() {
+            }.getType());
+
+            Map<K, V> result = new HashMap<>();
+            for (var entry : identifierVMap.entrySet()) {
+                result.put(keyFromId.apply(entry.getKey()), entry.getValue());
+            }
+            return result;
         }
     }
 }
