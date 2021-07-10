@@ -55,9 +55,9 @@ public class ConfigHandler<T> {
     }
 
     private String commentApplier(String str) {
-        Pattern pattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": (\"?([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}");
+        Pattern pattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": ((.|\\s)+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}");
         Matcher m = pattern.matcher(str);
-        return m.replaceAll("$1//$6\\\n$1\"$2\": $3");
+        return m.replaceAll("$1//$5\\\n$1\"$2\": $3");
     }
 
 
@@ -80,25 +80,26 @@ public class ConfigHandler<T> {
             if (fieldMatch == null)
                 continue;
 
+            String value = "";
+            Description description = fieldMatch.field.getAnnotation(Description.class);
+            if (description != null)
+                value += description.value();
+
+            if (fieldMatch.field.getType().isEnum()) {
+                value += (value.length() > 0 ? " " : "") + enumToString(fieldMatch.field.getType());
+            }
+
             if (entry.getValue() instanceof JsonObject) {
                 commentAdderHelper((JsonObject) entry.getValue(), fieldMatch.field.getType());
-            } else {
-                String value = "";
-                Description description = fieldMatch.field.getAnnotation(Description.class);
-                if (description != null)
-                    value += description.value();
-
-                if (fieldMatch.field.getType().isEnum()) {
-                    value += (value.length() > 0 ? " " : "") + enumToString(fieldMatch.field.getType());
-                }
-
-                if (value.length() > 0) {
-                    JsonObject o = new JsonObject();
-                    o.add("value", entry.getValue());
-                    o.addProperty("comment", value);
-                    object.add(entry.getKey(), o);
-                }
             }
+
+            if (value.length() > 0) {
+                JsonObject o = new JsonObject();
+                o.add("value", entry.getValue());
+                o.addProperty("comment", value);
+                object.add(entry.getKey(), o);
+            }
+
         }
     }
 
