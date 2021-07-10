@@ -51,10 +51,12 @@ public class FilterInventory implements Inventory {
         return new FilterInventory(items, filterType, height, matchNbt, matchMod);
     }
 
+    @Override
     public int getMaxCountPerStack() {
         return 1;
     }
 
+    @Override
     public void clear() {
         this.items.clear();
     }
@@ -67,10 +69,12 @@ public class FilterInventory implements Inventory {
         return height;
     }
 
+    @Override
     public int size() {
         return getInventoryWidth() * getInventoryHeight();
     }
 
+    @Override
     public boolean isEmpty() {
         return this.items.stream().allMatch(ItemStack::isEmpty);
     }
@@ -92,23 +96,28 @@ public class FilterInventory implements Inventory {
         return false;
     }
 
+    @Override
     public ItemStack getStack(int slot) {
         return items.get(slot);
     }
 
+    @Override
     public ItemStack removeStack(int slot, int amount) {
         return Inventories.splitStack(this.items, slot, amount);
     }
 
+    @Override
     public ItemStack removeStack(int slot) {
         return Inventories.removeStack(this.items, slot);
     }
 
+    @Override
     public void setStack(int slot, ItemStack stack) {
         stack.setCount(1);
         this.items.set(slot, stack);
     }
 
+    @Override
     public void markDirty() {
         fixItems();
     }
@@ -152,7 +161,7 @@ public class FilterInventory implements Inventory {
 
         Set<ItemStack> stacks = items.stream().filter(i -> !i.isEmpty()).collect(Collectors.toSet());
         for (ItemStack test : stacks) {
-            if (test.getItem() == stack.getItem() && ItemStack.areTagsEqual(test, stack))
+            if (test.getItem() == stack.getItem() && ItemStack.areNbtEqual(test, stack))
                 return true;
         }
 
@@ -160,6 +169,7 @@ public class FilterInventory implements Inventory {
 
     }
 
+    @Override
     public boolean canPlayerUse(PlayerEntity player) {
         return true;
     }
@@ -210,10 +220,12 @@ public class FilterInventory implements Inventory {
         return tag;
     }
 
+    @Override
     public void onOpen(PlayerEntity player) {
         player.playSound(SoundEvents.BLOCK_METAL_HIT, SoundCategory.PLAYERS, 1f, 1f);
     }
 
+    @Override
     public void onClose(PlayerEntity player) {
         player.playSound(SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.PLAYERS, 1f, 1f);
         player.playSound(SoundEvents.BLOCK_METAL_HIT, SoundCategory.PLAYERS, 1f, 1f);

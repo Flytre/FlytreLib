@@ -44,7 +44,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
     }
 
     public void addEntry(ButtonCreator<K> buttonCreator) {
-        this.addEntry(ButtonEntry.create(buttonLeft, buttonWidth, buttonCreator,buttonPadding));
+        this.addEntry(ButtonEntry.create(buttonLeft, buttonWidth, buttonCreator, buttonPadding));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
         }
 
         @Override
-        public List<? extends Selectable> method_37025() {
+        public List<? extends Selectable> selectableChildren() {
             return Collections.singletonList(button);
         }
     }

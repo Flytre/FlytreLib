@@ -114,7 +114,7 @@ public class MultistateButton extends ButtonWidget {
     }
 
     @Override
-    public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
 
         if (tooltips == null)
             return;
@@ -132,6 +132,7 @@ public class MultistateButton extends ButtonWidget {
         return state;
     }
 
+    @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         if (MinecraftClient.getInstance() == null)
             return;
@@ -159,7 +160,7 @@ public class MultistateButton extends ButtonWidget {
         if (isHovering(mouseX, mouseY) && renderTooltipWithButton) {
             int zOffset = getZOffset();
             setZOffset(zOffset + 100);
-            renderToolTip(matrices, mouseX, mouseY);
+            renderTooltip(matrices, mouseX, mouseY);
             setZOffset(zOffset);
         }
     }

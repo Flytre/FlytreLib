@@ -2,8 +2,6 @@ package net.flytre.flytre_lib.common.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
@@ -57,9 +55,10 @@ public class QuantifiedIngredient implements Predicate<ItemStack> {
         return ingredient.test(stack) && stack.getCount() >= quantity;
     }
 
-    @Environment(EnvType.CLIENT)
-    public ItemStack[] getMatchingStacksClient() {
-        ItemStack[] result = ingredient.getMatchingStacksClient();
+
+    public ItemStack[] getMatchingStacks() {
+        ingredient.getMatchingStacks();
+        ItemStack[] result =  ingredient.getMatchingStacks();
         for (ItemStack stack : result) {
             stack.setCount(quantity);
         }

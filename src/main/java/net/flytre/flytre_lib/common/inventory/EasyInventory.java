@@ -20,10 +20,6 @@ import java.util.stream.IntStream;
  */
 public interface EasyInventory extends SidedInventory, IOTypeProvider {
 
-    @Deprecated
-    static boolean canMergeItems(ItemStack first, ItemStack second) {
-        return InventoryUtils.canMergeItems(first, second);
-    }
 
     DefaultedList<ItemStack> getItems();
 

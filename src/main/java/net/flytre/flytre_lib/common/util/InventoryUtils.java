@@ -44,15 +44,16 @@ public class InventoryUtils {
      * Whether two stacks could be merged at all, ie. 33 stone and 34 stone into 64 stone and 3 stone
      */
     public static boolean canMergeItems(ItemStack first, ItemStack second) {
-        if (first.getItem() != second.getItem()) {
+        if (first.getItem() != second.getItem())
             return false;
-        } else if (first.getDamage() != second.getDamage()) {
+
+        if (first.getDamage() != second.getDamage())
             return false;
-        } else if (first.getCount() > first.getMaxCount()) {
+
+        if (first.getCount() > first.getMaxCount())
             return false;
-        } else {
-            return ItemStack.areTagsEqual(first, second);
-        }
+
+        return ItemStack.areNbtEqual(first, second);
     }
 
     /**
