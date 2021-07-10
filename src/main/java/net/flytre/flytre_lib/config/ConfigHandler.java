@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConfigHandler<T> {
     private final Gson gson;
@@ -37,38 +39,40 @@ public class ConfigHandler<T> {
 
     public void save(T config) {
         Path location = FabricLoader.getInstance().getConfigDir();
-        Path path = Paths.get(location.toString(), name + ".json");
+        Path path = Paths.get(location.toString(), name + ".json5");
         Writer writer;
         try {
             writer = new FileWriter(path.toFile());
             JsonElement serialized = gson.toJsonTree(config);
-            serialized = configValueHelper(serialized, config);
-            gson.toJson(serialized, writer);
+            serialized = commentAdder(serialized, config);
+            String out = gson.toJson(serialized);
+            String commented = commentApplier(out);
+            writer.write(commented);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private JsonElement configValueHelper(JsonElement serialized, T config) {
+    private String commentApplier(String str) {
+        Pattern pattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": (\"?([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}");
+        Matcher m = pattern.matcher(str);
+        return m.replaceAll("$1//$6\\\n$1\"$2\": $3");
+    }
+
+
+    private JsonElement commentAdder(JsonElement serialized, T config) {
 
         if (!(serialized instanceof JsonObject))
             return serialized;
 
         JsonObject object = (JsonObject) serialized;
 
-        List<String> comment = new ArrayList<>();
-        comment.add("Config Value Helper:");
-        comment.add("Use this to help you figure out what values each key can have");
-
-        configValueHelperRecur(comment, object, config.getClass(), "");
-
-        if (comment.size() > 2)
-            object.add("__comment", gson.toJsonTree(comment));
+        commentAdderHelper(object, config.getClass());
         return object;
     }
 
-    private void configValueHelperRecur(List<String> comment, JsonObject object, Class<?> clazz, String prefix) {
+    private void commentAdderHelper(JsonObject object, Class<?> clazz) {
         List<Field> fields = getFields(clazz);
         for (var entry : object.entrySet()) {
             FieldMatch fieldMatch = match(fields, entry.getKey());
@@ -77,23 +81,43 @@ public class ConfigHandler<T> {
                 continue;
 
             if (entry.getValue() instanceof JsonObject) {
-                String prefix2 = prefix.equals("") ? fieldMatch.displayName : prefix + "." + fieldMatch.displayName;
-                configValueHelperRecur(comment, (JsonObject) entry.getValue(), fieldMatch.field.getType(), prefix2);
+                commentAdderHelper((JsonObject) entry.getValue(), fieldMatch.field.getType());
             } else {
-                String start = prefix + (prefix.length() > 0 ? "." : "") + fieldMatch.displayName + ": ";
-
-                String end = "";
+                String value = "";
                 Description description = fieldMatch.field.getAnnotation(Description.class);
                 if (description != null)
-                    end += description.value();
+                    value += description.value();
 
                 if (fieldMatch.field.getType().isEnum()) {
-                    comment.add(start + end + " " + Arrays.toString(fieldMatch.field.getType().getEnumConstants()));
-                } else if (end.length() > 0) {
-                    comment.add(start + end);
+                    value += (value.length() > 0 ? " " : "") + enumToString(fieldMatch.field.getType());
+                }
+
+                if (value.length() > 0) {
+                    JsonObject o = new JsonObject();
+                    o.add("value", entry.getValue());
+                    o.addProperty("comment", value);
+                    object.add(entry.getKey(), o);
                 }
             }
         }
+    }
+
+    private String enumToString(Class<?> type) {
+        Enum<?>[] objs = (Enum<?>[]) type.getEnumConstants();
+        List<String> result = new ArrayList<>();
+        for (Enum<?> val : objs) {
+            try {
+                SerializedName serializedName = val.getClass().getField(val.name()).getAnnotation(SerializedName.class);
+                if (serializedName == null)
+                    result.add(val.name());
+                else
+                    result.add(serializedName.value());
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return result.toString();
     }
 
     private @Nullable FieldMatch match(List<Field> fields, String serializedName) {
@@ -126,7 +150,7 @@ public class ConfigHandler<T> {
         File config = location.toFile();
         File configFile = null;
         for (File file : config.listFiles()) {
-            if (file.getName().equals(name + ".json")) {
+            if (file.getName().equals(name + ".json5")) {
                 configFile = file;
                 break;
             }
