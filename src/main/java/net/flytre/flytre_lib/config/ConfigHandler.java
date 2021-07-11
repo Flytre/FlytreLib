@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -17,9 +18,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * A config handler is what handles all the input-output of a config.
+ * Namely, Turning the config into a formatted file and back again
+ *
+ * @param <T> The Config class
+ */
 public class ConfigHandler<T> {
     private final Gson gson;
     private final T assumed;
@@ -37,42 +44,47 @@ public class ConfigHandler<T> {
     }
 
 
+    /**
+     * Save a config to the config file location
+     */
     public void save(T config) {
         Path location = FabricLoader.getInstance().getConfigDir();
         Path path = Paths.get(location.toString(), name + ".json5");
         Writer writer;
         try {
             writer = new FileWriter(path.toFile());
-            JsonElement serialized = gson.toJsonTree(config);
-            serialized = commentAdder(serialized, config);
-            String out = gson.toJson(serialized);
-            String commented = commentApplier(out);
-            writer.write(commented);
+            JsonElement parsed = commentFormattedGson(gson.toJsonTree(config), config);
+            writer.write(StringEscapeUtils.unescapeJava(formattedGsonToJson5(gson.toJson(parsed))));
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private String commentApplier(String str) {
-        Pattern pattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": ((.|\\s)+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}");
-        Matcher m = pattern.matcher(str);
-        return m.replaceAll("$1//$5\\\n$1\"$2\": $3");
+    private String formattedGsonToJson5(String str) {
+        Pattern commentPattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": ((.|\\s)+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}");
+        str = commentPattern.matcher(str).replaceAll("$1//$5\\\n$1\"$2\": $3");
+
+        Pattern multiline = Pattern.compile("^(\\s*)//(.*?)\\\\n(.*)$", Pattern.MULTILINE);
+        while (str.contains("\\n"))
+            str = multiline.matcher(str).replaceAll("$1//$2\n$1//$3");
+
+        return str;
     }
 
 
-    private JsonElement commentAdder(JsonElement serialized, T config) {
+    private JsonElement commentFormattedGson(JsonElement serialized, T config) {
 
         if (!(serialized instanceof JsonObject))
             return serialized;
 
         JsonObject object = (JsonObject) serialized;
 
-        commentAdderHelper(object, config.getClass());
+        commentFormattedGsonHelper(object, config.getClass());
         return object;
     }
 
-    private void commentAdderHelper(JsonObject object, Class<?> clazz) {
+    private void commentFormattedGsonHelper(JsonObject object, Class<?> clazz) {
         List<Field> fields = getFields(clazz);
         for (var entry : object.entrySet()) {
             FieldMatch fieldMatch = match(fields, entry.getKey());
@@ -80,23 +92,23 @@ public class ConfigHandler<T> {
             if (fieldMatch == null)
                 continue;
 
-            String value = "";
+            String comment = "";
             Description description = fieldMatch.field.getAnnotation(Description.class);
             if (description != null)
-                value += description.value();
+                comment += description.value();
 
             if (fieldMatch.field.getType().isEnum()) {
-                value += (value.length() > 0 ? " " : "") + enumToString(fieldMatch.field.getType());
+                comment += (comment.length() > 0 ? " " : "") + enumToString(fieldMatch.field.getType());
             }
 
             if (entry.getValue() instanceof JsonObject) {
-                commentAdderHelper((JsonObject) entry.getValue(), fieldMatch.field.getType());
+                commentFormattedGsonHelper((JsonObject) entry.getValue(), fieldMatch.field.getType());
             }
 
-            if (value.length() > 0) {
+            if (comment.length() > 0) {
                 JsonObject o = new JsonObject();
                 o.add("value", entry.getValue());
-                o.addProperty("comment", value);
+                o.addProperty("comment", comment);
                 object.add(entry.getKey(), o);
             }
 
@@ -146,6 +158,10 @@ public class ConfigHandler<T> {
         return result;
     }
 
+
+    /**
+     * Load the config, or if none is found save the default to a file and load that
+     */
     public void handle() {
         Path location = FabricLoader.getInstance().getConfigDir();
         File config = location.toFile();

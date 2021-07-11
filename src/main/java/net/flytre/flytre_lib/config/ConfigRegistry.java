@@ -6,6 +6,10 @@ import net.fabricmc.api.Environment;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Register configs here to allow loading/reloading to be handled automatically by FlytreLib
+ */
 public class ConfigRegistry {
     private static final List<ConfigHandler<?>> SERVER_CONFIGS;
     private static final List<ConfigHandler<?>> CLIENT_CONFIGS;

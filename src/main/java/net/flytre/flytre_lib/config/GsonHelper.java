@@ -94,7 +94,7 @@ public class GsonHelper {
 
         @Override
         public JsonElement serialize(Set<T> identifiers, Type type, JsonSerializationContext jsonSerializationContext) {
-            return jsonSerializationContext.serialize(identifiers.stream().map(toId::apply).sorted().collect(Collectors.toList()));
+            return jsonSerializationContext.serialize(identifiers.stream().map(toId).sorted().collect(Collectors.toList()));
         }
 
         @Override
