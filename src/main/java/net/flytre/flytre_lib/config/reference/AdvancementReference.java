@@ -45,10 +45,10 @@ public class AdvancementReference extends Reference<Advancement> {
         return null;
     }
 
-    public boolean hasAdvancement(@NotNull ServerPlayerEntity player, @NotNull ServerWorld world) {
+    public boolean hasAdvancement(@NotNull ServerPlayerEntity player, @NotNull ServerWorld world, boolean valueIfNull) {
         Advancement advancement = getValue(null, world);
         if (advancement == null)
-            return false;
+            return valueIfNull;
         PlayerAdvancementTracker manager = player.getAdvancementTracker();
         return manager.getProgress(advancement).isDone();
     }
