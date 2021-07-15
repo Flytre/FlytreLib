@@ -24,6 +24,8 @@ public class Formatter {
 
     private static final String[] PREFIX_VALUES = new String[]{"", "k", "M", "G", "T", "P"};
     private static final Map<String, String> modNameCache = Maps.newHashMap();
+    private static final String FORMAT_INT = "%d";
+    private static final String FORMAT_FLOAT = "%.2f";
 
 
     /**
@@ -158,6 +160,18 @@ public class Formatter {
 
         int format = num >= 100 ? 1 : 2;
         return String.format("%." + format + "f", num) + (space ? " " : "") + prefix + suffix;
+    }
+
+
+    /**
+     * Formats a number with no units!
+     */
+    public static String formatNumber(double value) {
+        if (value > 1000)
+            return Formatter.formatNumber(value, "", false);
+        else if (value == (int) value)
+            return String.format(FORMAT_INT, (int) (double) value);
+        return String.format(FORMAT_FLOAT, value);
     }
 
     /**

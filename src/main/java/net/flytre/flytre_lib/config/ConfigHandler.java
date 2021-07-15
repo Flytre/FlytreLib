@@ -1,11 +1,16 @@
 package net.flytre.flytre_lib.config;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
+import net.flytre.flytre_lib.FlytreLib;
+import net.flytre.flytre_lib.common.util.Formatter;
+import net.minecraft.util.InvalidIdentifierException;
+import org.apache.commons.compress.utils.Charsets;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,17 +20,21 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
  * A config handler is what handles all the input-output of a config.
  * Namely, Turning the config into a formatted file and back again
  *
- * @param <T> The Config class
+ * @param <T> The FlytreLibConfig class
  */
 public class ConfigHandler<T> {
     private final Gson gson;
@@ -34,7 +43,7 @@ public class ConfigHandler<T> {
     private T config;
 
     public ConfigHandler(T assumed, String name) {
-        this(assumed, name, new GsonBuilder().setPrettyPrinting().create());
+        this(assumed, name, GsonHelper.GSON);
     }
 
     public ConfigHandler(T assumed, String name, Gson gson) {
@@ -43,6 +52,9 @@ public class ConfigHandler<T> {
         this.gson = gson;
     }
 
+    private static String asString(Range range) {
+        return "[min: " + Formatter.formatNumber(range.min()) + ", max: " + Formatter.formatNumber(range.max()) + "]";
+    }
 
     /**
      * Save a config to the config file location
@@ -72,7 +84,6 @@ public class ConfigHandler<T> {
         return str;
     }
 
-
     private JsonElement commentFormattedGson(JsonElement serialized, T config) {
 
         if (!(serialized instanceof JsonObject))
@@ -101,6 +112,11 @@ public class ConfigHandler<T> {
                 comment += (comment.length() > 0 ? " " : "") + enumToString(fieldMatch.field.getType());
             }
 
+
+            Range range = fieldMatch.field.getAnnotation(Range.class);
+            if (range != null)
+                comment += (comment.length() > 0 ? " " : "") + asString(range);
+
             if (entry.getValue() instanceof JsonObject) {
                 commentFormattedGsonHelper((JsonObject) entry.getValue(), fieldMatch.field.getType());
             }
@@ -112,6 +128,44 @@ public class ConfigHandler<T> {
                 object.add(entry.getKey(), o);
             }
 
+        }
+    }
+
+    public void validate(JsonObject serialized, T config) throws IllegalAccessException {
+        validate(serialized, config.getClass(), config, new ArrayList<>());
+    }
+
+    public void validate(JsonObject json, Class<?> clazz, Object obj, List<String> path) throws IllegalAccessException {
+        List<Field> fields = getFields(clazz);
+        for (var entry : json.entrySet()) {
+            FieldMatch fieldMatch = match(fields, entry.getKey());
+
+            if (fieldMatch == null)
+                continue;
+
+            Range range = fieldMatch.field.getAnnotation(Range.class);
+            if (range != null) {
+                Object value = fieldMatch.field.get(obj);
+                if (range.max() < range.min())
+                    throw new ConfigAnnotationException("Invalid @Range annotation for field " + fieldMatch.field.getName() + ": Max value must be less or equal to the min value");
+                if (!(value instanceof Number)) {
+                    throw new ConfigAnnotationException("@Range annotation unsuppoted for field " + fieldMatch.field.getName());
+                } else {
+                    Number number = (Number) value;
+                    if (range.min() > number.doubleValue() || range.max() < number.doubleValue()) {
+                        List<String> path2 = new ArrayList<>(path);
+                        path2.add(fieldMatch.field.getName());
+                        throw new ValidationException("Value " + value + " for field " + String.join(".", path2) + " is not in range " + asString(range));
+                    }
+                }
+
+            }
+
+            if (entry.getValue() instanceof JsonObject) {
+                fieldMatch.field.setAccessible(true);
+                validate((JsonObject) entry.getValue(), fieldMatch.field.getType(), fieldMatch.field.get(obj),
+                        Stream.concat(path.stream(), List.of(fieldMatch.field.getName()).stream()).distinct().collect(Collectors.toUnmodifiableList()));
+            }
         }
     }
 
@@ -159,6 +213,37 @@ public class ConfigHandler<T> {
     }
 
 
+    private void appendErrorToConfig(File file, Exception e) throws IOException {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        String str = FileUtils.readFileToString(file, Charsets.UTF_8);
+
+
+        String errorMessage = e.getMessage();
+
+        if (e instanceof NumberFormatException) {
+            errorMessage = "java.lang.NumberFormatException: " + errorMessage;
+        }
+
+        errorMessage = errorMessage.replace("java.lang.NumberFormatException", "Expected a number but found a different data type");
+        errorMessage = errorMessage.replace("java.lang.IllegalStateException", "Wrong type of value passed");
+
+        if (e instanceof InvalidIdentifierException) {
+            errorMessage += ". The namespace is everything before the colon, while the path is everything after";
+        }
+
+        errorMessage = errorMessage + ". Default config was loaded.";
+
+
+        String logLine = "//[" + format.format(date) + "]" + " ERROR: " + errorMessage;
+        str = logLine + "\n" + str;
+
+        Path path = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), name + ".json5");
+        FileWriter writer = new FileWriter(path.toFile());
+        writer.write(str);
+        writer.close();
+    }
+
     /**
      * Load the config, or if none is found save the default to a file and load that
      */
@@ -178,8 +263,17 @@ public class ConfigHandler<T> {
             this.config = assumed;
         } else {
             try (Reader reader = new FileReader(configFile)) {
-                this.config = gson.fromJson(reader, (Type) assumed.getClass());
-            } catch (IOException e) {
+
+                try {
+                    JsonObject json = gson.fromJson(reader, JsonObject.class);
+                    this.config = gson.fromJson(json, (Type) assumed.getClass());
+                    validate(json, this.config);
+                } catch (JsonParseException | NumberFormatException | InvalidIdentifierException | ValidationException e) {
+                    this.config = assumed;
+                    FlytreLib.LOGGER.error("Unable to load config " + name + ".json5 : " + e.getMessage() + ". Loading default config instead.");
+                    appendErrorToConfig(configFile, e);
+                }
+            } catch (IOException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -198,5 +292,19 @@ public class ConfigHandler<T> {
     }
 
     private record FieldMatch(Field field, String displayName) {
+    }
+
+
+    public static class ConfigAnnotationException extends RuntimeException {
+
+        public ConfigAnnotationException(String msg) {
+            super(msg);
+        }
+    }
+
+    public static class ValidationException extends RuntimeException {
+        public ValidationException(String msg) {
+            super(msg);
+        }
     }
 }

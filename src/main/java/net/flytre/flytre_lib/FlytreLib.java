@@ -8,8 +8,14 @@ import net.flytre.flytre_lib.config.ReloadConfigCommand;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FlytreLib implements ModInitializer {
+
+    public static final Logger LOGGER = LogManager.getLogger("Flytre Lib");
+
+
     @Override
     public void onInitialize() {
 
