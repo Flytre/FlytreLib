@@ -27,7 +27,7 @@ public class MinecraftServerMixin {
 
     @Inject(method = "<init>*", at = @At("TAIL"))
     public void flytre_lib$reloadConfigs(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
-        ConfigRegistry.reloadServerConfigs();
+        ConfigRegistry.reloadServerConfigs(null);
     }
 
     @Inject(method = "getPermissionLevel", at = @At("HEAD"), cancellable = true)

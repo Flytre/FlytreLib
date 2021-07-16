@@ -13,7 +13,7 @@ public class ReloadConfigCommand {
         LiteralArgumentBuilder<ServerCommandSource> command = CommandManager
                 .literal("reloadconfig")
                 .executes(i -> {
-                    int x = ConfigRegistry.reloadServerConfigs();
+                    int x = ConfigRegistry.reloadServerConfigs(i.getSource().getServer().getPlayerManager());
                     i.getSource().sendFeedback(new LiteralText("Reloaded " + x + " configs."), true);
                     return x;
                 });

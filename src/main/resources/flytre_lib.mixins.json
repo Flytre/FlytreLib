@@ -4,7 +4,7 @@
   "package": "net.flytre.flytre_lib.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AbstractBlockAccessor", "EulaReaderMixin", "MinecraftServerMixin", "MiningToolItemAccessor",
+    "AbstractBlockAccessor", "EulaReaderMixin", "MinecraftServerMixin", "MiningToolItemAccessor", "PlayerManagerMixin",
     "ServerPropertiesHandlerMixin"
   ],
   "client": ["EntryListWidgetAccessor", "KeyboardMixin", "ReloadableResourceManagerImplMixin"],

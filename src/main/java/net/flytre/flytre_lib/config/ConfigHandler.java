@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
 import net.flytre.flytre_lib.FlytreLib;
 import net.flytre.flytre_lib.common.util.Formatter;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.apache.commons.compress.utils.Charsets;
 import org.apache.commons.io.FileUtils;
@@ -289,6 +290,25 @@ public class ConfigHandler<T> {
 
     public T getConfig() {
         return config;
+    }
+
+    public void setConfig(JsonElement element) {
+        this.config = gson.fromJson(element, (Type) assumed.getClass());
+    }
+
+    /**
+     * If handle hasn't been called once yet, that's on you
+     */
+    public JsonElement getConfigAsJson() {
+        return gson.toJsonTree(config == null ? assumed : config);
+    }
+
+    public Identifier getConfigId() {
+        return new Identifier("flytre_lib", name);
+    }
+
+    public T fromJson(JsonElement element) {
+        return gson.fromJson(element, (Type) assumed.getClass());
     }
 
     private record FieldMatch(Field field, String displayName) {

@@ -8,6 +8,5 @@ import net.fabricmc.api.Environment;
 public class FlytreLibClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-
     }
 }
