@@ -9,9 +9,12 @@ import java.lang.annotation.Target;
 /**
  * Annotate fields with this to set their display name in the config GUI
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DisplayName {
 
     String value();
+
+    boolean translationKey() default true;
+
 }

@@ -17,7 +17,6 @@ public class FlytreLib implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> ReloadConfigCommand.register(dispatcher));
         filterPackets();
 

@@ -26,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -314,10 +315,10 @@ public class GuiMaker {
         return raw;
     }
 
-    private static String getName(FieldMatch fieldMatch) {
+    public static String getName(FieldMatch fieldMatch) {
         DisplayName display = fieldMatch.field().getAnnotation(DisplayName.class);
         if (display != null)
-            return display.value();
+            return display.translationKey() ? I18n.translate(display.value()) : display.value();
         String base = fieldMatch.serializedName() != null ? fieldMatch.serializedName() : fieldMatch.field().getName();
         base = base.replaceAll("_", " ");
         return WordUtils.capitalize(base);

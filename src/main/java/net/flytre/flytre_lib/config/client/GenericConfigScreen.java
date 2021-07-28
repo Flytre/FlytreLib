@@ -8,6 +8,10 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Every config screen inherits from this, automatically jumps to the parent screen when closed and has the fun
+ * background and animation
+ */
 public class GenericConfigScreen extends Screen {
 
     public static final Identifier BACKGROUND = new Identifier("flytre_lib:textures/gui/config/background.png");
