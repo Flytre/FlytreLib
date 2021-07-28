@@ -1,34 +1,80 @@
 package net.flytre.flytre_lib.mixin;
 
 
-import net.flytre.flytre_lib.client.gui.TranslucentButton;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.flytre.flytre_lib.common.util.math.Rectangle;
 import net.flytre.flytre_lib.config.client.ConfigListerScreen;
+import net.flytre.flytre_lib.config.client.GenericConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 
-//TODO: DELETE
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
 
+
+    @Unique
+    private static final Identifier FLYTRE_LIB_TAB = new Identifier("flytre_lib:textures/gui/config/tab.png");
+    @Unique
+    private static final Identifier TAB_BACKGROUND = new Identifier("flytre_lib:textures/gui/config/background.png");
+    @Unique
+    private static final float ANIMATION_TIME = 20f;
+    @Unique
+    private float libAnimationTime = -1f;
+    @Unique
+    private boolean animating = false;
 
     protected TitleScreenMixin(Text title) {
         super(title);
     }
 
-    @Inject(method = "init", at = @At("TAIL"))
-    public void initTest(CallbackInfo ci) {
-        this.addDrawableChild(new TranslucentButton(159, 250, 50, 50, Text.of("CONFIG SCREEN"), button -> {
+    @Inject(method = "render", at = @At("TAIL"))
+    public void flytre_lib$renderTab(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        matrices.push();
+        matrices.translate(0, 0, 100);
+        int y = Math.min(height * 2 / 3, height - 80);
+        RenderSystem.setShaderTexture(0, FLYTRE_LIB_TAB);
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+        RenderSystem.enableBlend();
 
+        if (!animating)
+            drawTexture(matrices, 0, y, 0.0F, 0.0F, 42, 80, 42, 80);
 
-            MinecraftClient.getInstance().setScreen(new ConfigListerScreen(this));
-        }));
+        if (animating) {
+            libAnimationTime -= delta;
+            if (libAnimationTime < 0) {
+                animating = false;
+                MinecraftClient.getInstance().setScreen(new ConfigListerScreen(this).disableAnimation());
+            }
+            int maxX = width - 42;
+            int currX = (int) (maxX * ((ANIMATION_TIME - libAnimationTime) / ANIMATION_TIME));
+            drawTexture(matrices, currX, y, 0.0F, 0.0F, 42, 80, 42, 80);
 
+            RenderSystem.setShaderTexture(0, TAB_BACKGROUND);
+            GenericConfigScreen.tile(new Rectangle(currX - 1, height),0,1.0f,255);
+        }
+        matrices.pop();
+    }
+
+    @Inject(method = "mouseClicked", at = @At("TAIL"), cancellable = true)
+    public void flytre_lib$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+        int y = Math.min(height * 2 / 3, height - 80);
+        Rectangle bounds = new Rectangle(0, y, 42, 80);
+        if (bounds.contains(mouseX, mouseY) && !animating) {
+            libAnimationTime = ANIMATION_TIME;
+            animating = true;
+            cir.setReturnValue(true);
+        }
     }
 }

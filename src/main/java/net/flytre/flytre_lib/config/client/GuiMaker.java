@@ -347,7 +347,7 @@ public class GuiMaker {
                     @Override
                     protected void updateMessage() {
                         try {
-                            this.setMessage(new TranslatableText("flytre_lib.gui.slider", fieldMatch.field().getDouble(currentObject)));
+                            this.setMessage(new TranslatableText("flytre_lib.gui.slider", String.format("%.3f",fieldMatch.field().getDouble(currentObject))));
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
