@@ -32,10 +32,6 @@ public class StringValueWidget<K extends ClickableWidget> extends ConfigStyleLis
         addEntry(new PairEntry<>(key, textField));
     }
 
-    @Override
-    public int getRowWidth() {
-        return this.right - this.left;
-    }
 
     @Override
     protected int getScrollbarPositionX() {
@@ -125,25 +121,31 @@ public class StringValueWidget<K extends ClickableWidget> extends ConfigStyleLis
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 
-            int editorWidth = MathHelper.clamp(250, entryWidth / 4, entryWidth * 3 / 4);
-            int rightMargin = Math.max(10, entryWidth / 5);
+            int editorWidth = MathHelper.clamp(250, entryWidth / 5, 3 * entryWidth / 8);
+            int rightMargin = Math.min(150, entryWidth / 10);
 
+
+            int leftMargin = Math.min(150, entryWidth / 10);
             //name
-            int textX = x + entryWidth / 5;
-            int textWidth = entryWidth - editorWidth - rightMargin - entryWidth / 5 - 20;
-            textHeight = RenderUtils.drawWrappedString(matrices, key, textX, y, textWidth, 3, 0xFFAAAAAA);
+            int textX = x + leftMargin;
+            int textWidth = entryWidth - editorWidth - rightMargin - leftMargin - 20;
+
+            textHeight = RenderUtils.getWrappedHeight(key, textWidth, 3);
+
+
+            textHeight = RenderUtils.drawWrappedString(matrices, key, textX, y + entryHeight / 2 - textHeight / 2, textWidth, 3, 0xFFAAAAAA);
 
 
             value.setWidth(editorWidth);
             value.x = x + entryWidth - editorWidth - rightMargin;
-            value.y = y + textHeight / 2 - value.getHeight() / 2;
+            value.y = y + entryHeight / 2 - value.getHeight() / 2;
             value.render(matrices, mouseX, mouseY, tickDelta);
         }
 
 
         @Override
         public int getEntryHeight(int baseHeight) {
-            int value = Math.max(baseHeight, textHeight);
+            int value = Math.max(baseHeight, textHeight + 10);
             if (this.value instanceof TranslucentTextField && ((TranslucentTextField) this.value).isActive()) {
                 value = Math.max(value, ((TranslucentTextField) this.value).getFullHeight() + 10);
             }

@@ -122,7 +122,7 @@ public class ListEditorWidget<K extends TranslucentTextField> extends ConfigStyl
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            textField.x = (int) ((x + entryWidth * 0.5) - textField.getWidth() / 2);
+            textField.x = (int) (x + entryWidth * 0.5 - textField.getWidth() / 2) - 5;
             textField.y = y;
             textField.render(matrices, mouseX, mouseY, tickDelta);
 

@@ -78,6 +78,16 @@ public abstract class ConfigStyleList<E extends ConfigStyleList.Entry<E>> extend
 
 
     @Override
+    public int getRowLeft() {
+        return left;
+    }
+
+    @Override
+    public int getRowWidth() {
+        return right - left;
+    }
+
+    @Override
     protected int getMaxPosition() {
         return headerHeight + children().stream().map(i -> i.getEntryHeight(itemHeight)).reduce(0, Integer::sum);
     }

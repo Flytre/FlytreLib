@@ -2,11 +2,12 @@ package net.flytre.flytre_lib.config.client;
 
 import net.flytre.flytre_lib.config.ConfigHandler;
 import net.flytre.flytre_lib.config.client.list.ConfigListWidget;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -14,15 +15,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public class IndividualConfigScreen<T> extends GenericConfigScreen {
 
-    private final ConfigListWidget list;
+    private ConfigListWidget list;
     private final ConfigHandler<T> handler;
+    private final List<ConfigListWidget.ConfigEntry> entries;
 
 
     public IndividualConfigScreen(@Nullable Screen parent, ConfigHandler<T> handler) {
         super(parent);
         this.handler = handler;
-        Window window = MinecraftClient.getInstance().getWindow();
-        this.list =  new ConfigListWidget(MinecraftClient.getInstance(), window.getScaledWidth(), window.getScaledHeight(), 60, window.getScaledHeight() - 60, 30);
+        entries = new ArrayList<>();
     }
 
     public ConfigListWidget getList() {
@@ -41,11 +42,13 @@ public class IndividualConfigScreen<T> extends GenericConfigScreen {
     }
 
     public void addEntry(ConfigListWidget.ConfigEntry entry) {
-        this.list.addConfigEntry(entry);
+        entries.add(entry);
     }
 
     @Override
     protected void init() {
+        list = new ConfigListWidget(client, width, height, 60, height - 60, 30);
+        entries.forEach(i -> list.addConfigEntry(i));
         addSelectableChild(list);
         super.init();
     }

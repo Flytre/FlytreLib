@@ -57,13 +57,13 @@ import java.util.stream.Collectors;
 
 public class GuiMaker {
 
-    public static final Predicate<Class<?>> IS_ITEM = i -> ConfigItem.class.isAssignableFrom(i) || Item.class.isAssignableFrom(i);
-    public static final Predicate<Class<?>> IS_BLOCK = i -> ConfigBlock.class.isAssignableFrom(i) || Block.class.isAssignableFrom(i);
-    public static final Predicate<Class<?>> IS_ENTITY = i -> ConfigEntity.class.isAssignableFrom(i) || EntityType.class.isAssignableFrom(i);
-    public static final Predicate<Class<?>> IS_IDENTIFIER = i -> Reference.class.isAssignableFrom(i) || Fluid.class.isAssignableFrom(i)
+    static final Predicate<Class<?>> IS_ITEM = i -> ConfigItem.class.isAssignableFrom(i) || Item.class.isAssignableFrom(i);
+    static final Predicate<Class<?>> IS_BLOCK = i -> ConfigBlock.class.isAssignableFrom(i) || Block.class.isAssignableFrom(i);
+    static final Predicate<Class<?>> IS_ENTITY = i -> ConfigEntity.class.isAssignableFrom(i) || EntityType.class.isAssignableFrom(i);
+    static final Predicate<Class<?>> IS_IDENTIFIER = i -> Reference.class.isAssignableFrom(i) || Fluid.class.isAssignableFrom(i)
             || StatusEffect.class.isAssignableFrom(i) || Enchantment.class.isAssignableFrom(i) || EntityAttribute.class.isAssignableFrom(i)
             || SoundEvent.class.isAssignableFrom(i) || VillagerProfession.class.isAssignableFrom(i) || Identifier.class.isAssignableFrom(i);
-    public static final Predicate<Class<?>> IS_FLUID = i -> ConfigFluid.class.isAssignableFrom(i) || Fluid.class.isAssignableFrom(i);
+    static final Predicate<Class<?>> IS_FLUID = i -> ConfigFluid.class.isAssignableFrom(i) || Fluid.class.isAssignableFrom(i);
 
 
     public static <K> Screen makeGui(Screen parent, ConfigHandler<K> handler) {
@@ -80,7 +80,7 @@ public class GuiMaker {
     }
 
 
-    public static <K> void makeGuiHelper(IndividualConfigScreen<K> screen, ConfigHandler<K> handler, JsonObject object, Class<?> currentClass, Object currentObject) {
+    static <K> void makeGuiHelper(IndividualConfigScreen<K> screen, ConfigHandler<K> handler, JsonObject object, Class<?> currentClass, Object currentObject) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         try {
             List<Field> fields = ReflectionUtils.getFields(currentClass);
@@ -315,7 +315,7 @@ public class GuiMaker {
         return raw;
     }
 
-    public static String getName(ConfigHandler<?> handler, FieldMatch fieldMatch) {
+    static String getName(ConfigHandler<?> handler, FieldMatch fieldMatch) {
 
 
         DisplayName display = fieldMatch.field().getAnnotation(DisplayName.class);
@@ -429,7 +429,7 @@ public class GuiMaker {
     /**
      * Wrap map values
      */
-    public static ObjectWrapper<?> create(FieldMatch match, Object wrappedValue) {
+    static ObjectWrapper<?> create(FieldMatch match, Object wrappedValue) {
         Type generic = ((ParameterizedType) match.field().getGenericType()).getActualTypeArguments()[1];
         Class<?> clazz = TypeToken.get(generic).getRawType();
         return new ObjectWrapper<>(clazz.cast(wrappedValue));
