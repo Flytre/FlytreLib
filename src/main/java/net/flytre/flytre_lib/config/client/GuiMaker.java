@@ -356,7 +356,7 @@ public class GuiMaker {
                     @Override
                     protected void applyValue() {
                         try {
-                            fieldMatch.field().set(currentObject, convertNumberToType(fieldClass, rangeLiteral * value + range.min()));
+                            fieldMatch.field().set(currentObject, convertNumberToType(fieldClass, Double.parseDouble(String.format("%.3f",rangeLiteral * value + range.min()))));
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
