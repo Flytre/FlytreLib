@@ -339,6 +339,12 @@ public class RenderUtils {
         MatrixStack matrixStack2 = new MatrixStack();
         matrixStack2.translate(0.0D, 0.0D, 1000.0D);
         matrixStack2.scale((float) size, (float) size, (float) size);
+
+        float scalar = (float) (1f / entity.getBoundingBox().getYLength());
+        if(scalar < 1)
+            scalar = (float) (2f / entity.getBoundingBox().getYLength());
+        matrixStack2.scale(scalar, scalar, scalar);
+
         Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F);
         Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F);
         quaternion.hamiltonProduct(quaternion2);
@@ -367,9 +373,11 @@ public class RenderUtils {
         matrixStack2.multiply(rotation);
 
         VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+
+
         RenderSystem.runAsFancy(() -> {
-            float scalar = (float) (1f / entity.getBoundingBox().getYLength());
-            matrixStack2.scale(scalar, scalar, scalar);
+//            float scalar = (float) (1f / entity.getBoundingBox().getYLength());
+//            matrixStack2.scale(scalar, scalar, scalar);
 
             entityRenderDispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, matrixStack2, immediate, 15728880);
         });
@@ -493,10 +501,10 @@ public class RenderUtils {
         }
 
         buffer.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-        buffer.vertex(center.x, center.y, 0.0D).color(center.color.getRed(), center.color.getGreen(), center.color.getBlue(), (int)(alpha*255)).next();
+        buffer.vertex(center.x, center.y, 0.0D).color(center.color.getRed(), center.color.getGreen(), center.color.getBlue(), (int) (alpha * 255)).next();
         while (!vertices.isEmpty()) {
             ColoredCoordinate coord = vertices.poll();
-            buffer.vertex(coord.x, coord.y, 0.0D).color(coord.color.getRed(), coord.color.getGreen(), coord.color.getBlue(), (int)(alpha*255)).next();
+            buffer.vertex(coord.x, coord.y, 0.0D).color(coord.color.getRed(), coord.color.getGreen(), coord.color.getBlue(), (int) (alpha * 255)).next();
         }
         tessellator.draw();
 
@@ -564,15 +572,6 @@ public class RenderUtils {
         return b * (256 * 256) + g * (256) + r;
     }
 
-    private static record Color(float red, float green, float blue, float alpha) {
-        public Color(int color) {
-            this((float) (color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F, (float) (color >> 24 & 255) / 255.0F);
-        }
-    }
-
-    private static record ColoredCoordinate(double x, double y, java.awt.Color color) {
-    }
-
     public static void renderFluidInGui(MatrixStack matrixStack, Fluid fluid, int drawHeight, int x, int y, int width, int height) {
         RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
         y += height;
@@ -603,6 +602,14 @@ public class RenderUtils {
         }
     }
 
+    private static record Color(float red, float green, float blue, float alpha) {
+        public Color(int color) {
+            this((float) (color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F, (float) (color >> 24 & 255) / 255.0F);
+        }
+    }
+
+    private static record ColoredCoordinate(double x, double y, java.awt.Color color) {
+    }
 
 
 }

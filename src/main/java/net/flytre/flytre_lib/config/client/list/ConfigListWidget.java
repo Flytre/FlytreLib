@@ -51,7 +51,7 @@ public class ConfigListWidget extends StringValueWidget<ClickableWidget> {
             int textWidth = entryWidth - editorWidth - rightMargin - leftMargin - 20;
 
             //description
-            Rectangle bounds = new Rectangle(textX, y, Math.min(textWidth, renderer.getWidth(key)), textHeight);
+            Rectangle bounds = new Rectangle(textX, y+ entryHeight / 2 - textHeight / 2, Math.min(textWidth, renderer.getWidth(key)), textHeight);
             if (bounds.contains(mouseX, mouseY)) {
                 textWidth = Math.min(textWidth, x + entryWidth - mouseX - 2);
                 int height = RenderUtils.getWrappedHeight(description, textWidth, 3);

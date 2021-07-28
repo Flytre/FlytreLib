@@ -408,9 +408,9 @@ public class GuiMaker {
         if (IS_FLUID.test(clazz))
             return () -> DropdownUtils.createFluidDropdown(0, 0);
         if (IS_BLOCK.test(clazz))
-            return () -> DropdownUtils.createItemDropdown(0, 0);
+            return () -> DropdownUtils.createBlockDropdown(0, 0);
         if (IS_ENTITY.test(clazz))
-            return () -> DropdownUtils.createItemDropdown(0, 0);
+            return () -> DropdownUtils.createEntityDropdown(0, 0);
         if (IS_IDENTIFIER.test(clazz)) {
             return () -> {
                 TranslucentTextField searchField = new TranslucentTextField(0, 0, Math.min(250, width), 20, new TranslatableText("null"));
