@@ -19,7 +19,6 @@ public class FlytreLib implements ModInitializer {
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> ReloadConfigCommand.register(dispatcher));
         filterPackets();
-
     }
 
     //INITIALIZE BLOCK ENTITY FILTER PACKETS

@@ -175,6 +175,6 @@ public class ColorWidget extends TranslucentTextField {
 
     @Override
     public int getFullHeight() {
-        return height + getFocusedBounds().getHeight();
+        return height + (isActive() ?  getFocusedBounds().getHeight() : 0);
     }
 }

@@ -264,7 +264,7 @@ public class DropdownMenu extends TranslucentTextField {
 
     @Override
     public int getFullHeight() {
-        return dropdownYSize() + height;
+        return (isActive() ?  dropdownYSize() : 0) + height;
     }
 
     @FunctionalInterface

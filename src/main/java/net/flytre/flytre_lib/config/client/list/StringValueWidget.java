@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.client.gui.text_field.TranslucentTextField;
 import net.flytre.flytre_lib.client.util.RenderUtils;
+import net.flytre.flytre_lib.common.util.math.Rectangle;
 import net.flytre.flytre_lib.mixin.EntryListWidgetAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -121,6 +122,7 @@ public class StringValueWidget<K extends ClickableWidget> extends ConfigStyleLis
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 
+            RenderUtils.drawHollowRect(new Rectangle(x,y,entryWidth,entryHeight),0x99FF0000,1);
             int editorWidth = MathHelper.clamp(250, entryWidth / 5, 3 * entryWidth / 8);
             int rightMargin = Math.min(150, entryWidth / 10);
 
@@ -136,9 +138,10 @@ public class StringValueWidget<K extends ClickableWidget> extends ConfigStyleLis
             textHeight = RenderUtils.drawWrappedString(matrices, key, textX, y + entryHeight / 2 - textHeight / 2, textWidth, 3, 0xFFAAAAAA);
 
 
+            int valueHeight = value instanceof TranslucentTextField ? ((TranslucentTextField) value).getFullHeight() : value.getHeight();
             value.setWidth(editorWidth);
             value.x = x + entryWidth - editorWidth - rightMargin;
-            value.y = y + entryHeight / 2 - value.getHeight() / 2;
+            value.y = y + entryHeight / 2 - valueHeight / 2;
             value.render(matrices, mouseX, mouseY, tickDelta);
         }
 
