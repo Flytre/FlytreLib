@@ -40,16 +40,26 @@ public class ConfigHandler<T> {
     private final Gson gson;
     private final T assumed;
     private final String name;
+    private final String translationPrefix;
     private T config;
 
     public ConfigHandler(T assumed, String name) {
-        this(assumed, name, GsonHelper.GSON);
+        this(assumed, name, (String) null);
     }
 
     public ConfigHandler(T assumed, String name, Gson gson) {
+        this(assumed, name, null, gson);
+    }
+
+    public ConfigHandler(T assumed, String name, String translationPrefix) {
+        this(assumed, name, translationPrefix, GsonHelper.GSON);
+    }
+
+    public ConfigHandler(T assumed, String name, String translationPrefix, Gson gson) {
+        this.gson = gson;
         this.assumed = assumed;
         this.name = name;
-        this.gson = gson;
+        this.translationPrefix = translationPrefix;
     }
 
     public static String asString(Range range) {
@@ -63,6 +73,11 @@ public class ConfigHandler<T> {
         else
             return serializedName.value();
     }
+
+    public String getTranslationPrefix() {
+        return translationPrefix;
+    }
+
 
     public String getName() {
         return name;

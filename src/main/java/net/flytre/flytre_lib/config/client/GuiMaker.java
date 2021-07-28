@@ -92,7 +92,7 @@ public class GuiMaker {
 
                 Description descriptionAnnotation = fieldMatch.field().getAnnotation(Description.class);
                 String description = descriptionAnnotation == null ? "" : descriptionAnnotation.value();
-                String name = getName(fieldMatch);
+                String name = getName(handler, fieldMatch);
                 fieldMatch.field().setAccessible(true);
                 Object value = fieldMatch.field().get(currentObject);
 
@@ -315,10 +315,17 @@ public class GuiMaker {
         return raw;
     }
 
-    public static String getName(FieldMatch fieldMatch) {
+    public static String getName(ConfigHandler<?> handler, FieldMatch fieldMatch) {
+
+
         DisplayName display = fieldMatch.field().getAnnotation(DisplayName.class);
         if (display != null)
             return display.translationKey() ? I18n.translate(display.value()) : display.value();
+
+        if (handler.getTranslationPrefix() != null && I18n.hasTranslation(handler.getTranslationPrefix() + "." + fieldMatch.serializedName())) {
+            return I18n.translate(handler.getTranslationPrefix() + "." + fieldMatch.serializedName());
+        }
+
         String base = fieldMatch.serializedName() != null ? fieldMatch.serializedName() : fieldMatch.field().getName();
         base = base.replaceAll("_", " ");
         return WordUtils.capitalize(base);
