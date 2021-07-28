@@ -24,16 +24,6 @@ public class ConfigListWidget extends StringValueWidget<ClickableWidget> {
         addEntry(entry);
     }
 
-    @Override
-    public int getRowWidth() {
-        return this.right - this.left;
-    }
-
-    @Override
-    protected int getScrollbarPositionX() {
-        int rightMargin = Math.max(10, getRowWidth() / 5);
-        return width - rightMargin + 20;
-    }
 
     public static class ConfigEntry extends StringValueWidget.PairEntry<ClickableWidget> {
 
@@ -53,11 +43,12 @@ public class ConfigListWidget extends StringValueWidget<ClickableWidget> {
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
             //super math
-            int editorWidth = MathHelper.clamp(250, entryWidth / 4, entryWidth * 3 / 4);
-            int rightMargin = Math.max(10, entryWidth / 5);
+            int editorWidth = MathHelper.clamp(250, entryWidth / 5, 3 * entryWidth / 8);
+            int rightMargin = Math.min(150, entryWidth / 10);
             TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-            int textX = x + entryWidth / 5;
-            int textWidth = entryWidth - editorWidth - rightMargin - entryWidth / 5 - 20;
+            int leftMargin = Math.min(150, entryWidth / 10);
+            int textX = x + leftMargin;
+            int textWidth = entryWidth - editorWidth - rightMargin - leftMargin - 20;
 
             //description
             Rectangle bounds = new Rectangle(textX, y, Math.min(textWidth, renderer.getWidth(key)), textHeight);

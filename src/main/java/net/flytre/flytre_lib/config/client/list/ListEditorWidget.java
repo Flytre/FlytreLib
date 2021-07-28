@@ -31,16 +31,6 @@ public class ListEditorWidget<K extends TranslucentTextField> extends ConfigStyl
     }
 
     @Override
-    public int getRowWidth() {
-        return this.right - this.left;
-    }
-
-    @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 32;
-    }
-
-    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         ValueEntry<K> entry = getEntryAtPosition2(mouseX, mouseY);
         if (entry != null && entry.textField.isActive() && entry.textField.isMouseOver(mouseX, mouseY)) {
