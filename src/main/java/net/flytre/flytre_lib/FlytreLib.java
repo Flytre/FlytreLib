@@ -15,12 +15,12 @@ public class FlytreLib implements ModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger("Flytre Lib");
 
-
     @Override
     public void onInitialize() {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> ReloadConfigCommand.register(dispatcher));
         filterPackets();
+
     }
 
     //INITIALIZE BLOCK ENTITY FILTER PACKETS

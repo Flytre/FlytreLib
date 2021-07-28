@@ -66,4 +66,8 @@ public class ConfigRegistry {
     public static List<ConfigHandler<?>> getServerConfigs() {
         return Collections.unmodifiableList(SERVER_CONFIGS);
     }
+
+    public static List<ConfigHandler<?>> getClientConfigs() {
+        return Collections.unmodifiableList(CLIENT_CONFIGS);
+    }
 }

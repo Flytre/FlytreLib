@@ -14,6 +14,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -254,14 +255,25 @@ public class Formatter {
     /**
      * Convert an integer to a formatted readable hex string, i.e. #45AC2B
      */
-    public static String intToHexString(int i) {
-        return "#" + String.format("0x%06X", i).substring(2);
+    public static String intToHexString(int value) {
+        String hex = String.format("#%02x%02x%02x%02x", value >> 24 & 255, value >> 16 & 255, value >> 8 & 255, value & 255);
+        if ((hex.startsWith("#00") && hex.length() == 9))
+            hex = "#" + hex.substring(3);
+        return hex;
     }
 
     /**
      * Convert a formatted hex string to an int
      */
     public static int fromHexString(String hex) {
-        return Integer.decode(hex);
+        int color;
+        if (hex.startsWith("#") && hex.length() == 9) {
+            Color awt = Color.decode("#" + hex.substring(3));
+            int alpha = Integer.decode(hex.substring(0, 3));
+            color = awt.getRGB() + (alpha << 24);
+        } else {
+            color = Color.decode(hex).getRGB();
+        }
+        return color;
     }
 }

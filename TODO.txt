@@ -9,6 +9,5 @@
 5. Set of ConfigBlock <--- Adds support to block tags, i.e. #minecraft:carpets for all carpets
 
 
-TODO: limit number of tags to preserve search time
-TODO: MORE VISIBLE CONFIG ERRORS
-TODO: ConfigX.of methods
+TODO: CONFIGS FROM LISTS OF OBJECTS
+TODO: MAP ADDING / REMOVING VALUES

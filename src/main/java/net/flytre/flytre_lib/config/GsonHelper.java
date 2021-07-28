@@ -53,6 +53,8 @@ public class GsonHelper {
             return array;
         });
 
+        GSON_BUILDER.registerTypeAdapter(ConfigColor.class, new ConfigColor.ColorSerializer());
+
         registerRegistryBasedClass(EntityType.class, GSON_BUILDER, Registry.ENTITY_TYPE);
         registerRegistryBasedClass(Fluid.class, GSON_BUILDER, Registry.FLUID);
         registerRegistryBasedClass(StatusEffect.class, GSON_BUILDER, Registry.STATUS_EFFECT);

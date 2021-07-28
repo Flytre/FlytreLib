@@ -1,29 +1,115 @@
 package net.flytre.flytre_lib.client.util;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.flytre.flytre_lib.common.util.math.Rectangle;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tag.FluidTags;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
+import net.minecraft.text.Style;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.Language;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+
 
 /**
  * Some stuff to make rendering easier, which is great cuz rendering SUCKS.
  */
+@Environment(EnvType.CLIENT)
 public class RenderUtils {
+
+
+    /**
+     * Border is included in dimensions
+     */
+    public static void drawBorderedRect(Rectangle rectangle, int hex, int borderHex, int borderThickness) {
+        drawRectangle(rectangle.shrink(borderThickness), hex);
+        drawHollowRect(rectangle, borderHex, borderThickness);
+    }
+
+
+    /**
+     * Draws a border of thickness X AROUND rectangle X
+     */
+    public static void drawBorderAround(Rectangle rectangle, int hex, int thickness) {
+        Rectangle modified = new Rectangle(rectangle.getLeft() - thickness, rectangle.getTop() - thickness, rectangle.getWidth() + thickness * 2, rectangle.getHeight() + thickness * 2);
+        drawHollowRect(modified, hex, thickness);
+    }
+
+    /**
+     * Draws a hollow rectangle, i.e. a border of a specified thickness
+     */
+    public static void drawHollowRect(Rectangle rectangle, int hex, int thickness) {
+        Rectangle top = new Rectangle(rectangle.getLeft(), rectangle.getTop(), rectangle.getWidth(), thickness);
+        Rectangle bottom = new Rectangle(rectangle.getLeft(), rectangle.getBottom() - thickness, rectangle.getWidth(), thickness);
+        Rectangle left = new Rectangle(rectangle.getLeft(), rectangle.getTop() + thickness, thickness, rectangle.getHeight() - thickness * 2);
+        Rectangle right = new Rectangle(rectangle.getRight() - thickness, rectangle.getTop() + thickness, thickness, rectangle.getHeight() - thickness * 2);
+
+        drawRectangle(top, hex);
+        drawRectangle(bottom, hex);
+        drawRectangle(left, hex);
+        drawRectangle(right, hex);
+    }
+
+
+    public static void drawRectangle(Rectangle rectangle, int hex) {
+
+        final Color color = new Color(hex);
+
+        final Tessellator tessellator = Tessellator.getInstance();
+        final BufferBuilder buffer = tessellator.getBuffer();
+
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.vertex(rectangle.getLeft(), rectangle.getBottom(), 0.0D).color(color.red, color.green, color.blue, color.alpha).next();
+        buffer.vertex(rectangle.getRight(), rectangle.getBottom(), 0.0D).color(color.red, color.green, color.blue, color.alpha).next();
+        buffer.vertex(rectangle.getRight(), rectangle.getTop(), 0.0D).color(color.red, color.green, color.blue, color.alpha).next();
+        buffer.vertex(rectangle.getLeft(), rectangle.getTop(), 0.0D).color(color.red, color.green, color.blue, color.alpha).next();
+        tessellator.draw();
+
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    /**
+     * Draw a rectangle in a GUI
+     */
+    public static void drawRect(int left, int top, int right, int bottom, int color) {
+        drawRectangle(Rectangle.ofBounds(left, top, right, bottom), color);
+    }
 
     /**
      * Get the color of a fluid, except doesn't actually work very well but hey it might just so why not try it!
@@ -194,7 +280,6 @@ public class RenderUtils {
         }
     }
 
-
     /**
      * Overlay a texture on a block
      *
@@ -213,7 +298,6 @@ public class RenderUtils {
         model.render(matrices, vertexConsumer, light, overlay);
         matrices.pop();
     }
-
 
     /**
      * Overlay a texture on the specified side of a block
@@ -242,27 +326,154 @@ public class RenderUtils {
         matrices.pop();
     }
 
+    //See InventoryScreen::drawEntity
+    //Allows you to render all entities, not just living ones -> beware errors
+    public static void renderSpinningEntity(int x, int y, int size, float mouseX, float mouseY, Entity entity) {
+        float f = (float) Math.atan(mouseX / 40.0F);
+        float g = (float) Math.atan(mouseY / 40.0F);
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
+        matrixStack.translate(x, y, 1050.0D);
+        matrixStack.scale(1.0F, 1.0F, -1.0F);
+        RenderSystem.applyModelViewMatrix();
+        MatrixStack matrixStack2 = new MatrixStack();
+        matrixStack2.translate(0.0D, 0.0D, 1000.0D);
+        matrixStack2.scale((float) size, (float) size, (float) size);
+        Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F);
+        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F);
+        quaternion.hamiltonProduct(quaternion2);
+        matrixStack2.multiply(quaternion);
+        float h = entity instanceof LivingEntity ? ((LivingEntity) entity).bodyYaw : 0;
+        float i = entity.getYaw();
+        float j = entity.getPitch();
+        float k = entity instanceof LivingEntity ? ((LivingEntity) entity).prevHeadYaw : 0;
+        float l = entity instanceof LivingEntity ? ((LivingEntity) entity).headYaw : 0;
+        entity.setYaw(180.0F + f * 40.0F);
+        entity.setPitch(-g * 20.0F);
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity) entity).bodyYaw = 180.0F + f * 20.0F;
+            ((LivingEntity) entity).headYaw = entity.getYaw();
+            ((LivingEntity) entity).prevHeadYaw = entity.getYaw();
+        }
+        DiffuseLighting.method_34742();
+        EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
+        quaternion2.conjugate();
+        entityRenderDispatcher.setRotation(quaternion2);
+        entityRenderDispatcher.setRenderShadows(false);
+        entityRenderDispatcher.configure(FakeWorld.getInstance(), new Camera(), null);
+
+
+        Quaternion rotation = Vec3f.POSITIVE_Y.getDegreesQuaternion((System.currentTimeMillis() % (360 * 10)) / 10.0f);
+        matrixStack2.multiply(rotation);
+
+        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        RenderSystem.runAsFancy(() -> {
+            float scalar = (float) (1f / entity.getBoundingBox().getYLength());
+            matrixStack2.scale(scalar, scalar, scalar);
+
+            entityRenderDispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, matrixStack2, immediate, 15728880);
+        });
+        immediate.draw();
+        entityRenderDispatcher.setRenderShadows(true);
+
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity) entity).bodyYaw = h;
+            ((LivingEntity) entity).prevHeadYaw = k;
+            ((LivingEntity) entity).headYaw = l;
+        }
+        entity.setYaw(i);
+        entity.setPitch(j);
+        matrixStack.pop();
+        RenderSystem.applyModelViewMatrix();
+        DiffuseLighting.enableGuiDepthLighting();
+    }
+
+    //See ItemRenderer::renderInGUI
+    public static void renderSpinningItem(ItemStack stack, int x, int y, BakedModel model) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        assert client != null;
+        TextureManager textureManager = client.getTextureManager();
+        ItemRenderer renderer = client.getItemRenderer();
+
+        textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
+        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
+        matrixStack.translate(x, y, 100.0F + renderer.zOffset);
+        matrixStack.translate(8.0D, 8.0D, 0.0D);
+        matrixStack.scale(1.0F, -1.0F, 1.0F);
+        matrixStack.scale(16.0F, 16.0F, 16.0F);
+        RenderSystem.applyModelViewMatrix();
+        MatrixStack matrixStack2 = new MatrixStack();
+
+        Quaternion rotation = Vec3f.POSITIVE_Y.getDegreesQuaternion((System.currentTimeMillis() % (360 * 10)) / 10.0f);
+        matrixStack2.multiply(rotation);
+
+        matrixStack2.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-30));
+        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        boolean bl = !model.isSideLit();
+        if (bl) {
+            DiffuseLighting.disableGuiDepthLighting();
+        }
+        assert client.world != null;
+        renderer.renderItem(stack, ModelTransformation.Mode.GUI, false, matrixStack2, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
+        immediate.draw();
+        RenderSystem.enableDepthTest();
+        if (bl) {
+            DiffuseLighting.enableGuiDepthLighting();
+        }
+
+        matrixStack.pop();
+        RenderSystem.applyModelViewMatrix();
+    }
 
     /**
-     * Draw a rectangle in a GUI
+     * Draws a string that wraps around to new lines when it exceeds the width parameter.
+     * Returns the change in y from drawing the string
      */
-    public static void drawRect(int left, int top, int right, int bottom, int color) {
-        if (left < right) {
-            int temp = left;
-            left = right;
-            right = temp;
+    public static int drawWrappedString(MatrixStack matrices, String string, int x, int y, int wrapWidth, int maxLines, int color) {
+        while (string != null && string.endsWith("\n")) {
+            string = string.substring(0, string.length() - 1);
         }
-
-        if (top < bottom) {
-            int temp = top;
-            top = bottom;
-            bottom = temp;
+        MinecraftClient client = MinecraftClient.getInstance();
+        List<StringVisitable> strings = client.textRenderer.getTextHandler().wrapLines(new LiteralText(string), wrapWidth, Style.EMPTY);
+        int i;
+        for (i = 0; i < strings.size(); i++) {
+            if (i >= maxLines) {
+                break;
+            }
+            StringVisitable renderable = strings.get(i);
+            if (i == maxLines - 1 && strings.size() > maxLines) {
+                renderable = StringVisitable.concat(strings.get(i), StringVisitable.plain("..."));
+            }
+            OrderedText line = Language.getInstance().reorder(renderable);
+            int x1 = x;
+            if (client.textRenderer.isRightToLeft()) {
+                int width = client.textRenderer.getWidth(line);
+                x1 += (float) (wrapWidth - width);
+            }
+            client.textRenderer.draw(matrices, line, x1, y + i * client.textRenderer.fontHeight, color);
         }
+        return i * client.textRenderer.fontHeight;
+    }
 
-        final float red = (float) (color >> 16 & 255) / 255.0F;
-        final float green = (float) (color >> 8 & 255) / 255.0F;
-        final float blue = (float) (color & 255) / 255.0F;
-        final float alpha = (float) (color >> 24 & 255) / 255.0F;
+
+    /**
+     * Gets the height of a wrapped string (based on # of lines) without actually drawing the String
+     */
+    public static int getWrappedHeight(String string, int wrapWidth, int maxLines) {
+        while (string != null && string.endsWith("\n")) {
+            string = string.substring(0, string.length() - 1);
+        }
+        MinecraftClient client = MinecraftClient.getInstance();
+        List<StringVisitable> strings = client.textRenderer.getTextHandler().wrapLines(new LiteralText(string), wrapWidth, Style.EMPTY);
+        return Math.min(strings.size(), maxLines) * client.textRenderer.fontHeight;
+    }
+
+    public static void drawColorWheel(int centerX, int centerY, double radius, float brightness, float alpha) {
 
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder buffer = tessellator.getBuffer();
@@ -270,15 +481,128 @@ public class RenderUtils {
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.disableCull();
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        buffer.vertex(left, bottom, 0.0D).color(red,green,blue,alpha).next();
-        buffer.vertex(right, bottom, 0.0D).color(red,green,blue,alpha).next();
-        buffer.vertex(right, top, 0.0D).color(red,green,blue,alpha).next();
-        buffer.vertex(left, top, 0.0D).color(red,green,blue,alpha).next();
+        ColoredCoordinate center = new ColoredCoordinate(centerX, centerY, new java.awt.Color(java.awt.Color.HSBtoRGB(0, 0.0f, brightness)));
+        Queue<ColoredCoordinate> vertices = new LinkedList<>();
+        for (int degrees = 360; degrees >= 0; degrees -= 10) {
+            double radians = degrees * Math.PI / 180;
+            double x = radius * Math.cos(radians);
+            double y = radius * Math.sin(radians);
+            vertices.add(new ColoredCoordinate(x + center.x, y + center.y, new java.awt.Color(java.awt.Color.HSBtoRGB((float) degrees / 360f, 1.0f, brightness))));
+        }
+
+        buffer.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+        buffer.vertex(center.x, center.y, 0.0D).color(center.color.getRed(), center.color.getGreen(), center.color.getBlue(), (int)(alpha*255)).next();
+        while (!vertices.isEmpty()) {
+            ColoredCoordinate coord = vertices.poll();
+            buffer.vertex(coord.x, coord.y, 0.0D).color(coord.color.getRed(), coord.color.getGreen(), coord.color.getBlue(), (int)(alpha*255)).next();
+        }
         tessellator.draw();
 
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
+        RenderSystem.enableCull();
     }
+
+    /**
+     * USE MOUSE RAW COORDS, NOT SCALED COORDS (Mouse::getX)
+     */
+    public static int getPixelColor(int x, int y) {
+
+        //See ScreenshotRenderer.java, code copied from there
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        Framebuffer framebuffer = client.getFramebuffer();
+
+
+        int width = framebuffer.textureWidth;
+        int height = framebuffer.textureHeight;
+        int channels = 4;
+        long sizeBytes = (long) width * (long) height * (long) channels;
+        long pointer = MemoryUtil.nmemAlloc(sizeBytes);
+
+        RenderSystem.bindTexture(framebuffer.getColorAttachment());
+
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        GlStateManager._pixelStore(3333, 4);
+
+        int pixelDataFormat = 6408;
+        int level = 0;
+        GlStateManager._getTexImage(3553, level, pixelDataFormat, 5121, pointer);
+
+        MemoryStack memoryStack = MemoryStack.stackPush();
+
+        try {
+            int j = width * channels;
+            long l = memoryStack.nmalloc(j);
+
+            for (int k = 0; k < height / 2; ++k) {
+                int m = k * width * channels;
+                int n = (height - 1 - k) * width * channels;
+                MemoryUtil.memCopy(pointer + (long) m, l, j);
+                MemoryUtil.memCopy(pointer + (long) n, pointer + (long) m, j);
+                MemoryUtil.memCopy(l, pointer + (long) n, j);
+            }
+        } catch (Throwable var10) {
+            try {
+                memoryStack.close();
+            } catch (Throwable var9) {
+                var10.addSuppressed(var9);
+            }
+
+            throw var10;
+        }
+
+        memoryStack.close();
+
+        long l = ((long) x + (long) y * (long) width) * 4L;
+        int color = MemoryUtil.memGetInt(pointer + l);
+        int r = (color >> 16 & 255);
+        int g = (color >> 8 & 255);
+        int b = (color & 255);
+        return b * (256 * 256) + g * (256) + r;
+    }
+
+    private static record Color(float red, float green, float blue, float alpha) {
+        public Color(int color) {
+            this((float) (color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F, (float) (color >> 24 & 255) / 255.0F);
+        }
+    }
+
+    private static record ColoredCoordinate(double x, double y, java.awt.Color color) {
+    }
+
+    public static void renderFluidInGui(MatrixStack matrixStack, Fluid fluid, int drawHeight, int x, int y, int width, int height) {
+        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        y += height;
+
+        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+
+        if (handler == null)
+            return;
+
+        final Sprite sprite = handler.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid.getDefaultState())[0];
+        int color = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid.getDefaultState());
+
+        final int iconHeight = sprite.getHeight();
+        int offsetHeight = drawHeight;
+
+        RenderSystem.setShaderColor((color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F, 1.0F);
+
+        int iteration = 0;
+        while (offsetHeight != 0) {
+            final int curHeight = Math.min(offsetHeight, iconHeight);
+
+            DrawableHelper.drawSprite(matrixStack, x, y - offsetHeight, 0, width, curHeight, sprite);
+            offsetHeight -= curHeight;
+            iteration++;
+            if (iteration > 50) {
+                break;
+            }
+        }
+    }
+
+
+
 }
