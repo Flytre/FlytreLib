@@ -8,6 +8,10 @@
   "flytre_lib.gui.edit" : "[Edit]",
   "flytre_lib.gui.value" : "Value",
   "flytre_lib.gui.open" : "Open",
+  "flytre_lib.gui.open_file" : "Open File (.json5)",
+  "flytre_lib.gui.help_mac" : "Help Mac --> ",
+  "flytre_lib.gui.help_windows" : " <-- Help Windows",
+
   "flytre_lib.gui.client_message" : "All configs are edited client side. Upload to server to sync to server config."
 
 }
