@@ -84,7 +84,7 @@ public abstract class ConfigStyleList<E extends ConfigStyleList.Entry<E>> extend
 
     @Override
     protected int getScrollbarPositionX() {
-        return width - 15;
+        return right - 10;
     }
 
     @Override

@@ -32,12 +32,6 @@ public class StringValueWidget<K extends ClickableWidget> extends ConfigStyleLis
         addEntry(new PairEntry<>(key, textField));
     }
 
-
-    @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 32;
-    }
-
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         PairEntry<K> entry = getEntryAtPosition2(mouseX, mouseY);
