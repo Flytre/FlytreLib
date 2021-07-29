@@ -12,6 +12,9 @@ import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 
+/**
+ * A text field with an advanced color picker
+ */
 @Environment(EnvType.CLIENT)
 public class ColorWidget extends TranslucentTextField {
 

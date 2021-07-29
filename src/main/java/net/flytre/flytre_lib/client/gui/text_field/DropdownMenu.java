@@ -16,6 +16,8 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 /**
+ * A dropdown menu! Use DropdownUtils to create standard dropdowns
+ *
  * Remember that dropdown menus need special handling if their dropdown intersects
  * with another UI member to handle clicks correctly!
  */

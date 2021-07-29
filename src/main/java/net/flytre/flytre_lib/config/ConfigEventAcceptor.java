@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 /**
- * FlytreLibConfig events.
+ * Config events. Implement this interface to execute code on events.
  */
 public interface ConfigEventAcceptor {
 
@@ -15,7 +15,7 @@ public interface ConfigEventAcceptor {
     default void onReload() {}
 
     /**
-     * Triggers whenever the client joins a server, leaves a servers, or switches servers using a plugin (i.e. switching lobbies)
+     * Triggers whenever the client joins a server, leaves a server, or switches servers using a plugin (i.e. switching lobbies)
      */
     @Environment(EnvType.CLIENT)
     default void onServerStatusChanged() {}

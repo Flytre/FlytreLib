@@ -29,6 +29,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 
+/**
+ * Nicer looking text field.
+ * Does not inherit from the vanilla TextField and is implemented somewhat differently
+ */
 @Environment(EnvType.CLIENT)
 public class TranslucentTextField extends ClickableWidget {
 

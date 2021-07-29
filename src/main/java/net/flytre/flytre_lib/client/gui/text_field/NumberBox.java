@@ -7,6 +7,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A text field that only allows valid numbers and has arrows to adjust the number quickly
+ */
 public class NumberBox extends TranslucentTextField {
 
     private final boolean integers;

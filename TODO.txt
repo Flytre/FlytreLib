@@ -1,13 +1,4 @@
 --> ADD TAG SUPPORT! THIS MEANS SUBCLASSES OF TAGREFERENCE, SERIALIZATION, AND CUSTOM INTERFACES FOR EACH TYPE OF TAG
 
 
-5 layers of storing blocks in configs
-1. Set of String <--- Base
-2. Set of Identifier <--- Less parsing required, using Registry to convert blocks to Identifiers = O(1) search type
-3. Set of Block <--- No caching required if you wanted to convert to set of blocks, very easy to use
-4. Set of BlockReference <--- Adds back support to modded blocks by default (step 3 doesn't have) AND support to data driven types
-5. Set of ConfigBlock <--- Adds support to block tags, i.e. #minecraft:carpets for all carpets
-
-
-TODO: CONFIGS FROM LISTS OF OBJECTS
-TODO: MAP ADDING / REMOVING VALUES
+TODO: ENUM DISPLAY NAME ANNOTATION
