@@ -43,29 +43,25 @@ public class ListEditorWidget<K extends TranslucentTextField> extends ConfigStyl
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.updateScrollingState(mouseX, mouseY, button);
-        if (!this.isMouseOver(mouseX, mouseY)) {
-            return false;
-        } else {
-            ValueEntry<K> entry = this.getEntryAtPosition2(mouseX, mouseY);
+        ValueEntry<K> entry = this.getEntryAtPosition2(mouseX, mouseY);
 
-            children().forEach(i -> {
-                if (i != entry)
-                    i.textField.setTextFieldFocused(false);
-            });
+        children().forEach(i -> {
+            if (i != entry)
+                i.textField.setTextFieldFocused(false);
+        });
 
-            if (entry != null) {
-                if (entry.mouseClicked(mouseX, mouseY, button)) {
-                    this.setFocused(entry);
-                    this.setDragging(true);
-                    return true;
-                }
-            } else if (button == 0) {
-                this.clickedHeader((int) (mouseX - (double) (this.left + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.top) + (int) this.getScrollAmount() - 4);
+        if (entry != null) {
+            if (entry.mouseClicked(mouseX, mouseY, button)) {
+                this.setFocused(entry);
+                this.setDragging(true);
                 return true;
             }
-
-            return ((EntryListWidgetAccessor) this).getScrolling();
+        } else if (button == 0) {
+            this.clickedHeader((int) (mouseX - (double) (this.left + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.top) + (int) this.getScrollAmount() - 4);
+            return true;
         }
+
+        return ((EntryListWidgetAccessor) this).getScrolling();
     }
 
     @Override
