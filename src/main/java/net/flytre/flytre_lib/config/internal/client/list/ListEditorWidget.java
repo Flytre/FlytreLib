@@ -1,4 +1,4 @@
-package net.flytre.flytre_lib.config.client.list;
+package net.flytre.flytre_lib.config.internal.client.list;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

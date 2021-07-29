@@ -1,4 +1,4 @@
-package net.flytre.flytre_lib.config.client;
+package net.flytre.flytre_lib.config.internal.client;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,9 +14,9 @@ import net.flytre.flytre_lib.client.util.DropdownUtils;
 import net.flytre.flytre_lib.common.util.reflection.FieldMatch;
 import net.flytre.flytre_lib.common.util.reflection.ReflectionUtils;
 import net.flytre.flytre_lib.config.*;
-import net.flytre.flytre_lib.config.client.list.ConfigListWidget;
-import net.flytre.flytre_lib.config.client.list.ListEditorScreen;
-import net.flytre.flytre_lib.config.client.list.MapEditorScreen;
+import net.flytre.flytre_lib.config.internal.client.list.ConfigListWidget;
+import net.flytre.flytre_lib.config.internal.client.list.ListEditorScreen;
+import net.flytre.flytre_lib.config.internal.client.list.MapEditorScreen;
 import net.flytre.flytre_lib.config.reference.Reference;
 import net.flytre.flytre_lib.config.reference.block.ConfigBlock;
 import net.flytre.flytre_lib.config.reference.entity.ConfigEntity;
@@ -25,8 +25,11 @@ import net.flytre.flytre_lib.config.reference.item.ConfigItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -40,8 +43,10 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -50,6 +55,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -133,7 +139,7 @@ public class GuiMaker {
                             name,
                             description
                     ));
-                } else if (Boolean.class.isAssignableFrom(fieldClass) || fieldClass == boolean.class) {
+                } else if (value instanceof Boolean || Boolean.class.isAssignableFrom(fieldClass) || fieldClass == boolean.class) {
                     TranslucentCyclingOption<Boolean> option = TranslucentCyclingOption.create(
                             "flytre_lib.gui.value",
                             (options) -> {
@@ -152,7 +158,7 @@ public class GuiMaker {
                     );
                     ClickableWidget button = option.createButton(MinecraftClient.getInstance().options, 0, 0, Math.min(250, width));
                     screen.addEntry(new ConfigListWidget.ConfigEntry(button, name, description));
-                } else if (ConfigColor.class.isAssignableFrom(fieldClass)) {
+                } else if (value instanceof ConfigColor || ConfigColor.class.isAssignableFrom(fieldClass)) {
                     ColorWidget colorWidget = new ColorWidget(0, 0, Math.min(250, width), 20, new TranslatableText("null"));
                     colorWidget.setText(entry.getValue().getAsString());
                     screen.addEntry(new ConfigListWidget.ConfigEntry(
@@ -160,7 +166,7 @@ public class GuiMaker {
                             name,
                             description
                     ));
-                } else if (Enum.class.isAssignableFrom(fieldClass)) {
+                } else if (value instanceof Enum || Enum.class.isAssignableFrom(fieldClass)) {
                     enumHandler(screen, handler, fieldClass, fieldMatch, currentObject, entry.getValue(), width, name, description);
                 } else if (entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
                     TranslucentTextField searchField = new TranslucentTextField(0, 0, Math.min(250, width), 20, new TranslatableText("null"));
@@ -197,48 +203,26 @@ public class GuiMaker {
                             but.setMessage(Text.of("Error: Edit Config Json"));
                             return;
                         }
+
                         List<TranslucentTextField> initial = parsed
                                 .stream()
                                 .sorted()
                                 .map(i -> adder.get().withText(i))
                                 .collect(Collectors.toList());
-                        MinecraftClient.getInstance().setScreen(new ListEditorScreen(screen, consumer, initial, adder));
+                        MinecraftClient.getInstance().setScreen(new ListEditorScreen(screen, consumer, initial, adder,fieldMatch.field().getAnnotation(Button.class), but));
                     });
                     screen.addEntry(new ConfigListWidget.ConfigEntry(button, name, description));
                 } else if (Map.class.isAssignableFrom(fieldClass)) {
-                    MapEditorScreen mapEditor = new MapEditorScreen(screen);
-                    Map<?, ?> rawValues = (Map<?, ?>) fieldMatch.field().get(currentObject);
-                    Map<String, ClickableWidget> values = new HashMap<>();
-                    Map<String, ObjectWrapper<?>> wrappedValues = new HashMap<>();
-                    for (var mapEntry : rawValues.entrySet()) {
-                        String key = handler.getGson().fromJson(handler.getGson().toJson(mapEntry.getKey()), String.class);
-                        JsonElement element = handler.getGson().toJsonTree(mapEntry.getValue());
-                        IndividualConfigScreen<K> simulator = new IndividualConfigScreen<>(mapEditor, handler);
-                        if (element instanceof JsonObject) {
-                            GuiMaker.makeGuiHelper(simulator, handler, (JsonObject) element, mapEntry.getValue().getClass(), mapEntry.getValue());
-                            ClickableWidget button = new TranslucentButton(0, 0, Math.min(250, width), 20, new TranslatableText("flytre_lib.gui.open"), (but) -> {
-                                MinecraftClient.getInstance().setScreen(simulator);
-                            });
-                            values.put(key, button);
-                        } else {
-                            ObjectWrapper<?> wrapper = create(fieldMatch, mapEntry.getValue());
-                            wrappedValues.put(key, wrapper);
-                            JsonElement elementInner = handler.getGson().toJsonTree(wrapper);
-                            GuiMaker.makeGuiHelper(simulator, handler, (JsonObject) elementInner, wrapper.getClass(), wrapper);
-                            ClickableWidget widget = simulator.getList().children().get(0).getValue();
-                            values.put(key, widget);
-
-                        }
-                    }
-                    if (!wrappedValues.isEmpty())
-                        mapEditor.setWrappedElements(wrappedValues, fieldMatch, handler, currentObject);
-                    mapEditor.setValues(values);
-
                     ClickableWidget button = new TranslucentButton(0, 0, Math.min(250, width), 20, new TranslatableText("flytre_lib.gui.edit"), (but) -> {
-                        MinecraftClient.getInstance().setScreen(mapEditor);
+                        //Generates the map every time its opened rather than just once for custom button tweaking
+                        try {
+                            fieldMatch.field().setAccessible(true);
+                            MinecraftClient.getInstance().setScreen(mapHandler(screen, handler, fieldMatch, currentObject, width, (Map<?, ?>) fieldMatch.field().get(currentObject), but));
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     });
                     screen.addEntry(new ConfigListWidget.ConfigEntry(button, name, description));
-
                 } else if (entry.getValue().isJsonObject()) {
                     JsonObject inner = (JsonObject) entry.getValue();
                     IndividualConfigScreen<K> innerScreen = new IndividualConfigScreen<>(screen, handler);
@@ -253,6 +237,62 @@ public class GuiMaker {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static <T, E, K> MapEditorScreen mapHandler(IndividualConfigScreen<?> screen, ConfigHandler<K> handler, FieldMatch fieldMatch, Object currentObject, int width, Map<T, E> rawValues, ButtonWidget reopen) {
+        MapEditorScreen mapEditor = new MapEditorScreen(screen, fieldMatch.field().getAnnotation(Button.class), reopen);
+
+        //Populator
+        populator:
+        {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            ClientWorld world = MinecraftClient.getInstance().world;
+            if (player == null || world == null)
+                break populator;
+            Populator annotation = fieldMatch.field().getAnnotation(Populator.class);
+            if (annotation == null)
+                break populator;
+            try {
+                BiFunction<ClientWorld, ClientPlayerEntity, Map<?, ?>> function = annotation.value().getConstructor().newInstance();
+                Map<? extends T, ? extends E> values = (Map<? extends T, ? extends E>) function.apply(world, player);//Ignore THIS fishy cast, I trust the user to be sensible
+                for (T key : values.keySet()) {
+                    if (!annotation.replace())
+                        rawValues.putIfAbsent(key, values.get(key));
+                    else
+                        rawValues.put(key, values.get(key));
+                }
+            } catch (ClassCastException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Map<String, ClickableWidget> values = new HashMap<>();
+        Map<String, ObjectWrapper<?>> wrappedValues = new HashMap<>();
+        for (var mapEntry : rawValues.entrySet()) {
+            String key = handler.getGson().fromJson(handler.getGson().toJson(mapEntry.getKey()), String.class);
+            JsonElement element = handler.getGson().toJsonTree(mapEntry.getValue());
+            IndividualConfigScreen<K> simulator = new IndividualConfigScreen<>(mapEditor, handler);
+            if (element instanceof JsonObject) {
+                GuiMaker.makeGuiHelper(simulator, handler, (JsonObject) element, mapEntry.getValue().getClass(), mapEntry.getValue());
+                ClickableWidget button = new TranslucentButton(0, 0, Math.min(250, width), 20, new TranslatableText("flytre_lib.gui.open"), (but) -> {
+                    MinecraftClient.getInstance().setScreen(simulator);
+                });
+                values.put(key, button);
+            } else {
+                ObjectWrapper<?> wrapper = create(fieldMatch, mapEntry.getValue());
+                wrappedValues.put(key, wrapper);
+                JsonElement elementInner = handler.getGson().toJsonTree(wrapper);
+                GuiMaker.makeGuiHelper(simulator, handler, (JsonObject) elementInner, wrapper.getClass(), wrapper);
+                ClickableWidget widget = simulator.getEntries().get(0).getValue();
+                values.put(key, widget);
+
+            }
+        }
+        if (!wrappedValues.isEmpty())
+            mapEditor.setWrappedElements(wrappedValues, fieldMatch, handler, currentObject);
+        mapEditor.setValues(values);
+
+        return mapEditor;
     }
 
 
@@ -347,7 +387,7 @@ public class GuiMaker {
                     @Override
                     protected void updateMessage() {
                         try {
-                            this.setMessage(new TranslatableText("flytre_lib.gui.slider", String.format("%.3f",fieldMatch.field().getDouble(currentObject))));
+                            this.setMessage(new TranslatableText("flytre_lib.gui.slider", String.format("%.3f", fieldMatch.field().getDouble(currentObject))));
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
@@ -356,7 +396,7 @@ public class GuiMaker {
                     @Override
                     protected void applyValue() {
                         try {
-                            fieldMatch.field().set(currentObject, convertNumberToType(fieldClass, Double.parseDouble(String.format("%.3f",rangeLiteral * value + range.min()))));
+                            fieldMatch.field().set(currentObject, convertNumberToType(fieldClass, Double.parseDouble(String.format("%.3f", rangeLiteral * value + range.min()))));
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
@@ -398,7 +438,7 @@ public class GuiMaker {
         if (BigDecimal.class.isAssignableFrom(fieldClass))
             return BigDecimal.valueOf(value);
 
-        throw new IllegalArgumentException("Unknown class:" + fieldClass.getClass());
+        throw new IllegalArgumentException("Unknown class:" + fieldClass);
     }
 
     private static Supplier<TranslucentTextField> adder(Class<?> clazz) {
@@ -440,6 +480,15 @@ public class GuiMaker {
 
         public ObjectWrapper(K value) {
             this.value = value;
+        }
+    }
+
+    public static Runnable getRunnable(@Nullable Button button) {
+        try {
+            return button == null ? null : button.function().getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

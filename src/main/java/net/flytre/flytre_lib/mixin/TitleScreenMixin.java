@@ -4,8 +4,8 @@ package net.flytre.flytre_lib.mixin;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flytre.flytre_lib.common.util.math.Rectangle;
-import net.flytre.flytre_lib.config.client.ConfigListerScreen;
-import net.flytre.flytre_lib.config.client.GenericConfigScreen;
+import net.flytre.flytre_lib.config.internal.client.ConfigListerScreen;
+import net.flytre.flytre_lib.config.internal.client.GenericConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -20,6 +20,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 
+/**
+ * Lib icon and title screen animation to open the config from the title screen
+ */
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
 
@@ -31,7 +34,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Unique
     private static final float ANIMATION_TIME = 20f;
     @Unique
-    private float libAnimationTime = -1f;
+    private float libAnimationProgress = -1f;
     @Unique
     private boolean animating = false;
 
@@ -52,13 +55,13 @@ public abstract class TitleScreenMixin extends Screen {
             drawTexture(matrices, 0, y, 0.0F, 0.0F, 42, 80, 42, 80);
 
         if (animating) {
-            libAnimationTime -= delta;
-            if (libAnimationTime < 0) {
+            libAnimationProgress -= delta;
+            if (libAnimationProgress < 0) {
                 animating = false;
                 MinecraftClient.getInstance().setScreen(new ConfigListerScreen(this).disableAnimation());
             }
             int maxX = width - 42;
-            int currX = (int) (maxX * ((ANIMATION_TIME - libAnimationTime) / ANIMATION_TIME));
+            int currX = (int) (maxX * ((ANIMATION_TIME - libAnimationProgress) / ANIMATION_TIME));
             drawTexture(matrices, currX, y, 0.0F, 0.0F, 42, 80, 42, 80);
 
             RenderSystem.setShaderTexture(0, TAB_BACKGROUND);
@@ -72,7 +75,7 @@ public abstract class TitleScreenMixin extends Screen {
         int y = Math.min(height * 2 / 3, height - 80);
         Rectangle bounds = new Rectangle(0, y, 42, 80);
         if (bounds.contains(mouseX, mouseY) && !animating) {
-            libAnimationTime = ANIMATION_TIME;
+            libAnimationProgress = ANIMATION_TIME;
             animating = true;
             cir.setReturnValue(true);
         }

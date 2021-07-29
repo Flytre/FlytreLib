@@ -1,10 +1,10 @@
-package net.flytre.flytre_lib.config.client;
+package net.flytre.flytre_lib.config.internal.client;
 
 import net.flytre.flytre_lib.client.gui.TranslucentButton;
 import net.flytre.flytre_lib.config.ConfigHandler;
 import net.flytre.flytre_lib.config.ConfigRegistry;
 import net.flytre.flytre_lib.config.DisplayName;
-import net.flytre.flytre_lib.config.client.list.StringValueWidget;
+import net.flytre.flytre_lib.config.internal.client.list.StringValueWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -54,7 +54,6 @@ public class ConfigListerScreen extends GenericConfigScreen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
-        this.list.render(matrices, mouseX, mouseY, delta);
         drawCenteredText(matrices, textRenderer, new TranslatableText("flytre_lib.gui.client_message"), width / 2, height - 60, 0xFFFFFFFF);
     }
 

@@ -371,7 +371,7 @@ public class TranslucentTextField extends ClickableWidget {
         if (this.isVisible()) {
             int color;
             if (this.drawsBackground) {
-                color = this.isFocused() ? 0xCC363636 : 0xCC1a1a1a;
+                color = this.isFocused() ? 0xCC363636 : 0x446b6b6b;
                 RenderUtils.drawBorderedRect(new Rectangle(x - 1, y - 1, width + 2, height + 2), 0x446b6b6b, color, 1);
             }
 

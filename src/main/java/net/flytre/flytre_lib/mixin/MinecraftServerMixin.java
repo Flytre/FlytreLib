@@ -22,6 +22,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.net.Proxy;
 
+/**
+ * Load configs on server start; Automatic OP when in dev environment
+ */
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
 

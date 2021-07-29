@@ -8,8 +8,8 @@
     "ServerPropertiesHandlerMixin"
   ],
   "client": [
-    "EntryListWidgetAccessor", "KeyboardMixin", "LivingEntityRendererMixin", "ReloadableResourceManagerImplMixin",
-    "TitleScreenMixin"
+    "ClientPlayNetworkHandlerMixin", "EntryListWidgetAccessor", "KeyboardMixin", "LivingEntityRendererMixin",
+    "MinecraftClientMixin", "ReloadableResourceManagerImplMixin", "TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -8,6 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Make sure not to render name tags when simulating a world, as that causes crashes when it tries to calculate
+ * name tag size / distance from play
+ */
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin<T extends LivingEntity> {
     @Inject(method = "hasLabel", at = @At("INVOKE"), cancellable = true)

@@ -8,6 +8,9 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Properties;
 
+/**
+ * Automatically set online mode to false if in dev environment
+ */
 @Mixin(ServerPropertiesHandler.class)
 public abstract class ServerPropertiesHandlerMixin extends AbstractPropertiesHandler<ServerPropertiesHandler> {
 

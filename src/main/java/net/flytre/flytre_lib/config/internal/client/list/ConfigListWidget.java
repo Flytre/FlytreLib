@@ -1,4 +1,4 @@
-package net.flytre.flytre_lib.config.client.list;
+package net.flytre.flytre_lib.config.internal.client.list;
 
 import net.flytre.flytre_lib.client.util.RenderUtils;
 import net.flytre.flytre_lib.common.util.math.Rectangle;
