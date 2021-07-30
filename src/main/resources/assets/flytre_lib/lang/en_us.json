@@ -13,6 +13,7 @@
   "flytre_lib.gui.help_windows" : " <-- Help Windows",
   "flytre_lib.debug.load_config_screen.message" : "Loaded Config Editor (FlytreLib)",
   "flytre_lib.debug.load_config_screen.help": "F3 + M = Open Config Editor (FlytreLib)",
-  "flytre_lib.gui.client_message" : "All configs are edited client side. Upload to server to sync to server config."
-
+  "flytre_lib.gui.client_message" : "All configs are edited client side. Upload to server to sync to server config.",
+  "config.flytre_lib.display_title_screen_config_button" : "Display Title Screen Config Button",
+  "config.flytre_lib" : "Flytre Lib - Client Config"
 }

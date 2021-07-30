@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * A config handler is what handles all the input-output of a config.
  * Namely, Turning the config into a formatted file and back again
  *
- * @param <T> The FlytreLibConfig class
+ * @param <T> The Config class
  */
 public class ConfigHandler<T> {
     private final Gson gson;
@@ -108,6 +108,7 @@ public class ConfigHandler<T> {
         while (str.contains("\\n"))
             str = multiline.matcher(str).replaceAll("$1//$2\n$1//$3");
 
+        str = "//Hit F3 + M to edit configs client side in game\n" + str;
         return str;
     }
 

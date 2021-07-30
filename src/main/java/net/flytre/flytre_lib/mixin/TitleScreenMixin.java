@@ -3,6 +3,7 @@ package net.flytre.flytre_lib.mixin;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.flytre.flytre_lib.client.FlytreLibClient;
 import net.flytre.flytre_lib.common.util.math.Rectangle;
 import net.flytre.flytre_lib.config.internal.client.ConfigListerScreen;
 import net.flytre.flytre_lib.config.internal.client.GenericConfigScreen;
@@ -44,6 +45,10 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("TAIL"))
     public void flytre_lib$renderTab(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+
+        if (!FlytreLibClient.HANDLER.getConfig().displayTitleScreenConfigButton)
+            return;
+
         matrices.push();
         matrices.translate(0, 0, 100);
         int y = Math.min(height * 2 / 3, height - 80);
@@ -65,13 +70,17 @@ public abstract class TitleScreenMixin extends Screen {
             drawTexture(matrices, currX, y, 0.0F, 0.0F, 42, 80, 42, 80);
 
             RenderSystem.setShaderTexture(0, TAB_BACKGROUND);
-            GenericConfigScreen.tile(new Rectangle(currX - 1, height),0,1.0f,255);
+            GenericConfigScreen.tile(new Rectangle(currX - 1, height), 0, 1.0f, 255);
         }
         matrices.pop();
     }
 
     @Inject(method = "mouseClicked", at = @At("TAIL"), cancellable = true)
     public void flytre_lib$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+
+        if (!FlytreLibClient.HANDLER.getConfig().displayTitleScreenConfigButton)
+            return;
+
         int y = Math.min(height * 2 / 3, height - 80);
         Rectangle bounds = new Rectangle(0, y, 42, 80);
         if (bounds.contains(mouseX, mouseY) && !animating) {
