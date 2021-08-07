@@ -1,32 +1,21 @@
 {
   "schemaVersion": 1,
   "id": "flytre_lib",
+  "name": "Flytre Lib",
   "version": "${version}",
-  "name": "FlytreLib",
-  "description": "Common Code for Flytre mods",
-  "authors": [
-    "Flytre"
-  ],
+  "environment": "*",
+  "license": "All Rights Reserved Unless Explicitly Stated Otherwise",
+  "icon": "assets/flytre_lib/icon.png",
   "contact": {
     "website": "https://www.flytre.net"
   },
-  "license": "All Rights Reserved Unless Explicitly Stated Otherwise",
-  "icon": "assets/flytre_lib/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "client": [
-      "net.flytre.flytre_lib.client.FlytreLibClient"
-    ],
-    "main": [
-      "net.flytre.flytre_lib.FlytreLib"
-    ]
-  },
-  "mixins": [
-    "flytre_lib.mixins.json"
+  "authors": [
+    "Flytre"
   ],
   "depends": {
     "fabricloader": ">=0.11.1",
-    "fabric": "*",
-    "minecraft": "1.17.*"
-  }
+    "minecraft": "1.17.*",
+    "java" : ">=16"
+  },
+  "description": "Common Code for Flytre mods"
 }

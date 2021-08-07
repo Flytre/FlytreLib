@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "flytre-lib-compat",
+  "version": "${version}",
+  "name": "Flytre Lib - Compat Module",
+  "description": "Compatibility Utilities for Flytre mods",
+  "authors": [
+    "Flytre"
+  ],
+  "contact": {
+    "website": "https://www.flytre.net"
+  },
+  "license": "All Rights Reserved Unless Explicitly Stated Otherwise",
+  "icon": "assets/flytre-lib-compat/icon.png",
+  "environment": "*",
+  "entrypoints": {
+  },
+  "mixins": [
+    "flytre-lib-compat.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.1",
+    "minecraft": "1.17.*"
+  }
+}

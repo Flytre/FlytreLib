@@ -1,79 +1,186 @@
 plugins {
-    id 'fabric-loom' version '0.8-SNAPSHOT'
-    id 'maven-publish'
+	id "java-library"
+	id "eclipse"
+	id "idea"
+	id "maven-publish"
+	id "fabric-loom" version "0.8.12" apply false
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
-
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
-
-repositories {
-    maven { url "https://jitpack.io" }
-    maven { url "https://maven.shedaniel.me/" }
-    jcenter()
+class Globals {
+	static def baseVersion = "1.0.0"
+	static def mcVersion = "1.17.1"
+	static def yarnVersion = "+build.10"
+	static def loaderVersion = "0.11.3"
+	static def fabricVersion = "0.36.1+1.17"
 }
 
-dependencies {
-    //to change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+version = Globals.baseVersion
+logger.lifecycle("Building Flytre Lib: " + version)
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.264-alpha"
-    modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:6.0.264-alpha"
+import net.fabricmc.loom.task.RemapJarTask
+
+def getSubprojectVersion(project, version) {
+	return version
 }
 
-
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
-}
-
-jar {
-    from "LICENSE"
+//Add each passed dependency as an API dependency and list it in the pom file
+def moduleDependencies(project, List<String> depNames) {
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+	project.dependencies {
+		deps.each {
+			api it
+		}
+	}
+	project.publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom.withXml {
+					def depsNode = asNode().appendNode("dependencies")
+					deps.each {
+						def depNode = depsNode.appendNode("dependency")
+						depNode.appendNode("groupId", it.group)
+						depNode.appendNode("artifactId", it.name)
+						depNode.appendNode("version", it.version)
+						depNode.appendNode("scope", "compile")
+					}
+				}
+			}
+		}
+	}
 }
 
-// configure the maven publication
+allprojects {
+	apply plugin: "java-library"
+	apply plugin: "maven-publish"
+	apply plugin: "fabric-loom"
+
+	tasks.withType(JavaCompile).configureEach {
+		it.options.release = 16
+	}
+
+	group = "net.flytre.flytre_lib"
+
+	dependencies {
+		minecraft "com.mojang:minecraft:$Globals.mcVersion"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
+		modApi "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
+		modCompileOnly( "net.fabricmc.fabric-api:fabric-api:${Globals.fabricVersion}")
+
+		//Include resource loader
+		modImplementation fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)
+		include fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)
+	}
+
+	configurations {
+		dev
+	}
+
+	loom {
+		shareCaches = true
+	}
+
+	repositories {
+		mavenLocal()
+	}
+
+	jar {
+		archiveClassifier = "dev"
+	}
+
+	afterEvaluate {
+		remapJar {
+			input = file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar")
+			archiveName = "${archivesBaseName}-${version}.jar"
+		}
+
+		artifacts {
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: jar
+		}
+
+		processResources {
+			inputs.property "version", project.version
+
+			filesMatching("fabric.mod.json") {
+				expand "version": project.version
+			}
+		}
+	}
+
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		archiveClassifier = "sources"
+		from sourceSets.main.allSource
+	}
+
+	tasks.withType(AbstractArchiveTask) {
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
+	}
+
+	// configure the maven publication
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				// add all the jars that should be included when publishing to maven
+
+				artifact jar
+				artifact remapJar
+				artifact sourcesJar
+			}
+		}
+
+		// select the repositories you want to publish to
+		repositories {
+			// uncomment to publish to the local maven
+			 mavenLocal()
+		}
+	}
+
+}
+
+subprojects {
+
+	task remapMavenJar(type: Copy, dependsOn: remapJar) {
+		afterEvaluate {
+			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
+			into("${project.buildDir}/libs/")
+			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
+		}
+	}
+
+	artifacts {
+		archives sourcesJar
+	}
+
+	javadoc.enabled = false
+}
+
+task remapMavenJar(type: RemapJarTask, dependsOn: jar) {
+	afterEvaluate {
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		archiveName = "${archivesBaseName}-${version}-maven.jar"
+		addNestedDependencies = false
+	}
+}
+
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
-    }
-
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+				subprojects.each {
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+					depNode.appendNode("version", it.version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}
+	}
 }
+
+
+task licenseFormatAll
+subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
+subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }

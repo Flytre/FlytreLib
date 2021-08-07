@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.flytre.flytre_lib.mixin.base",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "AbstractBlockAccessor", "EulaReaderMixin", "MinecraftServerMixin", "MiningToolItemAccessor",
+    "NetworkState$PacketHandlerMixin", "NetworkStateMixin", "ServerPropertiesHandlerMixin"
+  ],
+  "client": ["LivingEntityRendererMixin", "KeyBindingAccessor"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

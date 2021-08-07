@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.flytre.flytre_lib.mixin.config",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "MinecraftServerMixin",
+    "PlayerManagerMixin"
+  ],
+  "client": [
+    "ClientPlayNetworkHandlerMixin", "EntryListWidgetAccessor", "KeyboardMixin",
+    "MinecraftClientMixin", "ReloadableResourceManagerImplMixin", "TitleScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

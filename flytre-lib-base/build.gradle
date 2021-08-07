@@ -1,0 +1,11 @@
+archivesBaseName = "flytre-lib-base"
+version = getSubprojectVersion(project, "1.0.0")
+
+minecraft {
+    accessWidener("src/main/resources/flytre-lib-base.accessWidener")
+}
+
+moduleDependencies(project, [])
+
+dependencies {
+}

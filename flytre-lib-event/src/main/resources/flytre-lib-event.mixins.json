@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.flytre.flytre_lib.mixin.event",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": ["CommandManagerMixin", "LootTable$BuilderMixin", "LootTableMixin", "LootManagerMixin"],
+  "client": [
+    "InGameHudMixin", "MinecraftClientMixin","ClientWorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

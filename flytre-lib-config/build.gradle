@@ -1,0 +1,12 @@
+archivesBaseName = "flytre-lib-config"
+version = getSubprojectVersion(project, "1.0.0")
+
+
+moduleDependencies(project, [
+        'flytre-lib-base',
+        'flytre-lib-event',
+        'flytre-lib-gui'
+])
+
+dependencies {
+}

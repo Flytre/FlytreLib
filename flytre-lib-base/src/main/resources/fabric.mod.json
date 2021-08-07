@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "flytre-lib-base",
+  "version": "${version}",
+  "name": "Flytre Lib - Base Module",
+  "description": "Needed Utilities & Enhancements for Flytre mods",
+  "authors": [
+    "Flytre"
+  ],
+  "contact": {
+    "website": "https://www.flytre.net"
+  },
+  "license": "All Rights Reserved Unless Explicitly Stated Otherwise",
+  "icon": "assets/flytre-lib-base/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": ["net.flytre.flytre_lib.impl.base.FluidInitializer"]
+  },
+  "mixins": [
+    "flytre-lib-base.mixins.json"
+  ],
+  "accessWidener": "flytre-lib-base.accessWidener",
+  "depends": {
+    "fabricloader": ">=0.11.1",
+    "minecraft": "1.17.*"
+  }
+}

@@ -1,0 +1,8 @@
+archivesBaseName = "flytre-lib-event"
+version = getSubprojectVersion(project, "1.0.0")
+
+moduleDependencies(project, [])
+
+
+dependencies {
+}
