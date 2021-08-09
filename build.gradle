@@ -164,7 +164,7 @@ dependencies {
 	afterEvaluate {
 		subprojects.each {
 			include project("${it.name}:")
-			api project(path: ":${it.name}", configuration: "dev")
+//			api project(path: ":${it.name}", configuration: "dev")
 		}
 	}
 	include fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)
