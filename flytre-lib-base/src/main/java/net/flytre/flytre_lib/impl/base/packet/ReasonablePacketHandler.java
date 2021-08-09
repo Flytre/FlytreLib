@@ -9,5 +9,5 @@ import java.util.function.Function;
 
 public interface ReasonablePacketHandler<T extends PacketListener> {
 
-    NetworkState.PacketHandler<T> register(Class<? extends Packet<T>> type, Function<PacketByteBuf, ? extends Packet<T>> function);
+    NetworkState.PacketHandler<T> reasonableRegister(Class<? extends Packet<T>> type, Function<PacketByteBuf, ? extends Packet<T>> function);
 }

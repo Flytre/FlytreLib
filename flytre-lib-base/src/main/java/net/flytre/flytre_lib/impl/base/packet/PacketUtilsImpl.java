@@ -4,7 +4,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.ServerPlayPacketListener;
-import net.minecraft.util.Pair;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -13,25 +13,33 @@ import java.util.function.Function;
 public class PacketUtilsImpl {
 
 
-    private static final List<Pair<Class<? extends Packet<ServerPlayPacketListener>>, Function<PacketByteBuf, ? extends Packet<ServerPlayPacketListener>>>> PLAY_C2S_PACKETS = new ArrayList<>();
-    private static final List<Pair<Class<? extends Packet<ClientPlayPacketListener>>, Function<PacketByteBuf, ? extends Packet<ClientPlayPacketListener>>>> PLAY_S2C_PACKETS = new ArrayList<>();
+    public static final Map<Identifier, PacketData> REGISTERED_IDS = new HashMap<>();
+    public static final Map<Class<?>, PacketData> REGISTERED_TYPES = new HashMap<>();
+    public static final List<Triad<? extends Packet<ServerPlayPacketListener>>> PLAY_C2S_PACKET = new ArrayList<>();
+    public static final List<Triad<? extends Packet<ClientPlayPacketListener>>> PLAY_S2C_PACKET = new ArrayList<>();
 
 
-    public static List<Pair<Class<? extends Packet<ServerPlayPacketListener>>, Function<PacketByteBuf, ? extends Packet<ServerPlayPacketListener>>>> getPlayC2SPackets() {
-        return PLAY_C2S_PACKETS;
-    }
-
-    public static List<Pair<Class<? extends Packet<ClientPlayPacketListener>>, Function<PacketByteBuf, ? extends Packet<ClientPlayPacketListener>>>> getPlayS2CPackets() {
-        return PLAY_S2C_PACKETS;
+    private static Identifier toId(Class<?> type) {
+        return new Identifier("flytre_lib",type.getName().toLowerCase().replaceAll("[^a-zA-Z0-9_/.-]","_"));
     }
 
     public static <P extends Packet<ClientPlayPacketListener>> void registerS2CPacket(Class<P> type, Function<PacketByteBuf, P> function) {
-        PLAY_S2C_PACKETS.add(new Pair<>(type, function));
+        Identifier id = toId(type);
+        PLAY_S2C_PACKET.add(new Triad<>(type,function,toId(type)));
+        PacketData data = new PacketData(true,PLAY_S2C_PACKET.size() - 1);
+        REGISTERED_IDS.put(id,data);
+        REGISTERED_TYPES.put(type,data);
     }
 
     public static <P extends Packet<ServerPlayPacketListener>> void registerC2SPacket(Class<P> type, Function<PacketByteBuf, P> function) {
-        PLAY_C2S_PACKETS.add(new Pair<>(type, function));
+        Identifier id = toId(type);
+        PLAY_C2S_PACKET.add(new Triad<>(type,function,toId(type)));
+        PacketData data = new PacketData(false,PLAY_C2S_PACKET.size() - 1);
+        REGISTERED_IDS.put(id,data);
+        REGISTERED_TYPES.put(type,data);
     }
+
+
 
 
     public static <T> void toPacket(PacketByteBuf buf, List<T> list, BiConsumer<T, PacketByteBuf> func) {
@@ -84,4 +92,11 @@ public class PacketUtilsImpl {
         }
         return result;
     }
+
+
+    public static final record Triad<P>(Class<P> type,Function<PacketByteBuf,P> creator,Identifier channel) {
+
+    }
+
+    public static final record PacketData(boolean clientbound,int index) {}
 }

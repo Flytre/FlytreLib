@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.api.base.math.Rectangle;
+import net.flytre.flytre_lib.impl.base.RenderUtilsImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.model.ModelPart;
@@ -27,10 +28,8 @@ import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.*;
+import net.minecraft.world.World;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -46,8 +45,35 @@ import java.util.Queue;
 @Environment(EnvType.CLIENT)
 public class RenderUtils {
 
+
+    /**
+     * Get the color of a fluid
+     *
+     * @param world the world
+     * @param pos   the pos
+     * @param fluid the fluid
+     * @return the int
+     */
+
+    public static int color(World world, BlockPos pos, Fluid fluid) {
+       return RenderUtilsImpl.getColor(world, pos, fluid);
+    }
+
+    /**
+     * Get the sprite for a fluid.
+     *
+     * @param world the world
+     * @param pos   the pos
+     * @param fluid the fluid
+     * @return the sprite
+     */
+    @Environment(EnvType.CLIENT)
+    public static Sprite textureName(World world, BlockPos pos, Fluid fluid) {
+        return RenderUtilsImpl.getSprite(world, pos, fluid);
+    }
+
     public static void renderFluidInGui(MatrixStack matrixStack, Fluid fluid, int drawHeight, int x, int y, int width, int height) {
-        throw new AssertionError("XD");
+        RenderUtilsImpl.renderFluidInGui(matrixStack, fluid, drawHeight, x, y, width, height);
     }
 
 

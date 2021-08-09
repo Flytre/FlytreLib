@@ -9,9 +9,24 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class SetupRenderUtils {
+
+    public static Sprite getSprite(World world, BlockPos pos, Fluid fluid) {
+        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+        Sprite[] sprites = handler.getFluidSprites(world, pos, fluid.getDefaultState());
+        return sprites[0];
+    }
+
+    public static int getColor(World world, BlockPos pos,Fluid fluid) {
+        int c = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(world, pos, fluid.getDefaultState());
+        if (fluid.isIn(FluidTags.WATER))
+            c += 0xFF000000;
+        return c;
+    }
 
     public static void renderFluidInGui(MatrixStack matrixStack, Fluid fluid, int drawHeight, int x, int y, int width, int height) {
         RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
@@ -46,6 +61,9 @@ public class SetupRenderUtils {
 
     public static void setup() {
         RenderUtilsImpl.setRenderer(SetupRenderUtils::renderFluidInGui);
+        RenderUtilsImpl.setSpriteGetter(SetupRenderUtils::getSprite);
+        RenderUtilsImpl.setColorGetter(SetupRenderUtils::getColor);
+
     }
 
 }

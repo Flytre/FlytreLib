@@ -1,0 +1,43 @@
+package net.flytre.flytre_lib.mixin.storage.upgrade;
+
+
+import com.mojang.authlib.GameProfile;
+import net.flytre.flytre_lib.api.storage.upgrade.UpgradeHandler;
+import net.flytre.flytre_lib.impl.storage.upgrade.gui.UpgradeHandlerListener;
+import net.flytre.flytre_lib.impl.storage.upgrade.gui.UpgradeHandlerSyncHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(ServerPlayerEntity.class)
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements UpgradeHandlerListener {
+
+
+    @Unique
+    private UpgradeHandlerSyncHandler upgradeHandlerSyncHandler;
+
+    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
+        super(world, pos, yaw, profile);
+    }
+
+    @Inject(method = "<init>*", at = @At("TAIL"))
+    public void mechanix$listeners(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
+        upgradeHandlerSyncHandler = new UpgradeHandlerSyncHandler.Impl((ServerPlayerEntity) (Object) this);
+    }
+
+    @Inject(method = "onSpawn(Lnet/minecraft/screen/ScreenHandler;)V", at = @At("TAIL"))
+    public void mechanix$onSpawn(ScreenHandler screenHandler, CallbackInfo ci) {
+        if (screenHandler instanceof UpgradeHandler)
+            ((UpgradeHandler) screenHandler).updateSyncHandler(this.upgradeHandlerSyncHandler);
+
+    }
+}
