@@ -63,8 +63,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     public void mechanix$getUpgradeSlotAt(double xPosition, double yPosition, CallbackInfoReturnable<Slot> cir) {
         if (handler instanceof UpgradeHandler) {
             UpgradeHandler handler = (UpgradeHandler) this.handler;
-            for (int i = 0; i < handler.upgradeSlots.size(); ++i) {
-                Slot slot = handler.upgradeSlots.get(i);
+            for (int i = 0; i < handler.getUpgradeSlots().size(); ++i) {
+                Slot slot = handler.getUpgradeSlots().get(i);
                 if (this.isPointOverSlot(slot, xPosition, yPosition) && slot.isEnabled()) {
                     cir.setReturnValue(slot);
                 }
@@ -74,7 +74,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(method = "render", at = @At("HEAD"))
     public void mechanix$renderQuadUpgradePanel(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).upgradeSlots.size() == 4) {
+        if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).getUpgradeSlots().size() == 4) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, UPGRADE);
@@ -85,7 +85,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(method = "isClickOutsideBounds", at = @At("HEAD"), cancellable = true)
     public void mechanix$inBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).upgradeSlots.size() == 4 && mouseX >= (double) left && mouseY >= (double) top + 70 && mouseX < (double) (left + this.backgroundWidth + 65) && mouseY <= (double) (top + 135)) {
+        if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).getUpgradeSlots().size() == 4 && mouseX >= (double) left && mouseY >= (double) top + 70 && mouseX < (double) (left + this.backgroundWidth + 65) && mouseY <= (double) (top + 135)) {
             cir.setReturnValue(false);
         }
     }
@@ -95,8 +95,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         if (handler instanceof UpgradeHandler) {
             UpgradeHandler handler = (UpgradeHandler) this.handler;
             int r;
-            for (int m = 0; m < handler.upgradeSlots.size(); ++m) {
-                Slot slot = handler.upgradeSlots.get(m);
+            for (int m = 0; m < handler.getUpgradeSlots().size(); ++m) {
+                Slot slot = handler.getUpgradeSlots().get(m);
                 if (slot.isEnabled()) {
                     drawSlot(matrices, slot);
                 }
@@ -120,7 +120,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
     public void mechanix$onUpgradeSlotClicked(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
-        if (handler instanceof UpgradeHandler && slot != null && ((UpgradeHandler) handler).upgradeSlots.stream().anyMatch(i -> i == slot)) {
+        if (handler instanceof UpgradeHandler && slot != null && ((UpgradeHandler) handler).getUpgradeSlots().stream().anyMatch(i -> i == slot)) {
             slotId = slot.id;
             assert this.client != null;
             mechanix$clickSlot(this.handler.syncId, slotId, button, actionType, this.client.player);
@@ -131,23 +131,23 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     @Unique
     private void mechanix$clickSlot(int syncId, int slotId, int button, SlotActionType actionType, ClientPlayerEntity player) {
         UpgradeHandler handler = (UpgradeHandler) this.handler;
-        List<ItemStack> list = Lists.newArrayListWithCapacity(handler.upgradeSlots.size());
-        for (var slot : handler.upgradeSlots)
+        List<ItemStack> list = Lists.newArrayListWithCapacity(handler.getUpgradeSlots().size());
+        for (var slot : handler.getUpgradeSlots())
             list.add(slot.getStack().copy());
 
         handler.onUpgradeSlotClick(slotId, button, actionType, player);
         Map<Integer, ItemStack> modifiedStacks = new Int2ObjectOpenHashMap<>();
 
 
-        for (int j = 0; j < handler.upgradeSlots.size(); ++j) {
+        for (int j = 0; j < handler.getUpgradeSlots().size(); ++j) {
             ItemStack originalStack = list.get(j);
-            ItemStack modifiedStack = handler.upgradeSlots.get(j).getStack();
+            ItemStack modifiedStack = handler.getUpgradeSlots().get(j).getStack();
             if (!ItemStack.areEqual(originalStack, modifiedStack))
                 modifiedStacks.put(j, modifiedStack.copy());
         }
 
         ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
         assert networkHandler != null;
-        networkHandler.sendPacket(new UpgradeClickSlotC2SPacket(syncId, slotId, button, actionType, modifiedStacks, handler.getCursorStack().copy()));
+        networkHandler.sendPacket(new UpgradeClickSlotC2SPacket(syncId, slotId, button, actionType, modifiedStacks, this.handler.getCursorStack().copy()));
     }
 }

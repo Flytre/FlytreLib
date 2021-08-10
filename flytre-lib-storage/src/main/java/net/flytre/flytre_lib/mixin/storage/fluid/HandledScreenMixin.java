@@ -35,8 +35,8 @@ public class HandledScreenMixin<T extends ScreenHandler> extends Screen {
             FluidHandler handler = (FluidHandler) this.handler;
             FluidHandledScreen<?> me = (FluidHandledScreen<?>) (Object) this;
             int r;
-            for (int m = 0; m < handler.fluidSlots.size(); ++m) {
-                FluidSlot slot = handler.fluidSlots.get(m);
+            for (int m = 0; m < handler.getFluidSlots().size(); ++m) {
+                FluidSlot slot = handler.getFluidSlots().get(m);
                 if (slot.doDrawHoveringEffect()) {
                     me.drawFluidSlot(matrices, slot);
                 }

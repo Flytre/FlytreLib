@@ -44,7 +44,8 @@ public class FluidInventoryS2CPacket implements Packet<ClientPlayPacketListener>
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity playerEntity = client.player;
         client.execute(() -> {
-            assert playerEntity != null;
+            if(playerEntity == null)
+                return;
             if (syncId == playerEntity.currentScreenHandler.syncId && playerEntity.currentScreenHandler instanceof FluidHandler) {
                 ((FluidHandler) playerEntity.currentScreenHandler).updateFluidSlotStacks(stacks);
             }

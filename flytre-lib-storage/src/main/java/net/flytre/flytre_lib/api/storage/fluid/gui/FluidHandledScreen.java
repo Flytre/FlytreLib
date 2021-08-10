@@ -15,6 +15,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -23,21 +24,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-;
-
 
 /**
  * Screens that draw fluids
  */
 //FluidHandler::render handled by mixin to prevent messy code
-public abstract class FluidHandledScreen<T extends FluidHandler> extends HandledScreen<T> {
+public abstract class FluidHandledScreen<T extends ScreenHandler> extends HandledScreen<T> {
 
-    private static final Identifier BCKG = new Identifier("mechanix:textures/gui/container/fluid_cell.png");
-    private static final Identifier OVERLAY = new Identifier("mechanix:textures/gui/container/fluid_cell_overlay.png");
+    private static final Identifier BCKG = new Identifier("flytre_lib:textures/gui/container/fluid_cell.png");
+    private static final Identifier OVERLAY = new Identifier("flytre_lib:textures/gui/container/fluid_cell_overlay.png");
+    private final FluidHandler fluidHandler;
     public FluidSlot focusedFluidSlot; //UNUSED
 
     public FluidHandledScreen(T handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
+        this.fluidHandler = ((FluidHandler) handler);
     }
 
 
@@ -72,11 +73,10 @@ public abstract class FluidHandledScreen<T extends FluidHandler> extends Handled
     }
 
 
-
     @Nullable
     private FluidSlot getFluidSlotAt(double xPosition, double yPosition) {
-        for (int i = 0; i < this.handler.fluidSlots.size(); ++i) {
-            FluidSlot slot = this.handler.fluidSlots.get(i);
+        for (int i = 0; i < this.fluidHandler.getFluidSlots().size(); ++i) {
+            FluidSlot slot = this.fluidHandler.getFluidSlots().get(i);
             if (this.isPointOverFluidSlot(slot, xPosition, yPosition) && slot.doDrawHoveringEffect()) {
                 return slot;
             }
@@ -120,17 +120,17 @@ public abstract class FluidHandledScreen<T extends FluidHandler> extends Handled
     }
 
     private void clickSlot(int syncId, int slotId, int button, SlotActionType actionType, ClientPlayerEntity player) {
-        List<FluidStack> list = Lists.newArrayListWithCapacity(handler.fluidSlots.size());
-        for (FluidSlot fluidSlot : handler.fluidSlots)
+        List<FluidStack> list = Lists.newArrayListWithCapacity(fluidHandler.getFluidSlots().size());
+        for (FluidSlot fluidSlot : fluidHandler.getFluidSlots())
             list.add(fluidSlot.getStack().copy());
 
-        handler.onFluidSlotClick(slotId, button, actionType, player);
+        fluidHandler.onFluidSlotClick(slotId, button, actionType, player);
         Map<Integer, FluidStack> modifiedStacks = new Int2ObjectOpenHashMap<>();
 
 
-        for (int j = 0; j < handler.fluidSlots.size(); ++j) {
+        for (int j = 0; j < fluidHandler.getFluidSlots().size(); ++j) {
             FluidStack originalStack = list.get(j);
-            FluidStack modifiedStack = handler.fluidSlots.get(j).getStack();
+            FluidStack modifiedStack = fluidHandler.getFluidSlots().get(j).getStack();
             if (!FluidStack.areEqual(originalStack, modifiedStack)) {
                 modifiedStacks.put(j, modifiedStack.copy());
             }

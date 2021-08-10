@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "net.flytre.flytre_lib.mixin.storage.upgrade",
   "compatibilityLevel": "JAVA_8",
-  "mixins": ["ScreenHandlerAccessor", "ServerPlayerEntityMixin"],
+  "mixins": ["ScreenHandlerMixin", "ServerPlayerEntityMixin"],
   "client": [
     "HandledScreenMixin"
   ],

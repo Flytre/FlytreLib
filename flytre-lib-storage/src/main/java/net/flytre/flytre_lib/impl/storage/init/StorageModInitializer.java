@@ -14,8 +14,6 @@ import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPa
 
 public class StorageModInitializer implements ModInitializer {
 
-
-
     @Override
     public void onInitialize() {
         PacketUtils.registerC2SPacket(BlockModMatchC2SPacket.class, BlockModMatchC2SPacket::new);

@@ -23,13 +23,13 @@ public interface UpgradeHandlerSyncHandler {
 
         @Override
         public void updateUpgradeState(UpgradeHandler handler, DefaultedList<ItemStack> stacks) {
-            me.networkHandler.sendPacket(new UpgradeInventoryS2CPacket(handler.syncId,stacks));
-            me.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(ScreenHandlerSlotUpdateS2CPacket.UPDATE_CURSOR_SYNC_ID,handler.nextRevision(), -1, me.currentScreenHandler.getCursorStack()));
+            me.networkHandler.sendPacket(new UpgradeInventoryS2CPacket(handler.get().syncId,stacks));
+            me.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(ScreenHandlerSlotUpdateS2CPacket.UPDATE_CURSOR_SYNC_ID,handler.get().nextRevision(), -1, me.currentScreenHandler.getCursorStack()));
         }
 
         @Override
         public void updateSlot(UpgradeHandler handler, int slot, ItemStack stack) {
-            me.networkHandler.sendPacket(new UpgradeSlotUpdateS2CPacket(handler.syncId,slot,stack));
+            me.networkHandler.sendPacket(new UpgradeSlotUpdateS2CPacket(handler.get().syncId,slot,stack));
         }
     }
 }
