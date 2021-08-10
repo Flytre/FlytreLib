@@ -2,6 +2,7 @@
 .gradle/
 loom-cache/
 
+
 # VSCode
 .settings/
 .vscode/
