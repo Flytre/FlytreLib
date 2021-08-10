@@ -1,6 +1,7 @@
 package net.flytre.flytre_lib.api.storage.upgrade;
 
 import net.flytre.flytre_lib.api.base.util.InventoryUtils;
+import net.flytre.flytre_lib.api.storage.inventory.EasyInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,7 +51,9 @@ public interface UpgradeInventory {
     }
 
     default ItemStack removeUpgrade(int slot) {
-        return Inventories.removeStack(getUpgrades(), slot);
+        ItemStack stack = Inventories.removeStack(getUpgrades(), slot);
+        markUpgradesDirty();
+        return stack;
     }
 
     default void setUpgrade(int slot, ItemStack stack) {

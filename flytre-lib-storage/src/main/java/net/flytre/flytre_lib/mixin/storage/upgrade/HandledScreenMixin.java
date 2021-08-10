@@ -60,7 +60,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     protected abstract void drawSlot(MatrixStack matrices, Slot slot);
 
     @Inject(method = "getSlotAt", at = @At("TAIL"), cancellable = true)
-    public void mechanix$getUpgradeSlotAt(double xPosition, double yPosition, CallbackInfoReturnable<Slot> cir) {
+    public void flytre_lib$getUpgradeSlotAt(double xPosition, double yPosition, CallbackInfoReturnable<Slot> cir) {
         if (handler instanceof UpgradeHandler) {
             UpgradeHandler handler = (UpgradeHandler) this.handler;
             for (int i = 0; i < handler.getUpgradeSlots().size(); ++i) {
@@ -73,7 +73,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    public void mechanix$renderQuadUpgradePanel(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    public void flytre_lib$renderQuadUpgradePanel(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).getUpgradeSlots().size() == 4) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -84,14 +84,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 
     @Inject(method = "isClickOutsideBounds", at = @At("HEAD"), cancellable = true)
-    public void mechanix$inBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
+    public void flytre_lib$inBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
         if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).getUpgradeSlots().size() == 4 && mouseX >= (double) left && mouseY >= (double) top + 70 && mouseX < (double) (left + this.backgroundWidth + 65) && mouseY <= (double) (top + 135)) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawForeground(Lnet/minecraft/client/util/math/MatrixStack;II)V", shift = At.Shift.BEFORE))
-    public void mechanix$upgradeHandledScreenRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    public void flytre_lib$upgradeHandledScreenRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (handler instanceof UpgradeHandler) {
             UpgradeHandler handler = (UpgradeHandler) this.handler;
             int r;
@@ -119,17 +119,17 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 
     @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
-    public void mechanix$onUpgradeSlotClicked(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
+    public void flytre_lib$onUpgradeSlotClicked(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
         if (handler instanceof UpgradeHandler && slot != null && ((UpgradeHandler) handler).getUpgradeSlots().stream().anyMatch(i -> i == slot)) {
             slotId = slot.id;
             assert this.client != null;
-            mechanix$clickSlot(this.handler.syncId, slotId, button, actionType, this.client.player);
+            flytre_lib$clickSlot(this.handler.syncId, slotId, button, actionType, this.client.player);
             ci.cancel();
         }
     }
 
     @Unique
-    private void mechanix$clickSlot(int syncId, int slotId, int button, SlotActionType actionType, ClientPlayerEntity player) {
+    private void flytre_lib$clickSlot(int syncId, int slotId, int button, SlotActionType actionType, ClientPlayerEntity player) {
         UpgradeHandler handler = (UpgradeHandler) this.handler;
         List<ItemStack> list = Lists.newArrayListWithCapacity(handler.getUpgradeSlots().size());
         for (var slot : handler.getUpgradeSlots())

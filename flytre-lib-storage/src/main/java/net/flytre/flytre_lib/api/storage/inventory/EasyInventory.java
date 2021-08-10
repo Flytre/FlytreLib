@@ -4,6 +4,7 @@ import net.flytre.flytre_lib.api.base.util.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
@@ -61,7 +62,9 @@ public interface EasyInventory extends SidedInventory, IOTypeProvider {
 
     @Override
     default ItemStack removeStack(int slot) {
-        return Inventories.removeStack(getItems(), slot);
+        ItemStack stack = Inventories.removeStack(getItems(), slot);
+        markDirty();
+        return stack;
     }
 
     @Override

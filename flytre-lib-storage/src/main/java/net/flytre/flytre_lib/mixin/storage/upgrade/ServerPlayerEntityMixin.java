@@ -30,12 +30,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Up
     }
 
     @Inject(method = "<init>*", at = @At("TAIL"))
-    public void mechanix$listeners(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
+    public void flytre_lib$listeners(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
         upgradeHandlerSyncHandler = new UpgradeHandlerSyncHandler.Impl((ServerPlayerEntity) (Object) this);
     }
 
     @Inject(method = "onSpawn(Lnet/minecraft/screen/ScreenHandler;)V", at = @At("TAIL"))
-    public void mechanix$onSpawn(ScreenHandler screenHandler, CallbackInfo ci) {
+    public void flytre_lib$onSpawn(ScreenHandler screenHandler, CallbackInfo ci) {
         if (screenHandler instanceof UpgradeHandler)
             ((UpgradeHandler) screenHandler).updateSyncHandler(this.upgradeHandlerSyncHandler);
 

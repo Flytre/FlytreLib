@@ -220,8 +220,9 @@ public interface FluidInventory extends Clearable {
      * @return the fluid stack
      */
     default FluidStack removeFluidStack(int slot) {
-        return FluidInventory.removeFluidStack(getFluids(), slot);
-
+        FluidStack stack = FluidInventory.removeFluidStack(getFluids(), slot);
+        markDirty();
+        return stack;
     }
 
     /**
