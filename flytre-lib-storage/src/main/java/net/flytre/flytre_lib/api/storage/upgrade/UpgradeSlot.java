@@ -19,14 +19,13 @@ public class UpgradeSlot extends Slot {
     }
 
     public boolean canInsert(ItemStack stack, int qty) {
-        boolean bl = upgradeInventory.isValidUpgrade(stack);
-        boolean bl2 = stack.getItem() instanceof UpgradeItem;
+        if (!upgradeInventory.isValidUpgrade(stack))
+            return false;
+        boolean isUpgradeItem = stack.getItem() instanceof UpgradeItem;
         ItemStack copy = stack.copy();
         copy.setCount(qty);
-        if (bl && bl2) {
-            return ((UpgradeItem) stack.getItem()).isValid(upgradeInventory, copy, index);
-        }
-        return bl;
+
+        return !isUpgradeItem || ((UpgradeItem) stack.getItem()).isValid(upgradeInventory, copy, index);
     }
 
 
@@ -53,7 +52,13 @@ public class UpgradeSlot extends Slot {
 
     @Override
     public int getMaxItemCount(ItemStack stack) {
-        return this.getMaxItemCount();
+
+        int ct = getMaxItemCount();
+
+        if (stack.getItem() instanceof UpgradeItem) {
+            ct = Math.min(ct, ((UpgradeItem) stack.getItem()).maxCount());
+        }
+        return ct;
     }
 
     @Override
