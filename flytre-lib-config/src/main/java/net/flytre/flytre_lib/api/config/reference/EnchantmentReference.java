@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class EnchantmentReference extends Reference<Enchantment> {
+public final class EnchantmentReference extends Reference<Enchantment> {
 
     public EnchantmentReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -29,8 +29,5 @@ public class EnchantmentReference extends Reference<Enchantment> {
         return getValue(Registry.ENCHANTMENT_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Enchantment>> references) {
-        return references.contains(this);
-    }
+
 }

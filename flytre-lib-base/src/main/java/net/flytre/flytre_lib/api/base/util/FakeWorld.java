@@ -11,12 +11,15 @@ import net.minecraft.world.dimension.DimensionType;
 
 import java.util.OptionalLong;
 
+/**
+ * A fake world can be used to access a world when not in-game, i.e. the title screen
+ * Useful for things like rendering entities, which usually need a world to be rendered
+ */
 public class FakeWorld extends ClientWorld {
 
     private static final DimensionType DIMENSION_TYPE = DimensionType.create(OptionalLong.empty(), true, false, false, true, 1, true, true, true, true, false, 0, 256, 256, null, new Identifier("null"), new Identifier("null"), 15f);
-    private static FakeWorld instance;
-
-    private static final ClientPlayNetworkHandler NETWORK_HANDLER = new ClientPlayNetworkHandler(MinecraftClient.getInstance(),null, new ClientConnection(NetworkSide.CLIENTBOUND), MinecraftClient.getInstance().getSession().getProfile());
+    private static final ClientPlayNetworkHandler NETWORK_HANDLER = new ClientPlayNetworkHandler(MinecraftClient.getInstance(), null, new ClientConnection(NetworkSide.CLIENTBOUND), MinecraftClient.getInstance().getSession().getProfile());
+    private static FakeWorld INSTANCE;
 
     private FakeWorld() {
         super(NETWORK_HANDLER, new Properties(Difficulty.EASY, false, true), null, DIMENSION_TYPE,
@@ -24,7 +27,8 @@ public class FakeWorld extends ClientWorld {
     }
 
     public static FakeWorld getInstance() {
-        if (instance == null) instance = new FakeWorld();
-        return instance;
+        if (INSTANCE == null) //Lazy load
+            INSTANCE = new FakeWorld();
+        return INSTANCE;
     }
 }

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class StatusEffectReference extends Reference<StatusEffect> {
+public final class StatusEffectReference extends Reference<StatusEffect> {
 
     public StatusEffectReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -29,8 +29,5 @@ public class StatusEffectReference extends Reference<StatusEffect> {
         return getValue(Registry.MOB_EFFECT_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<StatusEffect>> references) {
-        return references.contains(this);
-    }
+
 }

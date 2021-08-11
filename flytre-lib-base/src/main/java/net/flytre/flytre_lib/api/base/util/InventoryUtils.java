@@ -28,6 +28,10 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public class InventoryUtils {
+    private InventoryUtils() {
+        throw new AssertionError();
+    }
+
     public static boolean isInventoryFull(Inventory inv, Direction direction) {
         return getAvailableSlots(inv, direction).allMatch((i) -> {
             ItemStack itemStack = inv.getStack(i);
@@ -38,7 +42,6 @@ public class InventoryUtils {
     public static IntStream getAvailableSlots(Inventory inventory, Direction side) {
         return inventory instanceof SidedInventory ? IntStream.of(((SidedInventory) inventory).getAvailableSlots(side)) : IntStream.range(0, inventory.size());
     }
-
 
     /**
      * Whether two stacks could be merged at all, ie. 33 stone and 34 stone into 64 stone and 3 stone
@@ -112,6 +115,9 @@ public class InventoryUtils {
         return inventory;
     }
 
+    /**
+     * Get the full contents of the player inventory as a list
+     */
     public static List<ItemStack> getCombinedInventory(PlayerInventory inv) {
         List<ItemStack> result = new ArrayList<>(inv.main);
         result.addAll(inv.offHand);
@@ -119,6 +125,9 @@ public class InventoryUtils {
         return result;
     }
 
+    /**
+     * Count the number of each type of item in an inventory
+     */
     public static Map<Item, Integer> countInventoryContents(Inventory inventory) {
         Map<Item, Integer> result = new HashMap<>();
         for (int i = 0; i < inventory.size(); i++) {
@@ -171,7 +180,6 @@ public class InventoryUtils {
         return stack;
     }
 
-
     public static @Nullable ItemStack getHoldingStack(LivingEntity entity, Predicate<ItemStack> condition) {
         ItemStack stack = entity.getOffHandStack();
         if (!condition.test(stack))
@@ -181,7 +189,6 @@ public class InventoryUtils {
             return null;
         return stack;
     }
-
 
     /**
      * Write inventory nbt to a subtag which is not Inventory

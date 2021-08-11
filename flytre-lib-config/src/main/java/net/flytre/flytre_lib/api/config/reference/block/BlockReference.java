@@ -30,8 +30,5 @@ public final class BlockReference extends Reference<Block> implements ConfigBloc
         return getValue(Registry.BLOCK_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Block>> references) {
-        return references.contains(this);
-    }
+
 }

@@ -12,10 +12,9 @@ import java.util.Objects;
 
 
 /**
- *
  * References are used to add compatibility (by default) to modded things (i.e. modded items / entities) and also to
  * add support for dynamic registries (i.e. biomes) without using an identifier set
- *
+ * <p>
  * Remember that some registries default so please use the identifier constructor if the value could possibly default!
  */
 public abstract class Reference<T> {
@@ -35,7 +34,6 @@ public abstract class Reference<T> {
     protected Reference(String namespace, String path) {
         this(new Identifier(namespace, path));
     }
-
 
 
     protected Reference(@NotNull Identifier id, @Nullable T value) {
@@ -67,7 +65,9 @@ public abstract class Reference<T> {
 
     public abstract @Nullable T getValue(World world);
 
-    public abstract boolean isIn(Collection<? extends Reference<T>> references);
+    public boolean isIn(Collection<? extends Reference<T>> references) {
+        return references.contains(this);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -86,7 +86,7 @@ public abstract class Reference<T> {
 
     @Override
     public String toString() {
-        return "Reference{" +
+        return getClass().getName() + "{" +
                 "identifier=" + identifier +
                 ", value=" + value +
                 '}';

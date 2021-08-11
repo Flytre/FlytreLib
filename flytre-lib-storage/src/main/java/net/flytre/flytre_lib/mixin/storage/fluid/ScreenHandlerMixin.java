@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+/**
+ * Implements FluidHandler onto every Screen Handler
+ */
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin implements FluidHandler {
 

@@ -55,7 +55,7 @@ public class ConfigListWidget extends StringValueWidget<ClickableWidget> {
             if (bounds.contains(mouseX, mouseY)) {
                 textWidth = Math.min(textWidth, x + entryWidth - mouseX - 2);
                 int height = RenderUtils.getWrappedHeight(description, textWidth, 3);
-                RenderUtils.drawBorderedRect(new Rectangle(mouseX, mouseY, Math.min(textWidth, renderer.getWidth(description)), height).grow(2), 0xAA3b3b3b, 0xCC363636, 1);
+                RenderUtils.drawBorderedRect(new Rectangle(mouseX, mouseY, Math.min(textWidth, renderer.getWidth(description)), height).expandedBy(2), 0xAA3b3b3b, 0xCC363636, 1);
                 RenderUtils.drawWrappedString(matrices, description, mouseX, mouseY, textWidth, 3, 0xFFCCCCCC);
             }
         }

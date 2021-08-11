@@ -13,7 +13,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Range {
 
+    /**
+     * @return the minimum value this numeric parameter can hold
+     */
     double min();
 
+    /**
+     * @return the maximum value this numeric parameter can hold
+     */
     double max();
 }

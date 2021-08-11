@@ -7,4 +7,8 @@ public class DevUtils {
 
     public static final Logger LOGGER = LogManager.getLogger("Flytre Lib");
 
+
+    private DevUtils() {
+        throw new AssertionError();
+    }
 }

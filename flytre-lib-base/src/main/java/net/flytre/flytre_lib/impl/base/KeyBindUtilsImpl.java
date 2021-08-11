@@ -1,6 +1,8 @@
 package net.flytre.flytre_lib.impl.base;
 
 import com.google.common.collect.Lists;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.mixin.base.KeyBindingAccessor;
 import net.minecraft.client.option.KeyBinding;
 
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Environment(EnvType.CLIENT)
 public final class KeyBindUtilsImpl {
 
     private static final List<KeyBinding> BINDS = new ArrayList<>();

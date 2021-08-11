@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class VillagerProfessionReference extends Reference<VillagerProfession> {
+public final class VillagerProfessionReference extends Reference<VillagerProfession> {
 
     public VillagerProfessionReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -29,8 +29,5 @@ public class VillagerProfessionReference extends Reference<VillagerProfession> {
         return getValue(Registry.VILLAGER_PROFESSION_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<VillagerProfession>> references) {
-        return references.contains(this);
-    }
+
 }

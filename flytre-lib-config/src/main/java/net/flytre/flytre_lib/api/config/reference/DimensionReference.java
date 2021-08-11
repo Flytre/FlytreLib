@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class DimensionReference extends Reference<DimensionType> {
+public final class DimensionReference extends Reference<DimensionType> {
 
     public static DimensionReference OVERWORLD = new DimensionReference("minecraft", "overworld");
     public static DimensionReference NETHER = new DimensionReference("minecraft", "the_nether");
@@ -38,8 +38,5 @@ public class DimensionReference extends Reference<DimensionType> {
         return getValue(Registry.DIMENSION_TYPE_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<DimensionType>> references) {
-        return references.contains(this);
-    }
+
 }

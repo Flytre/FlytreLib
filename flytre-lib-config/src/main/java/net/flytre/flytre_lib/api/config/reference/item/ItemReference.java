@@ -8,9 +8,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-
-public class ItemReference extends Reference<Item> implements ConfigItem {
+public final class ItemReference extends Reference<Item> implements ConfigItem {
 
     public ItemReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -30,8 +28,5 @@ public class ItemReference extends Reference<Item> implements ConfigItem {
         return getValue(Registry.ITEM_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Item>> references) {
-        return references.contains(this);
-    }
+
 }

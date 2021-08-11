@@ -15,33 +15,30 @@ import java.awt.*;
 public class RenderUtilsImpl {
 
 
+    private static FluidRenderer renderer = ((matrixStack, fluid, drawHeight, x, y, width, height) -> {
+        throw new AssertionError("Fabric API is required to use this method");
+    });
+    private static SpriteGetter spriteGetter = ((world, pos, fluid) -> {
+        throw new AssertionError("Fabric API is required to use this method");
+    });
+    private static ColorGetter colorGetter = ((world, pos, fluid) -> {
+        throw new AssertionError("Fabric API is required to use this method");
+    });
+    private static boolean renderingSupported = false;
+
     public static boolean isFluidRenderingSupported() {
         return renderingSupported;
     }
 
-    private static FluidRenderer renderer = ((matrixStack, fluid, drawHeight, x, y, width, height) -> {
-        throw new AssertionError("Fabric API is required to use this method");
-    });
-
-    private static SpriteGetter spriteGetter = ((world, pos, fluid) -> {
-        throw new AssertionError("Fabric API is required to use this method");
-    });
-
-    private static ColorGetter colorGetter = ((world, pos, fluid) -> {
-        throw new AssertionError("Fabric API is required to use this method");
-    });
-
-    private static boolean renderingSupported = false;
-
-    public static void setSpriteGetter(SpriteGetter spriteGetter) {
+    static void setSpriteGetter(SpriteGetter spriteGetter) {
         RenderUtilsImpl.spriteGetter = spriteGetter;
     }
 
-    public static void setColorGetter(ColorGetter colorGetter) {
+    static void setColorGetter(ColorGetter colorGetter) {
         RenderUtilsImpl.colorGetter = colorGetter;
     }
 
-    public static void setRenderer(FluidRenderer renderer) {
+    static void setRenderer(FluidRenderer renderer) {
         RenderUtilsImpl.renderer = renderer;
         renderingSupported = true;
     }
@@ -59,17 +56,17 @@ public class RenderUtilsImpl {
     }
 
     @FunctionalInterface
-    public interface FluidRenderer {
+    interface FluidRenderer {
         void render(MatrixStack matrixStack, Fluid fluid, int drawHeight, int x, int y, int width, int height);
     }
 
     @FunctionalInterface
-    public interface SpriteGetter {
+    interface SpriteGetter {
         Sprite get(World world, BlockPos pos, Fluid fluid);
     }
 
     @FunctionalInterface
-    public interface ColorGetter {
+    interface ColorGetter {
         int get(World world, BlockPos pos, Fluid fluid);
     }
 }

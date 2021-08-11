@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Basically used to cache all blocks that have fluids (water , lava, molten perlium, etc)
+ * Used to cache all blocks that have fluids (water , lava, molten perlium, etc)
  */
 public class FluidBlocks {
     public static final Collection<FluidBlock> FLUID_BLOCKS = new HashSet<>();

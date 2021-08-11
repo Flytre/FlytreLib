@@ -7,7 +7,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 /**
- * Translucent button from Biome Locator
+ * Creates a translucent button
  */
 public class TranslucentButton extends ButtonWidget {
     public TranslucentButton(int x, int y, int width, int height, Text message, PressAction onPress) {

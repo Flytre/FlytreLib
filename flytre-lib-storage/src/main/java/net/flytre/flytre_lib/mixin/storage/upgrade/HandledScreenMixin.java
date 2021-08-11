@@ -31,6 +31,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements upgrade rendering onto the screen
+ */
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
 
@@ -72,6 +75,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
         }
     }
 
+
+    /**
+     * Standard Upgrade Slot rendering
+     */
     @Inject(method = "render", at = @At("HEAD"))
     public void flytre_lib$renderQuadUpgradePanel(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).getUpgradeSlots().size() == 4) {
@@ -83,6 +90,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     }
 
 
+    /**
+     * Standard Upgrade Slot rendering
+     */
     @Inject(method = "isClickOutsideBounds", at = @At("HEAD"), cancellable = true)
     public void flytre_lib$inBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
         if (handler instanceof UpgradeHandler && ((UpgradeHandler) handler).getUpgradeSlots().size() == 4 && mouseX >= (double) left && mouseY >= (double) top + 70 && mouseX < (double) (left + this.backgroundWidth + 65) && mouseY <= (double) (top + 135)) {

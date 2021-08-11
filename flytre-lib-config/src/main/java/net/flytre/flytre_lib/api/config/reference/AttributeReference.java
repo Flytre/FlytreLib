@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class AttributeReference extends Reference<EntityAttribute> {
+public final class AttributeReference extends Reference<EntityAttribute> {
 
     public AttributeReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -29,8 +29,5 @@ public class AttributeReference extends Reference<EntityAttribute> {
         return getValue(Registry.ATTRIBUTE_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<EntityAttribute>> references) {
-        return references.contains(this);
-    }
+
 }

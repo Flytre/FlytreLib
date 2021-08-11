@@ -5,6 +5,9 @@ import net.flytre.flytre_lib.api.base.util.Formatter;
 
 import java.lang.reflect.Type;
 
+/**
+ * Represents a color as an object.
+ */
 public class ConfigColor {
 
     public int value;

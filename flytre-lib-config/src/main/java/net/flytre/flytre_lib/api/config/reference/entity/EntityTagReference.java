@@ -8,7 +8,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityTagReference extends TagReference<EntityType<?>> implements ConfigEntity {
+public final class EntityTagReference extends TagReference<EntityType<?>> implements ConfigEntity {
     public EntityTagReference(@NotNull Identifier identifier) {
         super(identifier);
     }

@@ -53,4 +53,7 @@ public class ParticleUtils {
     }
 
 
+    private ParticleUtils() {
+        throw new AssertionError();
+    }
 }

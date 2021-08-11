@@ -443,7 +443,7 @@ public class TranslucentTextField extends ClickableWidget {
                 x2 = q - 1;
                 y3 = topY + 1;
                 Objects.requireNonNull(this.textRenderer);
-                this.drawSelectionHighlight(Rectangle.ofBounds(p, y1, x2, y3 + 9));
+                this.drawSelectionHighlight(Rectangle.fromBounds(p, y1, x2, y3 + 9));
             }
 
         }
@@ -451,11 +451,11 @@ public class TranslucentTextField extends ClickableWidget {
 
     private void drawSelectionHighlight(Rectangle rectangle) {
         if (rectangle.getRight() > this.x + this.width) {
-            rectangle = Rectangle.ofBounds(rectangle.getLeft(), rectangle.getTop(), this.x + this.width, rectangle.getBottom());
+            rectangle = Rectangle.fromBounds(rectangle.getLeft(), rectangle.getTop(), this.x + this.width, rectangle.getBottom());
         }
 
         if (rectangle.getLeft() > this.x + this.width) {
-            rectangle = Rectangle.ofBounds(this.x + this.width, rectangle.getTop(), rectangle.getRight(), rectangle.getBottom());
+            rectangle = Rectangle.fromBounds(this.x + this.width, rectangle.getTop(), rectangle.getRight(), rectangle.getBottom());
         }
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();

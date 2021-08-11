@@ -16,7 +16,15 @@ import net.minecraft.state.property.Properties;
 
 import java.util.*;
 
+
+/**
+ * Get properties of items and block items
+ */
 public class ItemUtils {
+
+    private ItemUtils() {
+        throw new AssertionError();
+    }
 
     public static final Random RANDOM = new Random();
 

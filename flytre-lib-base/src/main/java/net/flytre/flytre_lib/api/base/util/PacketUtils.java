@@ -54,4 +54,8 @@ public final class PacketUtils {
         return PacketUtilsImpl.mapFromPacket(buf, packetToKey,packetToVal);
 
     }
+
+    private PacketUtils() {
+        throw new AssertionError();
+    }
 }

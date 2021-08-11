@@ -137,7 +137,7 @@ public class DropdownMenu extends TranslucentTextField {
                 {
                     int selectionIndex = getSelectionIndex(mouseX, mouseY);
                     if (selectionIndex >= 0 && selectionIndex < matchedOptions.size()) {
-                        Rectangle rectangle = new Rectangle(this.x, this.y + height + 1 + entryHeight * selectionIndex, entryWidth, entryHeight).shrink(1);
+                        Rectangle rectangle = new Rectangle(this.x, this.y + height + 1 + entryHeight * selectionIndex, entryWidth, entryHeight).reducedBy(1);
                         RenderUtils.drawRectangle(rectangle, 0x33000000);
                     }
                 }

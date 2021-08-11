@@ -43,10 +43,10 @@ public abstract class ConfigStyleList<E extends ConfigStyleList.Entry<E>> extend
                 q = this.top;
             }
 
-            Rectangle bounds = Rectangle.ofBounds(i - 1, top - 1, j + 1, bottom + 1);
+            Rectangle bounds = Rectangle.fromBounds(i - 1, top - 1, j + 1, bottom + 1);
             RenderUtils.drawHollowRect(bounds, 0xCC3d3d3d, 1);
 
-            bounds = Rectangle.ofBounds(i, q, j, q + p);
+            bounds = Rectangle.fromBounds(i, q, j, q + p);
             RenderUtils.drawRectangle(bounds, 0xAA333333);
         }
 

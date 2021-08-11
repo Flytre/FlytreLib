@@ -19,4 +19,8 @@ public class TagUtils {
         return group.getTagOrEmpty(id);
     }
 
+
+    private TagUtils() {
+        throw new AssertionError();
+    }
 }

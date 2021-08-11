@@ -81,7 +81,7 @@ public class RenderUtils {
      * Border is included in dimensions
      */
     public static void drawBorderedRect(Rectangle rectangle, int hex, int borderHex, int borderThickness) {
-        drawRectangle(rectangle.shrink(borderThickness), hex);
+        drawRectangle(rectangle.reducedBy(borderThickness), hex);
         drawHollowRect(rectangle, borderHex, borderThickness);
     }
 
@@ -136,7 +136,7 @@ public class RenderUtils {
      * Draw a rectangle in a GUI
      */
     public static void drawRect(int left, int top, int right, int bottom, int color) {
-        drawRectangle(Rectangle.ofBounds(left, top, right, bottom), color);
+        drawRectangle(Rectangle.fromBounds(left, top, right, bottom), color);
     }
 
     /**

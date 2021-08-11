@@ -8,15 +8,20 @@ import java.lang.annotation.Target;
 
 /**
  * Used to add a custom button to a map or list with the given function and name
- *
- * The runnable class must have a no-arg constructor
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Button {
 
+    /**
+     * @return A class with a no-arg constructor and runnable function that executes the
+     * button's on press code
+     */
     Class<? extends Runnable> function();
 
+    /**
+     * @return the translation key for the button's text
+     */
     String translationKey();
 
 }

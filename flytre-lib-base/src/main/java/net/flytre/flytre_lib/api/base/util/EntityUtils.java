@@ -15,13 +15,18 @@ public class EntityUtils {
     public static HitResult raycastNoFluid(Entity entity, double maxDistance) {
         Vec3d origin = new Vec3d(entity.getX(), entity.getY() + entity.getEyeHeight(entity.getPose()), entity.getZ());
         return entity.getEntityWorld().raycast(new RaycastContext(origin, origin.add(entity.getRotationVector().normalize().multiply(maxDistance)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity));
-
     }
 
+    /**
+     * @return ALL entities that the player is currently looking at (a line out from the cross hair would intersect with the entity)
+     */
     public static Set<Entity> getEntitiesLookedAt(Entity looker, double maxDistance) {
         return getEntityLookedAtHelper(looker, maxDistance).all;
     }
 
+    /**
+     * @return The entity that the player's crosshair is directly over
+     */
     public static Entity getEntityLookedAt(Entity looker, double maxDistance) {
         return getEntityLookedAtHelper(looker, maxDistance).main;
     }

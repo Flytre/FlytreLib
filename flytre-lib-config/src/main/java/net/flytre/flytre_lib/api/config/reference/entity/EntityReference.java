@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class EntityReference extends Reference<EntityType<?>> implements ConfigEntity {
+public final class EntityReference extends Reference<EntityType<?>> implements ConfigEntity {
 
     public EntityReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -30,8 +30,5 @@ public class EntityReference extends Reference<EntityType<?>> implements ConfigE
         return getValue(Registry.ENTITY_TYPE_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<EntityType<?>>> references) {
-        return references.contains(this);
-    }
+
 }

@@ -13,5 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Description {
 
+    /**
+     * @return the description of the given field
+     */
     String value();
 }

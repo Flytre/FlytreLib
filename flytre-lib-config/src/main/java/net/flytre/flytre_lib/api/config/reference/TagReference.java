@@ -31,8 +31,5 @@ public abstract class TagReference<E> extends Reference<Tag<E>> {
         return value != null ? value : world.getTagManager().getTag(getRegistry(),identifier, (exc) -> new JsonSyntaxException("Unknown tag '" + exc + "'"));
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Tag<E>>> references) {
-        return references.contains(this);
-    }
+
 }

@@ -5,15 +5,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ReflectionUtils {
 
 
     /**
-     * Get ALL fields, included superclass fields and all access types
+     * @return all fields, including superclass fields and inaccessible fields
      */
     public static List<Field> getFields(Class<?> clazz) {
         List<Field> result = new ArrayList<>();
@@ -27,7 +25,13 @@ public class ReflectionUtils {
     }
 
 
-    public static @Nullable FieldMatch match(List<Field> fields, String serializedName) {
+    /**
+     *
+     * @param fields the collection of fields to try matching
+     * @param serializedName the name of the field to locate
+     * @return a field that has the the serializedName specified when serialized, or null if none is found
+     */
+    public static @Nullable FieldMatch match(Collection<Field> fields, String serializedName) {
         for (Field field : fields) {
             if (Modifier.isTransient(field.getModifiers()))
                 continue;
@@ -39,6 +43,11 @@ public class ReflectionUtils {
             }
         }
         return null;
+    }
+
+
+    private ReflectionUtils() {
+        throw new AssertionError();
     }
 
 }

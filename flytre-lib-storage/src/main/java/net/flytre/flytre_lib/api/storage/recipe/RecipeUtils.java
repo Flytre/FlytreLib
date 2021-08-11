@@ -52,10 +52,14 @@ public class RecipeUtils {
         CACHE_HANDLER.clear();
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.18")
     public static Ingredient fromJson(@Nullable JsonElement json) {
         return json == null || isIngredientInvalid(json) ? Ingredient.EMPTY : Ingredient.fromJson(json);
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.18")
     public static boolean isIngredientInvalid(@Nullable JsonElement json) {
         if (json != null && !json.isJsonNull()) {
             if (json.isJsonObject()) {
@@ -98,7 +102,7 @@ public class RecipeUtils {
     }
 
     public static void craftOutput(Inventory inv, int lower, int upper, OutputProvider[] providers) {
-        HashSet<Integer> checked = new HashSet<>();
+        Set<Integer> checked = new HashSet<>();
         for (OutputProvider output : providers) {
             boolean matched = false;
             for (int i = lower; i < upper; i++)
@@ -128,7 +132,7 @@ public class RecipeUtils {
             if (inv.getStack(i).isEmpty())
                 blanks++;
         }
-        HashSet<Integer> checked = new HashSet<>();
+        Set<Integer> checked = new HashSet<>();
         for (OutputProvider output : outputProviders) {
             boolean matched = false;
             for (int i = lower; i < upper; i++)

@@ -8,7 +8,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemTagReference extends TagReference<Item> implements ConfigItem {
+public final class ItemTagReference extends TagReference<Item> implements ConfigItem {
     public ItemTagReference(@NotNull Identifier identifier) {
         super(identifier);
     }

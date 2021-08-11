@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Objects;
 
-public class BiomeReference extends Reference<Biome> {
+public final class BiomeReference extends Reference<Biome> {
 
     public BiomeReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -34,7 +34,6 @@ public class BiomeReference extends Reference<Biome> {
     }
 
 
-
     public BiomeReference(String namespace, String path) {
         super(namespace, path);
     }
@@ -44,8 +43,5 @@ public class BiomeReference extends Reference<Biome> {
         return getValue(Registry.BIOME_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Biome>> references) {
-        return references.contains(this);
-    }
+
 }

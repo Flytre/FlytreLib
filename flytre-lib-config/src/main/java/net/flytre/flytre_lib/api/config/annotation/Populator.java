@@ -26,6 +26,12 @@ import java.util.function.BiFunction;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Populator {
+
+    /**
+     * @return a class with a no-arg constructor; implements the specified function
+     * that takes in the world and player, and populates values to a map with the same
+     * type as the map this is annotated to
+     */
     Class<? extends BiFunction<ClientWorld, ClientPlayerEntity, Map<?,?>>> value();
 
     /**

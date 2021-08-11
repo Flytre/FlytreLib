@@ -2,6 +2,9 @@ package net.flytre.flytre_lib.api.base.util;
 
 import net.minecraft.entity.player.PlayerEntity;
 
+/**
+ * Utility class to help with enchanting and experience
+ */
 public class EnchantmentUtils {
 
 
@@ -60,5 +63,9 @@ public class EnchantmentUtils {
             level++;
             targetXp -= xpToNextLevel;
         }
+    }
+
+    private EnchantmentUtils() {
+        throw new AssertionError();
     }
 }

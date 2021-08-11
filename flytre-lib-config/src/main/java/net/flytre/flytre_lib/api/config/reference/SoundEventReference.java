@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class SoundEventReference extends Reference<SoundEvent> {
+public final class SoundEventReference extends Reference<SoundEvent> {
 
     public SoundEventReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -29,8 +29,5 @@ public class SoundEventReference extends Reference<SoundEvent> {
         return getValue(Registry.SOUND_EVENT_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<SoundEvent>> references) {
-        return references.contains(this);
-    }
+
 }

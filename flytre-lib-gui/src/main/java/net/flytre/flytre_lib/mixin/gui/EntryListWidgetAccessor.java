@@ -9,8 +9,4 @@ public interface EntryListWidgetAccessor<E extends EntryListWidget.Entry<E>> {
 
     @Accessor("scrolling")
     boolean getScrolling();
-
-
-    @Accessor("hoveredEntry")
-    void setHoveredEntry(E hoveredEntry);
 }

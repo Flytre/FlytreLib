@@ -6,7 +6,14 @@ import net.minecraft.nbt.*;
 
 import java.util.Map;
 
+/**
+ * Used to convert between Nbt and Json
+ */
 public class JsonNbtConverter {
+
+    private JsonNbtConverter() {
+        throw new AssertionError();
+    }
 
     public static NbtElement toNbt(JsonElement json) {
 

@@ -111,7 +111,7 @@ public class ColorWidget extends TranslucentTextField {
 
     private boolean updateBrightness(double mouseX, double mouseY, int button) {
         Rectangle slider = getWidthSliderBounds();
-        Rectangle sliderModifier = slider.grow(2).growHorizontal(30);
+        Rectangle sliderModifier = slider.expandedBy(2).horizontallyExpandedBy(30);
         if (sliderModifier.contains(mouseX, mouseY)) {
             brightness = MathHelper.clamp((float) ((mouseX - slider.getLeft()) / slider.getWidth()), 0f, 1f);
             return true;
@@ -121,7 +121,7 @@ public class ColorWidget extends TranslucentTextField {
 
     private boolean updateAlpha(double mouseX, double mouseY, int button) {
         Rectangle slider = getAlphaSliderBounds();
-        Rectangle sliderModifier = slider.grow(2).growHorizontal(30);
+        Rectangle sliderModifier = slider.expandedBy(2).horizontallyExpandedBy(30);
         if (sliderModifier.contains(mouseX, mouseY)) {
             alpha = MathHelper.clamp((float) ((mouseX - slider.getLeft()) / slider.getWidth()), 0f, 1f);
             return true;

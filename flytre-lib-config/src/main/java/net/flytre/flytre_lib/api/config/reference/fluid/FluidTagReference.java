@@ -8,7 +8,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidTagReference extends TagReference<Fluid> implements ConfigFluid {
+public final class FluidTagReference extends TagReference<Fluid> implements ConfigFluid {
     public FluidTagReference(@NotNull Identifier identifier) {
         super(identifier);
     }

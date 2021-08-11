@@ -11,6 +11,7 @@ import net.flytre.flytre_lib.api.gui.TranslucentSliderWidget;
 import net.flytre.flytre_lib.api.gui.button.TranslucentButton;
 import net.flytre.flytre_lib.api.gui.button.TranslucentCyclingOption;
 import net.flytre.flytre_lib.api.gui.text_field.*;
+import net.flytre.flytre_lib.impl.config.ConfigHelper;
 import net.flytre.flytre_lib.impl.config.client.list.ConfigListWidget;
 import net.flytre.flytre_lib.impl.config.client.list.ListEditorScreen;
 import net.flytre.flytre_lib.impl.config.client.list.MapEditorScreen;
@@ -302,7 +303,7 @@ public class GuiMaker {
                     objs,
                     enumVal -> {
                         try {
-                            return Text.of(ConfigHandler.getEnumName(enumVal));
+                            return Text.of(ConfigHelper.getEnumName(enumVal));
                         } catch (NoSuchFieldException e) {
                             return Text.of("ERROR");
                         }
@@ -327,7 +328,7 @@ public class GuiMaker {
         } else {
             DropdownMenu menu = DropdownUtils.createGenericDropdown(0, 0, Arrays.stream(objs).map(i -> {
                 try {
-                    return ConfigHandler.getEnumName(i);
+                    return ConfigHelper.getEnumName(i);
                 } catch (NoSuchFieldException e) {
                     return "";
                 }
@@ -375,7 +376,7 @@ public class GuiMaker {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
 
         if (range != null)
-            description += (description.length() > 0 ? " " : "") + ConfigHandler.asString(range);
+            description += (description.length() > 0 ? " " : "") + ConfigHelper.asString(range);
 
 
         if (range != null && range.max() - range.min() < 1000) {

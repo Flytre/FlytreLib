@@ -14,6 +14,10 @@ import net.minecraft.util.Identifier;
 
 import java.util.Collections;
 
+/**
+ * A multistate button is similar to a cycling button, but uses images rather than text
+ * when its rendered.
+ */
 public class MultistateButton extends ButtonWidget {
 
     private final int textureWidth;

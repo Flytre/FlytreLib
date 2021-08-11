@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 
-public class AdvancementReference extends Reference<Advancement> {
+public final class AdvancementReference extends Reference<Advancement> {
 
     public AdvancementReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -57,8 +57,5 @@ public class AdvancementReference extends Reference<Advancement> {
         return getValue(null, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Advancement>> references) {
-        return references.contains(this);
-    }
+
 }

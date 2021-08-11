@@ -1,18 +1,13 @@
 package net.flytre.flytre_lib.api.base.math;
 
-public class Rectangle implements Cloneable {
+public final class Rectangle {
+
+    public static final Rectangle DEFAULT = new Rectangle(0, 0, 0, 0);
+
     private final int x;
     private final int y;
     private final int width;
     private final int height;
-
-    public Rectangle() {
-        this(0, 0, 0, 0);
-    }
-
-    public Rectangle(Rectangle other) {
-        this(other.x, other.y, other.width, other.height);
-    }
 
     public Rectangle(int width, int height) {
         this(0, 0, width, height);
@@ -37,7 +32,10 @@ public class Rectangle implements Cloneable {
     }
 
 
-    public static Rectangle ofBounds(int left, int top, int right, int bottom) {
+    /**
+     * Creates a rectangle from the given bounds
+     */
+    public static Rectangle fromBounds(int left, int top, int right, int bottom) {
         return new Rectangle(left, top, right - left, bottom - top);
     }
 
@@ -76,28 +74,74 @@ public class Rectangle implements Cloneable {
 
 
     public boolean contains(int x, int y) {
-        return this.x <= x && this.y <= y && this.x + width >= x && this.y + height >= y;
+        return contains(x, (double) y);
     }
 
+    /**
+     * Checks whether the given point is inside the rectangle
+     */
     public boolean contains(double x, double y) {
         return this.x <= x && this.y <= y && this.x + width >= x && this.y + height >= y;
     }
 
 
-    public Rectangle shrink(int amount) {
+    /**
+     * @return a new rectangle with its bounds reduced by the amount
+     */
+    public Rectangle reducedBy(int amount) {
         return new Rectangle(x + amount, y + amount, width - amount * 2, height - amount * 2);
     }
 
-    public Rectangle grow(int amount) {
-        return shrink(-amount);
+    /**
+     * @return a new rectangle with its bounds expanded by the amount
+     */
+    public Rectangle expandedBy(int amount) {
+        return reducedBy(-amount);
     }
 
-    public Rectangle growHorizontal(int amount) {
+    /**
+     * @return a new rectangle with its horizontal bounds reduced by the amount
+     */
+    public Rectangle horizontallyExpandedBy(int amount) {
         return new Rectangle(x - amount, y, width + amount * 2, height);
     }
 
     @Override
-    public Rectangle clone() {
-        return new Rectangle(x, y, width, height);
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Rectangle rectangle = (Rectangle) o;
+
+        if (x != rectangle.x)
+            return false;
+        if (y != rectangle.y)
+            return false;
+        if (width != rectangle.width)
+            return false;
+
+        return height == rectangle.height;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + width;
+        result = 31 * result + height;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
     }
 }

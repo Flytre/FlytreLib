@@ -4,14 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
 import net.flytre.flytre_lib.api.base.util.DevUtils;
-import net.flytre.flytre_lib.api.base.util.Formatter;
 import net.flytre.flytre_lib.api.base.util.reflection.FieldMatch;
 import net.flytre.flytre_lib.api.base.util.reflection.ReflectionUtils;
 import net.flytre.flytre_lib.api.config.annotation.Description;
 import net.flytre.flytre_lib.api.config.annotation.Range;
+import net.flytre.flytre_lib.impl.config.ConfigHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.apache.commons.compress.utils.Charsets;
@@ -38,7 +37,7 @@ import java.util.stream.Stream;
  *
  * @param <T> The Config class
  */
-public class ConfigHandler<T> {
+public final class ConfigHandler<T> {
     private final Gson gson;
     private final T assumed;
     private final String name;
@@ -64,17 +63,6 @@ public class ConfigHandler<T> {
         this.translationPrefix = translationPrefix;
     }
 
-    public static String asString(Range range) {
-        return "[min: " + Formatter.formatNumber(range.min()) + ", max: " + Formatter.formatNumber(range.max()) + "]";
-    }
-
-    public static String getEnumName(Enum<?> val) throws NoSuchFieldException {
-        SerializedName serializedName = val.getClass().getField(val.name()).getAnnotation(SerializedName.class);
-        if (serializedName == null)
-            return val.name();
-        else
-            return serializedName.value();
-    }
 
     public String getTranslationPrefix() {
         return translationPrefix;
@@ -139,13 +127,13 @@ public class ConfigHandler<T> {
                 comment += description.value();
 
             if (fieldMatch.field().getType().isEnum()) {
-                comment += (comment.length() > 0 ? " " : "") + enumToString(fieldMatch.field().getType());
+                comment += (comment.length() > 0 ? " " : "") + ConfigHelper.enumAsStringArray(fieldMatch.field().getType());
             }
 
 
             Range range = fieldMatch.field().getAnnotation(Range.class);
             if (range != null)
-                comment += (comment.length() > 0 ? " " : "") + asString(range);
+                comment += (comment.length() > 0 ? " " : "") + ConfigHelper.asString(range);
 
             if (entry.getValue() instanceof JsonObject) {
                 commentFormattedGsonHelper((JsonObject) entry.getValue(), fieldMatch.field().getType());
@@ -161,11 +149,11 @@ public class ConfigHandler<T> {
         }
     }
 
-    public void validate(JsonObject serialized, T config) throws IllegalAccessException {
+    private void validate(JsonObject serialized, T config) throws IllegalAccessException {
         validate(serialized, config.getClass(), config, new ArrayList<>());
     }
 
-    public void validate(JsonObject json, Class<?> clazz, Object obj, List<String> path) throws IllegalAccessException {
+    private void validate(JsonObject json, Class<?> clazz, Object obj, List<String> path) throws IllegalAccessException {
         List<Field> fields = ReflectionUtils.getFields(clazz);
         for (var entry : json.entrySet()) {
             FieldMatch fieldMatch = ReflectionUtils.match(fields, entry.getKey());
@@ -192,7 +180,7 @@ public class ConfigHandler<T> {
                     if (range.min() > number.doubleValue() || range.max() < number.doubleValue()) {
                         List<String> path2 = new ArrayList<>(path);
                         path2.add(fieldMatch.field().getName());
-                        throw new ValidationException("Value " + value + " for field " + String.join(".", path2) + " is not in range " + asString(range));
+                        throw new ValidationException("Value " + value + " for field " + String.join(".", path2) + " is not in range " + ConfigHelper.asString(range));
                     }
                 }
 
@@ -206,21 +194,7 @@ public class ConfigHandler<T> {
         }
     }
 
-    private String enumToString(Class<?> type) {
-        Enum<?>[] objs = (Enum<?>[]) type.getEnumConstants();
-        List<String> result = new ArrayList<>();
-        for (Enum<?> val : objs) {
-            try {
-                result.add(getEnumName(val));
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-
-        }
-        return result.toString();
-    }
-
-    private void appendErrorToConfig(File file, Exception e) throws IOException {
+    private void appendError(File file, Exception e) throws IOException {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
         String str = FileUtils.readFileToString(file, Charsets.UTF_8);
@@ -280,7 +254,7 @@ public class ConfigHandler<T> {
                 } catch (JsonParseException | NumberFormatException | InvalidIdentifierException | ValidationException e) {
                     this.config = assumed;
                     DevUtils.LOGGER.error("Unable to load config " + name + ".json5 : " + e.getMessage() + ". Loading default config instead.");
-                    appendErrorToConfig(configFile, e);
+                    appendError(configFile, e);
                     error = true;
                 }
             } catch (IOException | IllegalAccessException e) {
@@ -318,9 +292,6 @@ public class ConfigHandler<T> {
         return new Identifier("flytre_lib", name);
     }
 
-    public T fromJson(JsonElement element) {
-        return gson.fromJson(element, (Type) assumed.getClass());
-    }
 
     public Gson getGson() {
         return gson;

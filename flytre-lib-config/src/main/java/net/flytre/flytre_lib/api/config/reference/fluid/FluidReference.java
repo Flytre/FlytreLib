@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class FluidReference extends Reference<Fluid> implements ConfigFluid {
+public final class FluidReference extends Reference<Fluid> implements ConfigFluid {
 
     public FluidReference(@NotNull Identifier identifier) {
         super(identifier);
@@ -30,8 +30,5 @@ public class FluidReference extends Reference<Fluid> implements ConfigFluid {
         return getValue(Registry.FLUID_KEY, world);
     }
 
-    @Override
-    public boolean isIn(Collection<? extends Reference<Fluid>> references) {
-        return references.contains(this);
-    }
+
 }

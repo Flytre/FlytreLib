@@ -29,6 +29,14 @@ public class Formatter {
     private static final String FORMAT_FLOAT = "%.2f";
 
 
+    private Formatter() {
+        throw new AssertionError();
+    }
+
+    /**
+     * Stores a map into a integer than can then be converted back into a map for serialization
+     * purposes.
+     */
     public static int mapToInt(Map<Direction, Boolean> map) {
         boolean[] array = new boolean[]{
                 map.get(Direction.NORTH),
@@ -40,6 +48,9 @@ public class Formatter {
         return booleansToInt(array);
     }
 
+    /**
+     * Converts a direction map represented as a boolean back into a full scale map
+     */
     public static Map<Direction, Boolean> intToMap(int n) {
         boolean[] array = intsToBoolean(n, 6);
         HashMap<Direction, Boolean> result = new HashMap<>();
@@ -134,7 +145,6 @@ public class Formatter {
         return String.format("%." + format + "f", num) + (space ? " " : "") + prefix + suffix;
     }
 
-
     /**
      * Formats a number with no units
      */
@@ -147,6 +157,7 @@ public class Formatter {
     }
 
     /**
+     * Gets the name of a mod from its id
      * @param modid the mod to get the name of
      * @return Human-readable name of the mod
      */
@@ -171,7 +182,6 @@ public class Formatter {
         return name;
     }
 
-
     /**
      * @param arr an int[3] array storing the position of the block pos
      * @return The block pos representing the position
@@ -179,7 +189,6 @@ public class Formatter {
     public static BlockPos arrToPos(int[] arr) {
         return new BlockPos(arr[0], arr[1], arr[2]);
     }
-
 
     /**
      * @param pos The block pos
@@ -189,7 +198,6 @@ public class Formatter {
     public static NbtIntArray writePosToNbt(BlockPos pos) {
         return new NbtIntArray(new int[]{pos.getX(), pos.getY(), pos.getZ()});
     }
-
 
     /**
      * Get energy from delegate (hardcoded indices 3 and 4)
@@ -221,7 +229,6 @@ public class Formatter {
     public static double EUsigmas(double EU) {
         return EU * 10;
     }
-
 
     /**
      * Convert an integer to a formatted readable hex string, i.e. #45AC2B
