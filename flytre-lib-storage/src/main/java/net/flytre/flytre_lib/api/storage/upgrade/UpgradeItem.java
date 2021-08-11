@@ -22,7 +22,7 @@ public interface UpgradeItem {
     default boolean isValid(UpgradeInventory inv, ItemStack stack, int slot) {
         if (incompatibleUpgrades()
                 .stream()
-                .anyMatch(i -> inv.hasUpgrade(i.get()))) {
+                .anyMatch(inv::hasUpgrade)) {
             return false;
         }
 
@@ -35,9 +35,12 @@ public interface UpgradeItem {
     /**
      * The collection of upgrades that this upgrade is not compatible with
      */
-    default Collection<UpgradeItem> incompatibleUpgrades() {
+    default Collection<Item> incompatibleUpgrades() {
         return Set.of();
     }
 
+    /**
+     * Get this upgrade as an item;
+     */
     Item get();
 }
