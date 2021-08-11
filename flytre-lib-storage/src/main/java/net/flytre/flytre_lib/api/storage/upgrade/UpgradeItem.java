@@ -16,20 +16,22 @@ public interface UpgradeItem {
         return 1;
     }
 
+
     /**
-     * Whether the given stack is valid to be inserted into the upgrade inventory
+     * How many more of this upgrade can be inserted into the given inventory
+     */
+    default int remainingCount(UpgradeInventory inventory) {
+        return Math.max(0, maxCount() - inventory.upgradeQuantity(get()));
+    }
+
+
+    /**
+     * Ignoring count, whether this upgrade is valid to be inserted into a slot
      */
     default boolean isValid(UpgradeInventory inv, ItemStack stack, int slot) {
-        if (incompatibleUpgrades()
+        return incompatibleUpgrades()
                 .stream()
-                .anyMatch(inv::hasUpgrade)) {
-            return false;
-        }
-
-        if (maxCount() == 1)
-            return !inv.hasUpgrade(get()) && stack.getCount() == 1;
-
-        return inv.upgradeQuantity(get()) + stack.getMaxCount() <= maxCount();
+                .noneMatch(inv::hasUpgrade);
     }
 
     /**

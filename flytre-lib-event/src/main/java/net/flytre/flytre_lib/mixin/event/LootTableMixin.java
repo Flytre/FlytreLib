@@ -19,7 +19,7 @@ public class LootTableMixin implements LootContainer {
 
     @Shadow @Final LootFunction[] functions;
 
-    @Shadow @Final private LootContextType type;
+    @Shadow @Final LootContextType type;
 
     @Override
     public List<LootPool> getPools() {

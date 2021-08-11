@@ -6,7 +6,7 @@
   "mixins": [
     "AbstractBlockAccessor", "EulaReaderMixin", "MinecraftServerMixin", "MiningToolItemAccessor", "ServerPropertiesHandlerMixin", "ClientConnectionMixin"
   ],
-  "client": ["LivingEntityRendererMixin", "KeyBindingAccessor"],
+  "client": ["LivingEntityRendererMixin", "KeyBindingAccessor", "GameOptionsMixin"],
   "server": ["DedicatedServerWatchdogMixin"],
   "injectors": {
     "defaultRequire": 1

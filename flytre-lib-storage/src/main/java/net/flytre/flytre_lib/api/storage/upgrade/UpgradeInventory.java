@@ -12,6 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+/**
+ * A "second" inventory that is used to handle upgrades, i.e. hopper upgrades or mechanix machine
+ * upgrades.
+ * Make sure to call toTag and fromTag when you implement this
+ */
 public interface UpgradeInventory {
 
     static NbtCompound toTag(NbtCompound tag, DefaultedList<ItemStack> stacks) {

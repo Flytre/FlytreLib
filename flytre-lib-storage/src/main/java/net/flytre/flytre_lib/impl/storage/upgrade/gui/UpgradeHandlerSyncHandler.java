@@ -7,7 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public interface UpgradeHandlerSyncHandler {
     void updateUpgradeState(UpgradeHandler handler, DefaultedList<ItemStack> stacks);
 

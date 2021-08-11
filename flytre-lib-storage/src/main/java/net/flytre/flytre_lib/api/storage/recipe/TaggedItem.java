@@ -9,12 +9,16 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
+/**
+ * A tagged item refers to an item stored in a tag;
+ * Which item in the specified tag is subject to change
+ */
 public class TaggedItem {
     private final Identifier path;
     private final int qty;
 
     public TaggedItem(Identifier path) {
-        this(path,1);
+        this(path, 1);
     }
 
     public TaggedItem(Identifier path, int qty) {
@@ -28,7 +32,7 @@ public class TaggedItem {
     }
 
     public ItemStack getItemStack() {
-        return new ItemStack(getItem(),qty);
+        return new ItemStack(getItem(), qty);
     }
 
     public int getQty() {

@@ -9,7 +9,10 @@ import net.minecraft.util.JsonHelper;
 
 import java.util.function.Predicate;
 
-public class QuantifiedIngredient implements Predicate<ItemStack> {
+/**
+ * A quantified ingredient is a recipe ingredient that also has a mandated quantity.
+ */
+public final class QuantifiedIngredient implements Predicate<ItemStack> {
 
     private final Ingredient ingredient;
     private final int quantity;

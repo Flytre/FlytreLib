@@ -11,9 +11,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.collection.DefaultedList;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
-
+@ApiStatus.Internal
 public class FluidInventoryS2CPacket implements Packet<ClientPlayPacketListener> {
 
     private final int syncId;

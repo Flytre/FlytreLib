@@ -5,6 +5,9 @@ import net.minecraft.util.math.Direction;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * IOTypes control the input-output status of a specific side of a block.
+ */
 public enum IOType {
 
     INPUT(1, true, false),

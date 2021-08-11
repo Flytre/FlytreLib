@@ -19,24 +19,37 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-
+/**
+ * Utilities that are associated with recipes:
+ * Things like converting Json to recipe objects, handling crafting logic, and finding
+ * matching recipes
+ */
 public class RecipeUtils {
 
-    private static final HashMap<Item, List<CraftingRecipe>> cache;
+    private static final Map<Item, List<CraftingRecipe>> CACHE;
+    private static final Queue<Item> CACHE_HANDLER;
 
     static {
-        cache = new HashMap<>();
+        CACHE = new HashMap<>();
+        CACHE_HANDLER = new LinkedList<>();
     }
 
+    private RecipeUtils() {
+        throw new AssertionError();
+    }
+
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.18")
     public static void clearCache() {
-        if (cache != null)
-            cache.clear();
+        CACHE.clear();
+        CACHE_HANDLER.clear();
     }
 
     public static Ingredient fromJson(@Nullable JsonElement json) {
@@ -62,7 +75,6 @@ public class RecipeUtils {
         }
     }
 
-
     private static boolean nullCheck(JsonObject json) {
         if (json.has("item") && json.has("tag")) {
             return true;
@@ -85,7 +97,6 @@ public class RecipeUtils {
         }
     }
 
-
     public static void craftOutput(Inventory inv, int lower, int upper, OutputProvider[] providers) {
         HashSet<Integer> checked = new HashSet<>();
         for (OutputProvider output : providers) {
@@ -107,7 +118,6 @@ public class RecipeUtils {
             }
         }
     }
-
 
     /**
      * Check whether a set of output providers can be placed between slots [lower, upper) in an inventory
@@ -136,7 +146,6 @@ public class RecipeUtils {
         return true;
     }
 
-
     public static boolean craftingInputMatch(CraftingRecipe recipe, Inventory inv, int lower, int upper) {
         //Get only non-empty ingredients
         DefaultedList<Ingredient> ingredients = recipe.getIngredients();
@@ -163,7 +172,6 @@ public class RecipeUtils {
         return true;
     }
 
-
     public static void actuallyCraft(CraftingRecipe recipe, Inventory inv, int lower, int upper) {
         //Get only non-empty ingredients
         DefaultedList<Ingredient> ingredients = recipe.getIngredients();
@@ -181,17 +189,21 @@ public class RecipeUtils {
                 }
     }
 
-
     /**
      * Filters out special crafting recipes
      */
     public static List<CraftingRecipe> craftingRecipesWithOutput(Item item, World world) {
 
-        if (cache.containsKey(item))
-            return cache.get(item);
+        if (CACHE.containsKey(item))
+            return CACHE.get(item);
 
         List<CraftingRecipe> recipes = world.getRecipeManager().listAllOfType(RecipeType.CRAFTING).stream().filter(i -> !(i instanceof SpecialCraftingRecipe)).filter(i -> i.getOutput().getItem() == item).collect(Collectors.toList());
-        cache.put(item, recipes);
+
+        CACHE.put(item, recipes);
+        CACHE_HANDLER.add(item);
+        if (CACHE.size() > 10) {
+            CACHE.remove(CACHE_HANDLER.poll());
+        }
         return recipes;
     }
 
@@ -203,7 +215,6 @@ public class RecipeUtils {
         Optional<CraftingRecipe> result = outputs.stream().filter(i -> craftingInputMatch(i, inv, lower, upper)).findFirst();
         return result.orElse(null);
     }
-
 
     /**
      * Get the array of output providers from a Json recipe object
@@ -221,7 +232,6 @@ public class RecipeUtils {
 
         return result;
     }
-
 
     public static QuantifiedIngredient[] getQuantifiedIngredients(JsonObject json, String pluralKey, String singularKey) {
         return getQuantifiedIngredients(json, pluralKey, singularKey, false);
@@ -242,6 +252,4 @@ public class RecipeUtils {
         }
         return ingredients;
     }
-
-
 }

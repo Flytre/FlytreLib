@@ -9,9 +9,11 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 
+@ApiStatus.Internal
 public class UpgradeClickSlotC2SPacket implements Packet<ServerPlayPacketListener> {
     private final int syncId;
     private final int slot;

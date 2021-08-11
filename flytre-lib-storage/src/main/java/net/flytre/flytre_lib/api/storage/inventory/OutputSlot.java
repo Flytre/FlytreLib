@@ -4,6 +4,9 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 
+/**
+ * An output slot cannot have items manually added to it, only removed
+ */
 public class OutputSlot extends Slot {
 
 

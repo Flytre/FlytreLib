@@ -55,9 +55,9 @@ public class UpgradeSlot extends Slot {
 
         int ct = getMaxItemCount();
 
-        if (stack.getItem() instanceof UpgradeItem) {
-            ct = Math.min(ct, ((UpgradeItem) stack.getItem()).maxCount());
-        }
+        if (stack.getItem() instanceof UpgradeItem)
+            ct = Math.min(ct, ((UpgradeItem) stack.getItem()).remainingCount(upgradeInventory));
+
         return ct;
     }
 

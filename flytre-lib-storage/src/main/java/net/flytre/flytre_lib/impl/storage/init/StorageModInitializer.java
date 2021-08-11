@@ -11,7 +11,9 @@ import net.flytre.flytre_lib.impl.storage.fluid.network.FluidSlotUpdateS2CPacket
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeClickSlotC2SPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class StorageModInitializer implements ModInitializer {
 
     @Override

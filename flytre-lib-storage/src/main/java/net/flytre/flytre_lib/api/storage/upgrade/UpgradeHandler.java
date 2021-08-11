@@ -14,7 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Implemented by ScreenHandler
+ * Implemented by ScreenHandler.
+ * Cast to this class to invoke upgrade related methods, i.e. adding upgrade slots
+ * to a screen handler
  */
 public interface UpgradeHandler extends FluidHandler {
 

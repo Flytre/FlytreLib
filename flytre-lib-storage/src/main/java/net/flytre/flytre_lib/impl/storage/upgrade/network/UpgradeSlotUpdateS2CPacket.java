@@ -9,7 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class UpgradeSlotUpdateS2CPacket implements Packet<ClientPlayPacketListener> {
 
     private final int syncId;
