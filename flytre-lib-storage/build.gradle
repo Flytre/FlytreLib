@@ -1,5 +1,5 @@
 archivesBaseName = "flytre-lib-storage"
-version = getSubprojectVersion(project, "2.2.1")
+version = getSubprojectVersion(project, "2.3.0")
 
 
 moduleDependencies(project, [
