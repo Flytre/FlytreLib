@@ -24,7 +24,7 @@ public class DropdownMenu extends TranslucentTextField {
 
     private final List<String> options;
     private List<String> matchedOptions;
-    private BiPredicate<String, String> matcher; //inputs are each option's text, followed by text in the main text field
+    protected BiPredicate<String, String> matcher; //inputs are each option's text, followed by text in the main text field
     private int entryHeight;
     private int entryWidth;
     private OptionRenderer optionRenderer;
@@ -64,6 +64,9 @@ public class DropdownMenu extends TranslucentTextField {
         return Math.max(0, entryHeight * Math.min(maxRenderedEntries, matchedOptions.size()) - 2);
     }
 
+    public BiPredicate<String, String> getMatcher() {
+        return matcher;
+    }
 
     private Rectangle scrollbarPos() {
 
@@ -81,12 +84,20 @@ public class DropdownMenu extends TranslucentTextField {
         this.optionRenderer = optionRenderer;
     }
 
+    public OptionRenderer getOptionRenderer() {
+        return optionRenderer;
+    }
+
     public void setEntryHeight(int entryHeight) {
         this.entryHeight = entryHeight;
     }
 
     public void setEntryWidth(int entryWidth) {
         this.entryWidth = entryWidth;
+    }
+
+    public int getEntryWidth() {
+        return entryWidth;
     }
 
     public void setMatcher(BiPredicate<String, String> matcher) {

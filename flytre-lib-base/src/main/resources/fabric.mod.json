@@ -14,7 +14,8 @@
   "icon": "assets/flytre-lib-base/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": ["net.flytre.flytre_lib.impl.base.FluidInitializer"]
+    "client": ["net.flytre.flytre_lib.impl.base.FluidInitializer"],
+    "main": ["net.flytre.flytre_lib.impl.base.Initializer"]
   },
   "mixins": [
     "flytre-lib-base.mixins.json"

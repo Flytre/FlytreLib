@@ -74,6 +74,10 @@ public class TranslucentTextField extends ClickableWidget {
     }
 
 
+    public TextFieldRenderer getRenderer() {
+        return renderer;
+    }
+
     public void setRightAligned(boolean rightAligned) {
         this.rightAligned = rightAligned;
     }
@@ -85,6 +89,10 @@ public class TranslucentTextField extends ClickableWidget {
 
     public void setTextXOffset(int textXOffset) {
         this.textXOffset = textXOffset;
+    }
+
+    public int getTextXOffset() {
+        return textXOffset;
     }
 
     private boolean showCursorTime() {

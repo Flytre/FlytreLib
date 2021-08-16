@@ -7,7 +7,7 @@ plugins {
 }
 
 class Globals {
-	static def baseVersion = "1.2.3"
+	static def baseVersion = "1.3.1"
 	static def mcVersion = "1.17.1"
 	static def yarnVersion = "+build.10"
 	static def loaderVersion = "0.11.3"
@@ -164,7 +164,7 @@ dependencies {
 	afterEvaluate {
 		subprojects.each {
 			include project("${it.name}:")
-//			api project(path: ":${it.name}", configuration: "dev")
+			api project(path: ":${it.name}", configuration: "dev")
 		}
 	}
 	include fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)

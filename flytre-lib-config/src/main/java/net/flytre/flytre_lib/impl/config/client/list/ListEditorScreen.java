@@ -1,12 +1,17 @@
 package net.flytre.flytre_lib.impl.config.client.list;
 
-import net.flytre.flytre_lib.api.gui.button.TranslucentButton;
-import net.flytre.flytre_lib.api.gui.text_field.TranslucentTextField;
 import net.flytre.flytre_lib.api.config.annotation.Button;
+import net.flytre.flytre_lib.api.gui.button.TranslucentButton;
+import net.flytre.flytre_lib.api.gui.button.TranslucentCyclingButtonWidget;
+import net.flytre.flytre_lib.api.gui.text_field.TranslucentTextField;
+import net.flytre.flytre_lib.impl.config.client.ConfigError;
 import net.flytre.flytre_lib.impl.config.client.GenericConfigScreen;
 import net.flytre.flytre_lib.impl.config.client.GuiMaker;
+import net.flytre.flytre_lib.mixin.config.SliderWidgetAccessor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,29 +20,46 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ListEditorScreen extends GenericConfigScreen {
+public class ListEditorScreen<T extends ClickableWidget> extends GenericConfigScreen {
 
     private final Button buttonAnnotation;
-    private final ButtonWidget reopen; //Basically references the button that created this screen, to recreate this screen with updated values
 
+    private final Consumer<List<Object>> saver;
+    private final List<T> initial;
+    private final Supplier<T> adder;
+    private ListEditorWidget<T> list;
 
-    private final Consumer<List<String>> saver;
-    private final List<TranslucentTextField> initial;
-    private final Supplier<TranslucentTextField> adder;
-    private ListEditorWidget<TranslucentTextField> list;
-
-    public ListEditorScreen(@Nullable Screen parent, Consumer<List<String>> saver, List<TranslucentTextField> initial, Supplier<TranslucentTextField> adder, @Nullable Button buttonAnnotation, @Nullable ButtonWidget reopen) {
-        super(parent);
+    public ListEditorScreen(@Nullable Screen parent, @Nullable ButtonWidget reopen, Consumer<List<Object>> saver, List<T> initial, Supplier<T> adder, @Nullable Button buttonAnnotation) {
+        super(parent, reopen);
         this.saver = saver;
         this.initial = initial;
         this.adder = adder;
         this.buttonAnnotation = buttonAnnotation;
-        this.reopen = reopen;
     }
 
     public void onClose() {
         super.onClose();
-        saver.accept(list.children().stream().map(ListEditorWidget.ValueEntry::getTextField).map(TranslucentTextField::getText).filter(i -> i.length() != 0).collect(Collectors.toList()));
+        saver.accept(list.children()
+                .stream()
+                .map(ListEditorWidget.ValueEntry::getClickable)
+                .map(this::toValue)
+                .filter(i -> !(i instanceof String) || ((String) i).length() != 0)
+                .collect(Collectors.toList()));
+    }
+
+    @Override
+    public ConfigStyleList<?> getList() {
+        return list;
+    }
+
+    private Object toValue(ClickableWidget clickable) {
+        if (clickable instanceof TranslucentTextField)
+            return ((TranslucentTextField) clickable).getText();
+        if (clickable instanceof SliderWidget)
+            return ((SliderWidgetAccessor) clickable).getValue();
+        if (clickable instanceof TranslucentCyclingButtonWidget)
+            return ((TranslucentCyclingButtonWidget<?>) clickable).getValue();
+        throw new ConfigError("Unknown type: " + clickable.getType());
     }
 
     @Override
@@ -55,20 +77,20 @@ public class ListEditorScreen extends GenericConfigScreen {
         TranslucentButton entryAdder = new TranslucentButton(width / 2 - width / 10 - offset, height - 30, width / 5, 20, new TranslatableText("flytre_lib.gui.add"), (button) -> {
             list.addEntry(adder.get());
         });
+
         addDrawableChild(entryAdder);
+
         TranslucentButton done = new TranslucentButton(width / 2 - width / 10 + offset, height - 30, width / 5, 20, new TranslatableText("flytre_lib.gui.done"), (button) -> {
             onClose();
         });
         addDrawableChild(done);
 
 
-
         if (customButtonFunc != null) {
             @Nullable TranslucentButton customButton = new TranslucentButton(width / 2 - width / 10, height - 30, width / 5, 20, new TranslatableText(buttonAnnotation.translationKey()), (x) -> {
                 onClose();
                 customButtonFunc.run();
-                if (reopen != null)
-                    reopen.onPress();
+                reopenAction();
             });
             addDrawableChild(customButton);
         }

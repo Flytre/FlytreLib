@@ -7,6 +7,7 @@ import net.flytre.flytre_lib.api.config.annotation.Button;
 import net.flytre.flytre_lib.api.config.ConfigHandler;
 import net.flytre.flytre_lib.impl.config.client.GenericConfigScreen;
 import net.flytre.flytre_lib.impl.config.client.GuiMaker;
+import net.flytre.flytre_lib.impl.config.client.ObjectWrapper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -20,8 +21,6 @@ import java.util.Map;
 public class MapEditorScreen extends GenericConfigScreen {
 
     private final Button buttonAnnotation;
-    private final ButtonWidget reopen; //Basically references the button that created this screen, to recreate this screen with updated values
-
     private Map<String, ClickableWidget> values;
     private StringValueWidget<ClickableWidget> list;
     private Runnable save;
@@ -30,9 +29,8 @@ public class MapEditorScreen extends GenericConfigScreen {
      * if the values are objects and already saved, no need to save them again. However if entries are not auto saved, save em this way
      */
     public MapEditorScreen(@Nullable Screen parent, @Nullable Button buttonAnnotation, @Nullable ButtonWidget reopen) {
-        super(parent);
+        super(parent, reopen);
         this.buttonAnnotation = buttonAnnotation;
-        this.reopen = reopen;
     }
 
 
@@ -40,7 +38,7 @@ public class MapEditorScreen extends GenericConfigScreen {
      * Basically, if a map contains JsonElements rather than objects (which are incompatible with makeGuiHelper()), the map's values are wrapped in objects and processed that way,
      * Then, on save, the ObjectWrappers' values are saved to the original config map
      */
-    public void setWrappedElements(Map<String, GuiMaker.ObjectWrapper<?>> wrappedElements, FieldMatch rawValueField, ConfigHandler<?> handler, Object currentObject) {
+    public void setWrappedElements(Map<String, ObjectWrapper<?>> wrappedElements, FieldMatch rawValueField, ConfigHandler<?> handler, Object currentObject) {
         save = () -> {
             Map<String, Object> processed = new HashMap<>();
             wrappedElements.forEach((key, value) -> processed.put(key, value.value));
@@ -90,13 +88,16 @@ public class MapEditorScreen extends GenericConfigScreen {
             @Nullable TranslucentButton customButton = new TranslucentButton(width / 2 - width / 10 - width / 8, height - 30, width / 5, 20, new TranslatableText(buttonAnnotation.translationKey()), (x) -> {
                 onClose();
                 customButtonFunc.run();
-                if (reopen != null)
-                    reopen.onPress();
+                reopenAction();
             });
             addDrawableChild(customButton);
         }
 
 
         super.init();
+    }
+
+    public StringValueWidget<ClickableWidget> getList() {
+        return list;
     }
 }

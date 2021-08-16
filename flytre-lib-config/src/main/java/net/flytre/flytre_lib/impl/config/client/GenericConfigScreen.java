@@ -2,7 +2,9 @@ package net.flytre.flytre_lib.impl.config.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flytre.flytre_lib.api.base.math.Rectangle;
+import net.flytre.flytre_lib.impl.config.client.list.ConfigStyleList;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
@@ -14,16 +16,19 @@ import org.jetbrains.annotations.Nullable;
  * Every config screen inherits from this, automatically jumps to the parent screen when closed and has the fun
  * background and animation
  */
-public class GenericConfigScreen extends Screen {
+public abstract class GenericConfigScreen extends Screen {
 
     public static final Identifier BACKGROUND = new Identifier("flytre_lib:textures/gui/config/background.png");
     protected @Nullable
     final Screen parent;
+    protected final @Nullable ButtonWidget reopen; //Basically references the button that created this screen, to recreate this screen with updated values
     private float animationTime;
 
-    public GenericConfigScreen(@Nullable Screen parent) {
+
+    public GenericConfigScreen(@Nullable Screen parent, @Nullable ButtonWidget reopen) {
         super(new TranslatableText("flytre_lib.gui.config_screen"));
         this.parent = parent;
+        this.reopen = reopen;
     }
 
     public static void tile(Rectangle bounds, int vOffset, float saturation, int green) {
@@ -38,6 +43,20 @@ public class GenericConfigScreen extends Screen {
         bufferBuilder.vertex(bounds.getRight(), bounds.getTop(), 0.0D).texture((float) bounds.getWidth() / 32.0F, (float) vOffset).color((int) (92 * saturation), (int) (92 * saturation), (int) (92 * saturation), 255).next();
         bufferBuilder.vertex(bounds.getLeft(), bounds.getTop(), 0.0D).texture(0.0F, (float) vOffset).color((int) (92 * saturation), (int) (92 * saturation), (int) (92 * saturation), 255).next();
         tessellator.draw();
+    }
+
+    public void reopenAction() {
+        if (reopen != null)
+            reopen.onPress();
+
+        assert client != null;
+        if (client.currentScreen != this) {
+            if (client.currentScreen instanceof GenericConfigScreen) {
+                GenericConfigScreen scr = (GenericConfigScreen) client.currentScreen;
+                scr.disableAnimation();
+                scr.getList().setScrollAmount(getList().getScrollAmount());
+            }
+        }
     }
 
     @Override
@@ -79,4 +98,6 @@ public class GenericConfigScreen extends Screen {
 
         tile(new Rectangle(width, height), vOffset, saturation, green);
     }
+
+    public abstract ConfigStyleList<?> getList();
 }

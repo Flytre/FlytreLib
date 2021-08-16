@@ -1,5 +1,2 @@
-TODO: Recipe Utils cache should auto clear and implementations should be in a diff class?
-
-TODO: ENUM DISPLAY NAME ANNOTATION
 TODO: Edit server configs client side
-TODO: REFACTOR CONFIG CLASSES
+TODO: OBJECT LISTS IN CONFIG

@@ -35,6 +35,11 @@ public class DropdownUtils {
 
     public static Pattern IDENTIFIER_REGEX = Pattern.compile("^([a-z0-9_.-]+:)?[a-z0-9_.-/]+$", Pattern.CASE_INSENSITIVE);
 
+
+    public static DropdownMenu createItemDropdown() {
+        return createItemDropdown(0, 0);
+    }
+
     public static DropdownMenu createItemDropdown(int xLoc, int yLoc) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), Registry.ITEM.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
@@ -44,6 +49,10 @@ public class DropdownUtils {
         searchField.setOptionRenderer(DropdownUtils::registryRenderer);
         searchField.setEntryWidth(200);
         return searchField;
+    }
+
+    public static DropdownMenu createBlockDropdown() {
+        return createBlockDropdown(0, 0);
     }
 
     public static DropdownMenu createBlockDropdown(int xLoc, int yLoc) {
@@ -57,11 +66,20 @@ public class DropdownUtils {
         return searchField;
     }
 
+    public static DropdownMenu createGenericDropdown(List<String> entries) {
+        return createGenericDropdown(0,0,entries);
+    }
+
     public static DropdownMenu createGenericDropdown(int xLoc, int yLoc, List<String> entries) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), entries);
         searchField.setEntryWidth(200);
         return searchField;
+    }
+
+
+    public static DropdownMenu createEntityDropdown() {
+        return createEntityDropdown(0, 0);
     }
 
     public static DropdownMenu createEntityDropdown(int xLoc, int yLoc) {
@@ -98,6 +116,10 @@ public class DropdownUtils {
         searchField.setOptionRenderer(DropdownUtils::registryRenderer);
         searchField.setEntryWidth(200);
         return searchField;
+    }
+
+    public static DropdownMenu createFluidDropdown() {
+        return createFluidDropdown(0, 0);
     }
 
     public static DropdownMenu createFluidDropdown(int xLoc, int yLoc) {

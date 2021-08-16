@@ -36,7 +36,8 @@ public abstract class KeyboardMixin {
             cir.setReturnValue(true);
         }
         if (key == 77) {
-            client.setScreen(new ConfigListerScreen(null));
+            client.setScreen(
+                    new ConfigListerScreen(null));
             this.debugLog("flytre_lib.debug.load_config_screen.message");
             cir.setReturnValue(true);
         }

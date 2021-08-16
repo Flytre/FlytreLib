@@ -36,6 +36,17 @@ public class GsonHelper {
 
     public static final Identifier.Serializer IDENTIFIER_SERIALIZER = new Identifier.Serializer();
 
+    public static final Map<Class<?>, Registry<?>> REGISTRY_BASED = Map.of(
+            EntityType.class, Registry.ENTITY_TYPE,
+            Fluid.class, Registry.FLUID,
+            StatusEffect.class, Registry.STATUS_EFFECT,
+            Block.class, Registry.BLOCK,
+            Enchantment.class, Registry.ENCHANTMENT,
+            Item.class, Registry.ITEM,
+            EntityAttribute.class, Registry.ATTRIBUTE,
+            SoundEvent.class, Registry.SOUND_EVENT,
+            VillagerProfession.class, Registry.VILLAGER_PROFESSION
+    );
 
     public static final GsonBuilder GSON_BUILDER = new GsonBuilder();
     public static final Gson GSON;
@@ -55,16 +66,9 @@ public class GsonHelper {
 
         GSON_BUILDER.registerTypeAdapter(ConfigColor.class, new ConfigColor.ColorSerializer());
 
-        registerRegistryBasedClass(EntityType.class, GSON_BUILDER, Registry.ENTITY_TYPE);
-        registerRegistryBasedClass(Fluid.class, GSON_BUILDER, Registry.FLUID);
-        registerRegistryBasedClass(StatusEffect.class, GSON_BUILDER, Registry.STATUS_EFFECT);
-        registerRegistryBasedClass(Block.class, GSON_BUILDER, Registry.BLOCK);
-        registerRegistryBasedClass(Enchantment.class, GSON_BUILDER, Registry.ENCHANTMENT);
-        registerRegistryBasedClass(Item.class, GSON_BUILDER, Registry.ITEM);
-        registerRegistryBasedClass(EntityAttribute.class, GSON_BUILDER, Registry.ATTRIBUTE);
-        registerRegistryBasedClass(SoundEvent.class, GSON_BUILDER, Registry.SOUND_EVENT);
-        registerRegistryBasedClass(VillagerProfession.class, GSON_BUILDER, Registry.VILLAGER_PROFESSION);
 
+        for (var entry : REGISTRY_BASED.entrySet())
+            registerRegistryBasedClass(entry.getKey(), GSON_BUILDER, entry.getValue());
 
         registerReference(EntityReference.class, GSON_BUILDER, EntityReference::new);
         registerReference(FluidReference.class, GSON_BUILDER, FluidReference::new);

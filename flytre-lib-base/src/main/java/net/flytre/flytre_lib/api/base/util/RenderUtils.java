@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.api.base.math.Rectangle;
+import net.flytre.flytre_lib.impl.base.Initializer;
 import net.flytre.flytre_lib.impl.base.RenderUtilsImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
@@ -111,6 +112,9 @@ public class RenderUtils {
 
 
     public static void drawRectangle(Rectangle rectangle, int hex) {
+
+        if(!Initializer.INITIALIZED)
+            throw new AssertionError("Mod not initialized");
 
         final Color color = new Color(hex);
 

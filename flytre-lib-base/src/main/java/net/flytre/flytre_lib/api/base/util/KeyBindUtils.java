@@ -2,6 +2,7 @@ package net.flytre.flytre_lib.api.base.util;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.flytre.flytre_lib.impl.base.Initializer;
 import net.flytre.flytre_lib.impl.base.KeyBindUtilsImpl;
 import net.minecraft.client.option.KeyBinding;
 
