@@ -48,10 +48,12 @@ public class GsonHelper {
             VillagerProfession.class, Registry.VILLAGER_PROFESSION
     );
 
-    public static final GsonBuilder GSON_BUILDER = new GsonBuilder();
+
+    public static final GsonBuilder GSON_BUILDER;
     public static final Gson GSON;
 
     static {
+        GSON_BUILDER = new GsonBuilder();
         GSON_BUILDER.setPrettyPrinting();
         GSON_BUILDER.registerTypeAdapter(Identifier.class, IDENTIFIER_SERIALIZER);
         GSON_BUILDER.registerTypeAdapter(new TypeToken<Set<Identifier>>() {
@@ -95,6 +97,10 @@ public class GsonHelper {
 
 
         GSON = GSON_BUILDER.create();
+    }
+
+    public GsonBuilder getGsonBuilder() {
+        return GSON_BUILDER;
     }
 
     /**
