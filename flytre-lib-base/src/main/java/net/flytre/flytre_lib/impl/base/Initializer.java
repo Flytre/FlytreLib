@@ -6,12 +6,14 @@ import net.fabricmc.loader.ModContainer;
 import net.flytre.flytre_lib.impl.base.entity.SimpleHasher;
 import net.flytre.flytre_lib.impl.base.entity.UniformModelBaker;
 import net.minecraft.client.MinecraftClient;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Initializer implements ModInitializer {
 
@@ -25,17 +27,25 @@ public class Initializer implements ModInitializer {
         return hashes;
     }
 
-    @Override
-    public void onInitialize() {
-        ModContainer container = (ModContainer) FabricLoader.getInstance().getModContainer("flytre_lib").orElseThrow(() -> new AssertionError("Uh oh"));
+    public static void fullBake(String id, String ext, @Nullable Consumer<Map<String, String>> hashModifier) {
+        ModContainer container = (ModContainer) FabricLoader.getInstance().getModContainer(id).orElseThrow(() -> new AssertionError("Uh oh"));
         Path pTM = null;
         try {
             pTM = Paths.get(container.getOriginUrl().toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        Map<String, String> hashes = generateStandardHashes(ext);
 
-        UniformModelBaker.baker(pTM, () -> MinecraftClient.getInstance().close(), generateStandardHashes("lib"));
+        if (hashModifier != null)
+            hashModifier.accept(hashes);
+
+        UniformModelBaker.baker(pTM, () -> MinecraftClient.getInstance().close(), hashes);
         INITIALIZED = true;
+    }
+
+    @Override
+    public void onInitialize() {
+        fullBake("flytre_lib","lib",null);
     }
 }
