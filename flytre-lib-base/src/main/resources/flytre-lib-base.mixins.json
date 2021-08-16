@@ -4,9 +4,10 @@
   "package": "net.flytre.flytre_lib.mixin.base",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AbstractBlockAccessor", "EulaReaderMixin", "MinecraftServerMixin", "MiningToolItemAccessor", "ServerPropertiesHandlerMixin", "ClientConnectionMixin"
+    "AbstractBlockAccessor", "ClientConnectionMixin", "DefaultAttributeRegistryMixin", "EulaReaderMixin",
+    "MinecraftServerMixin", "MiningToolItemAccessor", "ServerPropertiesHandlerMixin"
   ],
-  "client": ["LivingEntityRendererMixin", "KeyBindingAccessor", "GameOptionsMixin"],
+  "client": ["GameOptionsMixin", "KeyBindingAccessor", "LivingEntityRendererMixin"],
   "server": ["DedicatedServerWatchdogMixin"],
   "injectors": {
     "defaultRequire": 1

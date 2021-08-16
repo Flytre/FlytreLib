@@ -49,58 +49,66 @@ public class GsonHelper {
     );
 
 
-    public static final GsonBuilder GSON_BUILDER;
-    public static final Gson GSON;
+    public static final GsonBuilder GSON_BUILDER = new GsonHelper().builder;
+    public static final Gson GSON = GSON_BUILDER.create();
 
-    static {
-        GSON_BUILDER = new GsonBuilder();
-        GSON_BUILDER.setPrettyPrinting();
-        GSON_BUILDER.registerTypeAdapter(Identifier.class, IDENTIFIER_SERIALIZER);
-        GSON_BUILDER.registerTypeAdapter(new TypeToken<Set<Identifier>>() {
+
+    private final GsonBuilder builder;
+    private final Gson gson;
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public GsonBuilder getBuilder() {
+        return builder;
+    }
+
+    public GsonHelper() {
+        builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.registerTypeAdapter(Identifier.class, IDENTIFIER_SERIALIZER);
+        builder.registerTypeAdapter(new TypeToken<Set<Identifier>>() {
         }.getType(), new IdentifierBasedSetSerializer<>(Function.identity(), Function.identity()));
 
 
-        GSON_BUILDER.registerTypeAdapter(Set.class, (JsonSerializer<Set<?>>) (src, typeOfSrc, context) -> {
+        builder.registerTypeAdapter(Set.class, (JsonSerializer<Set<?>>) (src, typeOfSrc, context) -> {
             JsonArray array = new JsonArray();
             src.stream().map(context::serialize).sorted(Comparator.comparing(i -> i.isJsonPrimitive() ? i.getAsString() : "")).forEach(array::add);
             return array;
         });
 
-        GSON_BUILDER.registerTypeAdapter(ConfigColor.class, new ConfigColor.ColorSerializer());
+        builder.registerTypeAdapter(ConfigColor.class, new ConfigColor.ColorSerializer());
 
 
         for (var entry : REGISTRY_BASED.entrySet())
-            registerRegistryBasedClass(entry.getKey(), GSON_BUILDER, entry.getValue());
+            registerRegistryBasedClass(entry.getKey(), builder, entry.getValue());
 
-        registerReference(EntityReference.class, GSON_BUILDER, EntityReference::new);
-        registerReference(FluidReference.class, GSON_BUILDER, FluidReference::new);
-        registerReference(StatusEffectReference.class, GSON_BUILDER, StatusEffectReference::new);
-        registerReference(BiomeReference.class, GSON_BUILDER, BiomeReference::new);
-        registerReference(DimensionReference.class, GSON_BUILDER, DimensionReference::new);
-        registerReference(BlockReference.class, GSON_BUILDER, BlockReference::new);
-        registerReference(EnchantmentReference.class, GSON_BUILDER, EnchantmentReference::new);
-        registerReference(ItemReference.class, GSON_BUILDER, ItemReference::new);
-        registerReference(AttributeReference.class, GSON_BUILDER, AttributeReference::new);
-        registerReference(SoundEventReference.class, GSON_BUILDER, SoundEventReference::new);
-        registerReference(VillagerProfessionReference.class, GSON_BUILDER, VillagerProfessionReference::new);
-        registerReference(AdvancementReference.class, GSON_BUILDER, AdvancementReference::new);
+        registerReference(EntityReference.class, builder, EntityReference::new);
+        registerReference(FluidReference.class, builder, FluidReference::new);
+        registerReference(StatusEffectReference.class, builder, StatusEffectReference::new);
+        registerReference(BiomeReference.class, builder, BiomeReference::new);
+        registerReference(DimensionReference.class, builder, DimensionReference::new);
+        registerReference(BlockReference.class, builder, BlockReference::new);
+        registerReference(EnchantmentReference.class, builder, EnchantmentReference::new);
+        registerReference(ItemReference.class, builder, ItemReference::new);
+        registerReference(AttributeReference.class, builder, AttributeReference::new);
+        registerReference(SoundEventReference.class, builder, SoundEventReference::new);
+        registerReference(VillagerProfessionReference.class, builder, VillagerProfessionReference::new);
+        registerReference(AdvancementReference.class, builder, AdvancementReference::new);
 
-        registerTag(BlockTagReference.class, GSON_BUILDER, BlockTagReference::new);
-        registerTag(EntityTagReference.class, GSON_BUILDER, EntityTagReference::new);
-        registerTag(FluidTagReference.class, GSON_BUILDER, FluidTagReference::new);
-        registerTag(ItemTagReference.class, GSON_BUILDER, ItemTagReference::new);
+        registerTag(BlockTagReference.class, builder, BlockTagReference::new);
+        registerTag(EntityTagReference.class, builder, EntityTagReference::new);
+        registerTag(FluidTagReference.class, builder, FluidTagReference::new);
+        registerTag(ItemTagReference.class, builder, ItemTagReference::new);
 
-        GSON_BUILDER.registerTypeAdapter(ConfigBlock.class, new ConfigXDeserializer<>(BlockTagReference.class, BlockReference.class));
-        GSON_BUILDER.registerTypeAdapter(ConfigEntity.class, new ConfigXDeserializer<>(EntityTagReference.class, EntityReference.class));
-        GSON_BUILDER.registerTypeAdapter(ConfigFluid.class, new ConfigXDeserializer<>(FluidTagReference.class, FluidReference.class));
-        GSON_BUILDER.registerTypeAdapter(ConfigItem.class, new ConfigXDeserializer<>(ItemTagReference.class, ItemReference.class));
+        builder.registerTypeAdapter(ConfigBlock.class, new ConfigXDeserializer<>(BlockTagReference.class, BlockReference.class));
+        builder.registerTypeAdapter(ConfigEntity.class, new ConfigXDeserializer<>(EntityTagReference.class, EntityReference.class));
+        builder.registerTypeAdapter(ConfigFluid.class, new ConfigXDeserializer<>(FluidTagReference.class, FluidReference.class));
+        builder.registerTypeAdapter(ConfigItem.class, new ConfigXDeserializer<>(ItemTagReference.class, ItemReference.class));
 
 
-        GSON = GSON_BUILDER.create();
-    }
-
-    public GsonBuilder getGsonBuilder() {
-        return GSON_BUILDER;
+        gson = builder.create();
     }
 
     /**
@@ -234,8 +242,6 @@ public class GsonHelper {
 
         public IdentifierBasedSetSerializer(Registry<T> registry) {
             this(i -> registry.getOrEmpty(i).orElse(null), registry::getId);
-            Function<Identifier, T> fromId = i -> registry.getOrEmpty(i).orElse(null);
-            Function<T, Identifier> toId = registry::getId;
         }
 
         public IdentifierBasedSetSerializer(Function<Identifier, T> fromId, Function<T, Identifier> toId) {

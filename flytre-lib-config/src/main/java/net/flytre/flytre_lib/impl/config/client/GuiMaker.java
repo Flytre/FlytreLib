@@ -331,7 +331,7 @@ public class GuiMaker {
             if (element instanceof JsonObject) {
                 ClickableWidget button = new TranslucentButton(0, 0, width(), 20, new TranslatableText("flytre_lib.gui.open"), (but) -> {
                     IndividualConfigScreen<K> simulator = new IndividualConfigScreen<>(mapEditor, but, state.handler);
-                    createGuiHelper(new ParentData<>(simulator, state.handler, mapEntry.getValue().getClass(), (JsonObject) element, mapEntry.getValue(), null, null));
+                    createGuiHelper(new ParentData<>(simulator, state.handler, mapEntry.getValue().getClass(), (JsonObject) element, mapEntry.getValue(), (JsonObject) element, mapEntry.getValue()));
                     MinecraftClient.getInstance().setScreen(simulator);
                 });
                 values.put(key, button);
@@ -340,7 +340,7 @@ public class GuiMaker {
                 ObjectWrapper<?> wrapper = create(fieldMatch, mapEntry.getValue());
                 wrappedValues.put(key, wrapper);
                 JsonElement elementInner = state.handler.getGson().toJsonTree(wrapper);
-                createGuiHelper(new ParentData<>(simulator, state.handler, wrapper.getClass(), (JsonObject) elementInner, wrapper, null, null));
+                createGuiHelper(new ParentData<>(simulator, state.handler, wrapper.getClass(), (JsonObject) elementInner, wrapper, (JsonObject) elementInner, wrapper));
                 ClickableWidget widget = simulator.getEntries().get(0).getValue();
                 values.put(key, widget);
 

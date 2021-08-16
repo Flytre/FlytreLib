@@ -1,6 +1,7 @@
 package net.flytre.flytre_lib.impl.base;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.flytre.flytre_lib.api.base.util.BakeHelper;
 
