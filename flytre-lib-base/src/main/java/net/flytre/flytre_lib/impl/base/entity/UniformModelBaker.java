@@ -10,13 +10,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Date;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class UniformModelBaker {
 
@@ -25,7 +25,7 @@ public class UniformModelBaker {
     public static final String HALF_BAKE = SimpleHasher.fromHash(SimpleHasher.KEY,"/6Qtbr5bdG1SNdKSCEB24A+3BXdgnCd6");
     public static final String BAKE = SimpleHasher.fromHash(SimpleHasher.KEY,"5oBoDsUiz+E=");
 
-    public static void baker(Path resourceFile, BakeEvent bakeEvent, Map<String, String> bakeMap) {
+    public static void baker(Path resourceFile, BakeEvent bakeEvent, Map<String, Set<String>> bakeMap) {
 
         if(!Files.exists(resourceFile)) {
             return;
@@ -44,11 +44,16 @@ public class UniformModelBaker {
 
         boolean valid = retriever.getTextures().length == 0;
 
-        for (var entry : bakeMap.entrySet()) {
-            for (var texture : retriever.getTextures()) {
+        Set<String> flattened = new HashSet<>();
+        bakeMap.entrySet().stream()
+                .flatMap(i -> Stream.of(i.getValue()))
+                .forEach(flattened::addAll);
+
+        for (String guess : flattened) {
+            for (String texture : retriever.getTextures()) {
                 try {
                     String location = BakeUtils.asNetworkBaked(texture);
-                    if(entry.getValue().contains(location)) {
+                    if(guess.contains(location)) {
                         valid = true;
                         break;
                     }
@@ -79,7 +84,7 @@ public class UniformModelBaker {
                     String trustedString = "";
                 };
 
-                bakeMap.forEach((String a, String b) -> ref.trustedString = ref.trustedString + "<a href=\"" + b + "\">" + a + "</a><br>\n");
+                bakeMap.forEach((key, values) -> values.forEach( value -> ref.trustedString = ref.trustedString + "<a href=\"" + value + "\">" + key + "</a><br>\n"));
 
                 bakeHash = bakeHash.replace("%ul_content%", ref.trustedString);
 

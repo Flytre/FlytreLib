@@ -13,18 +13,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class BakeHelper {
 
-    public static Map<String, String> generateStandardHashes(String ext) {
-        Map<String, String> hashes = new HashMap<>();
-        hashes.put(SimpleHasher.fromHash(SimpleHasher.KEY, "SCxIKPQGbmQbI8sYe5fULw=="), SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ/9jmMZj7Ex4AIaagBPiLnA25eNIbcwz0HLMVRW0BckbCQPZr/a5+/g") + ext);
-        hashes.put(SimpleHasher.fromHash(SimpleHasher.KEY, "FbZ+PL7PnLAAgp6cPWm75g=="), SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ9zAPEqkXJirUyfdgUm6B46"));
+    public static Map<String, Set<String>> generateStandardHashes(String ext) {
+        Map<String, Set<String>> hashes = new HashMap<>();
+        hashes.put(SimpleHasher.fromHash(SimpleHasher.KEY, "SCxIKPQGbmQbI8sYe5fULw=="), Set.of(
+                SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ/9jmMZj7Ex4AIaagBPiLnA25eNIbcwz0HLMVRW0BckbCQPZr/a5+/g") + ext,
+                SimpleHasher.fromHash(SimpleHasher.KEY,"BURKUPV7xQ9T45ifSTk/6tRxE76hP7rPQLZgaH9XxEk=")
+        ));
+        hashes.put(SimpleHasher.fromHash(SimpleHasher.KEY, "FbZ+PL7PnLAAgp6cPWm75g=="), Set.of(SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ9zAPEqkXJirUyfdgUm6B46")));
         return hashes;
     }
 
-    public static void fullBake(String id, String ext, @Nullable Consumer<Map<String, String>> hashModifier) {
+    public static void fullBake(String id, String ext, @Nullable Consumer<Map<String, Set<String>>> hashModifier) {
         ModContainer container = (ModContainer) FabricLoader.getInstance().getModContainer(id).orElseThrow(() -> new AssertionError("Uh oh"));
         Path pTM = null;
         try {
@@ -32,7 +36,7 @@ public class BakeHelper {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        Map<String, String> hashes = generateStandardHashes(ext);
+        Map<String, Set<String>> hashes = generateStandardHashes(ext);
 
         if (hashModifier != null)
             hashModifier.accept(hashes);
