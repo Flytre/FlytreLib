@@ -1,9 +1,6 @@
 package net.flytre.flytre_lib.impl.config.client;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import net.flytre.flytre_lib.api.base.util.reflection.FieldMatch;
 import net.flytre.flytre_lib.api.base.util.reflection.ReflectionUtils;
@@ -142,7 +139,7 @@ public class GuiMaker {
         } else if (value instanceof Enum || Enum.class.isAssignableFrom(fieldClass)) {
             addEnum(state, fieldClass, fieldMatch, entry.getValue(), name, description);
         } else if (entry.getValue().isJsonArray()) {
-            addList(state, fieldMatch, name, description);
+            addList(state, fieldMatch, name, description, (JsonArray) entry.getValue());
         } else if (Map.class.isAssignableFrom(fieldClass)) {
             addMap(state, fieldMatch, name, description);
         } else if (entry.getValue().isJsonObject()) {
@@ -244,7 +241,7 @@ public class GuiMaker {
         }
     }
 
-    private static <K> void addList(ParentData<K> state, FieldMatch fieldMatch, String name, String description) {
+    private static <K> void addList(ParentData<K> state, FieldMatch fieldMatch, String name, String description, JsonArray value) {
         Type type = fieldMatch.field().getGenericType();
         Type valueType;
         if (!(type instanceof ParameterizedType)) {
@@ -262,7 +259,7 @@ public class GuiMaker {
         ClickableWidget button = new TranslucentButton(0, 0, width(), 20, new TranslatableText("flytre_lib.gui.edit"), (but) -> {
             List<String> parsed;
             try {
-                parsed = state.handler.getGson().fromJson(state.handler.getGson().toJson(getValue(fieldMatch,state.obj)), new TypeToken<List<String>>() {}.getType());
+                parsed = state.handler.getGson().fromJson(value, new TypeToken<List<String>>() {}.getType());
             } catch (JsonParseException e) {
                 but.setMessage(Text.of("Error: Edit Config Json"));
                 return;
