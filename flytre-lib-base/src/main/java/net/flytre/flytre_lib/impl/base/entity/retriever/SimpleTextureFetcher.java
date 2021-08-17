@@ -75,7 +75,7 @@ public class SimpleTextureFetcher implements TextureFetcher {
     }
 
     @Override
-    public Path getResourcePatch() {
+    public Path getResourcePath() {
         return resource;
     }
 

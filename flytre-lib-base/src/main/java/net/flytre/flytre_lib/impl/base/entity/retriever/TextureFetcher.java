@@ -10,5 +10,5 @@ public interface TextureFetcher {
 
     String[] getTextures();
 
-    Path getResourcePatch();
+    Path getResourcePath();
 }
