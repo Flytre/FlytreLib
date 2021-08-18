@@ -118,7 +118,7 @@ public abstract class OutputProvider {
     }
 
     private static class StackOutputProvider extends OutputProvider {
-        private final ItemStack stack;
+        protected final ItemStack stack;
 
         public StackOutputProvider(ItemStack stack, double chance) {
             super(chance);
@@ -138,6 +138,14 @@ public abstract class OutputProvider {
         public void toPacketImpl(PacketByteBuf buf) {
             buf.writeItemStack(stack);
             buf.writeDouble(chance);
+        }
+
+        @Override
+        public String toString() {
+            return "StackOutputProvider{" +
+                    "chance=" + chance +
+                    ", stack=" + stack +
+                    '}';
         }
     }
 
@@ -164,6 +172,14 @@ public abstract class OutputProvider {
             buf.writeIdentifier(taggedItem.getPath());
             buf.writeInt(taggedItem.getQty());
             buf.writeDouble(chance);
+        }
+
+        @Override
+        public String toString() {
+            return "TagOutputProvider{" +
+                    "chance=" + chance +
+                    ", taggedItem=" + taggedItem +
+                    '}';
         }
     }
 
@@ -199,6 +215,16 @@ public abstract class OutputProvider {
             super.toPacketImpl(buf);
             buf.writeInt(level);
             buf.writeBoolean(treasure);
+        }
+
+        @Override
+        public String toString() {
+            return "EnchantmentOutputProvider{" +
+                    "chance=" + chance +
+                    ", stack=" + stack +
+                    ", level=" + level +
+                    ", treasure=" + treasure +
+                    '}';
         }
     }
 }

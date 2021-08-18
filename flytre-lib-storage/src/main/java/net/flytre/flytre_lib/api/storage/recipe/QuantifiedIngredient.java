@@ -61,10 +61,18 @@ public final class QuantifiedIngredient implements Predicate<ItemStack> {
 
     public ItemStack[] getMatchingStacks() {
         ingredient.getMatchingStacks();
-        ItemStack[] result =  ingredient.getMatchingStacks();
+        ItemStack[] result = ingredient.getMatchingStacks();
         for (ItemStack stack : result) {
             stack.setCount(quantity);
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "QuantifiedIngredient{" +
+                "ingredient=" + ingredient.toJson() +
+                ", quantity=" + quantity +
+                '}';
     }
 }
