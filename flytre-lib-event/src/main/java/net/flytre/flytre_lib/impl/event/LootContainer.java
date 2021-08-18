@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface LootContainer {
 
-    List<LootPool> getPools();
+    List<LootPool> flytre_lib$getPools();
 
-    List<LootFunction> getFunctions();
+    List<LootFunction> flytre_lib$getFunctions();
 
-    LootContextType getType();
+    LootContextType flytre_lib$getType();
 }

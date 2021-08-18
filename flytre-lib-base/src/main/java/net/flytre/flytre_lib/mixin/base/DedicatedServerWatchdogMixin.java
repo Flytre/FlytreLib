@@ -21,6 +21,6 @@ public class DedicatedServerWatchdogMixin {
     @Inject(method="<init>", at = @At("TAIL"))
     public void flytre_lib$infiniteDebuggingTime(MinecraftDedicatedServer server, CallbackInfo ci) {
         if (FabricLoader.getInstance().isDevelopmentEnvironment())
-            maxTickTime = Long.MAX_VALUE;
+            maxTickTime = Long.MAX_VALUE / 2;
     }
 }

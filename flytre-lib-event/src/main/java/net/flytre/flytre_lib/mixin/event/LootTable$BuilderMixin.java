@@ -21,17 +21,17 @@ public class LootTable$BuilderMixin implements LootContainer {
     @Shadow private LootContextType type;
 
     @Override
-    public List<LootPool> getPools() {
+    public List<LootPool> flytre_lib$getPools() {
         return pools;
     }
 
     @Override
-    public List<LootFunction> getFunctions() {
+    public List<LootFunction> flytre_lib$getFunctions() {
         return functions;
     }
 
     @Override
-    public LootContextType getType() {
+    public LootContextType flytre_lib$getType() {
         return type;
     }
 

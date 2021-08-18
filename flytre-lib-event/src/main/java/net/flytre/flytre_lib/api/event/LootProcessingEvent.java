@@ -20,10 +20,10 @@ public interface LootProcessingEvent {
         LootContainer tableAccessor = (LootContainer) table;
         LootContainer builderAccessor = (LootContainer) builder;
 
-        builderAccessor.getPools().addAll(tableAccessor.getPools());
-        builderAccessor.getFunctions().addAll(tableAccessor.getFunctions());
+        builderAccessor.flytre_lib$getPools().addAll(tableAccessor.flytre_lib$getPools());
+        builderAccessor.flytre_lib$getFunctions().addAll(tableAccessor.flytre_lib$getFunctions());
 
-        builder.type(tableAccessor.getType());
+        builder.type(tableAccessor.flytre_lib$getType());
 
         return builder;
     }
