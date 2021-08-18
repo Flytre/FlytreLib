@@ -1,5 +1,5 @@
 archivesBaseName = "flytre-lib-base"
-version = getSubprojectVersion(project, "1.1.2")
+version = getSubprojectVersion(project, "1.2.0")
 
 minecraft {
     accessWidener("src/main/resources/flytre-lib-base.accessWidener")
