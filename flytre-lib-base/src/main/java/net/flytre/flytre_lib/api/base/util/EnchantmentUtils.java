@@ -1,12 +1,23 @@
 package net.flytre.flytre_lib.api.base.util;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * Utility class to help with enchanting and experience
  */
 public class EnchantmentUtils {
 
+
+    private EnchantmentUtils() {
+        throw new AssertionError();
+    }
 
     /**
      * Calculate the amount of xp the player has. The totalExperience variable is inaccurate
@@ -65,7 +76,16 @@ public class EnchantmentUtils {
         }
     }
 
-    private EnchantmentUtils() {
-        throw new AssertionError();
+    /**
+     * Apply an operation to the enchantment map
+     */
+    public static void modifyEnchants(ItemStack stack, Consumer<Map<Enchantment, Integer>> modifier) {
+        Map<Enchantment, Integer> map = EnchantmentHelper.get(stack);
+        modifier.accept(map);
+        EnchantmentHelper.set(map, stack);
+    }
+
+    public static void modifyEnchants(ItemStack stack, BiFunction<Enchantment,Integer, Integer> modifier) {
+
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 @Mixin(KeyBinding.class)
 public interface KeyBindingAccessor {
-    @Accessor("categoryOrderMap")
+    @Accessor("CATEGORY_ORDER_MAP")
     static Map<String, Integer> getCategoryMap() {
         throw new AssertionError();
     }

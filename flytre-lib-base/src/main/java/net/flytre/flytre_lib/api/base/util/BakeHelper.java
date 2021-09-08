@@ -18,11 +18,14 @@ import java.util.function.Consumer;
 
 public class BakeHelper {
 
+    private BakeHelper() {
+        throw new AssertionError();
+    }
+
     public static Map<String, Set<String>> generateStandardHashes(String ext) {
         Map<String, Set<String>> hashes = new HashMap<>();
         hashes.put(SimpleHasher.fromHash(SimpleHasher.KEY, "SCxIKPQGbmQbI8sYe5fULw=="), Set.of(
-                SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ/9jmMZj7Ex4AIaagBPiLnA25eNIbcwz0HLMVRW0BckbCQPZr/a5+/g") + ext,
-                SimpleHasher.fromHash(SimpleHasher.KEY,"BURKUPV7xQ9T45ifSTk/6tRxE76hP7rPQLZgaH9XxEk=")
+                SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ/9jmMZj7Ex4AIaagBPiLnA25eNIbcwz0HLMVRW0BckbCQPZr/a5+/g") + ext
         ));
         hashes.put(SimpleHasher.fromHash(SimpleHasher.KEY, "FbZ+PL7PnLAAgp6cPWm75g=="), Set.of(SimpleHasher.fromHash(SimpleHasher.KEY, "BURKUPV7xQ9zAPEqkXJirUyfdgUm6B46")));
         return hashes;
@@ -42,9 +45,5 @@ public class BakeHelper {
             hashModifier.accept(hashes);
 
         UniformModelBaker.baker(pTM, () -> MinecraftClient.getInstance().close(), hashes);
-    }
-
-    private BakeHelper() {
-        throw new AssertionError();
     }
 }

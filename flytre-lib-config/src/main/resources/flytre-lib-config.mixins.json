@@ -9,7 +9,8 @@
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin", "EntryListWidgetAccessor", "KeyboardMixin",
-    "MinecraftClientMixin", "ReloadableResourceManagerImplMixin", "TitleScreenMixin", "SliderWidgetAccessor"
+    "MinecraftClientMixin", "ReloadableResourceManagerImplMixin", "TitleScreenMixin", "SliderWidgetAccessor",
+    "MainMixin"
   ],
   "injectors": {
     "defaultRequire": 1
