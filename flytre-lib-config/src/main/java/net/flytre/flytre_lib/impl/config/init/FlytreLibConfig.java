@@ -13,18 +13,20 @@ public class FlytreLibConfig {
 
 
     @Description("Used to log in with a different account than signed in to the launcher (on game start). Mostly useful in development environments where its hard to log in. Like any 3rd-party log-in tool, don't trust it as passwords are stored unencrypted - Its mostly made for me, Flytre.")
-    public Login login;
+    public Login login = new Login("", "", false);
 
     public static class Login {
 
-        @Description("The username / email of the account to log-in with.")
         public String username;
-
-        @Description("The password of the account to log-in with.")
         public String password;
 
-        @Description("whether logging in should be attempted.")
-        @SerializedName("should login")
+        @SerializedName("should_login")
         public boolean shouldLogin = false;
+
+        public Login(String username, String password, boolean shouldLogin) {
+            this.username = username;
+            this.password = password;
+            this.shouldLogin = shouldLogin;
+        }
     }
 }

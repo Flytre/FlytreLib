@@ -6,6 +6,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import com.mojang.util.UUIDTypeAdapter;
+import net.flytre.flytre_lib.api.config.ConfigRegistry;
 import net.flytre.flytre_lib.impl.config.init.ClientConfigInitializer;
 import net.flytre.flytre_lib.impl.config.init.ConfigInitializer;
 import net.minecraft.client.main.Main;
@@ -35,12 +36,11 @@ public class MainMixin {
     private static String type;
     private static boolean successful = false;
 
-    static {
-        ClientConfigInitializer.HANDLER.handle();
-    }
 
     @Inject(method = "main", at = @At("HEAD"))
     private static void hoco_sg$login(String[] args, CallbackInfo ci) {
+
+        ConfigRegistry.registerClientConfig(ClientConfigInitializer.HANDLER);
 
 
         if(!ClientConfigInitializer.HANDLER.getConfig().login.shouldLogin) {
