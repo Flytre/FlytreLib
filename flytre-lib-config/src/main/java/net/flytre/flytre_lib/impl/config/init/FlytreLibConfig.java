@@ -21,7 +21,7 @@ public class FlytreLibConfig {
         public String password;
 
         @SerializedName("should_login")
-        public boolean shouldLogin = false;
+        public boolean shouldLogin;
 
         public Login(String username, String password, boolean shouldLogin) {
             this.username = username;
