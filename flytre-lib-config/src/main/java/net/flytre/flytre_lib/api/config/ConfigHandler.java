@@ -13,21 +13,22 @@ import net.flytre.flytre_lib.api.config.annotation.Range;
 import net.flytre.flytre_lib.impl.config.ConfigHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
-import org.apache.commons.compress.utils.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -91,8 +92,15 @@ public final class ConfigHandler<T> {
     }
 
     private String formattedGsonToJson5(String str) {
-        Pattern commentPattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": (.+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}");
-        str = commentPattern.matcher(str).replaceAll("$1//$5\\\n$1\"$2\": $3");
+
+
+        Pattern commentPattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": (.+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}",Pattern.DOTALL);
+
+        Matcher m = commentPattern.matcher(str);
+        while (m.find()) {
+            str = commentPattern.matcher(str).replaceAll("$1//$4\\\n$1\"$2\": $3");
+            m = commentPattern.matcher(str);
+        }
 
         Pattern multiline = Pattern.compile("^(\\s*)//(.*?)\\\\n(.*)$", Pattern.MULTILINE);
         while (str.contains("\\n"))
@@ -104,10 +112,8 @@ public final class ConfigHandler<T> {
 
     private JsonElement commentFormattedGson(JsonElement serialized, T config) {
 
-        if (!(serialized instanceof JsonObject))
+        if (!(serialized instanceof JsonObject object))
             return serialized;
-
-        JsonObject object = (JsonObject) serialized;
 
         commentFormattedGsonHelper(object, config.getClass());
         return object;
@@ -173,10 +179,9 @@ public final class ConfigHandler<T> {
             if (range != null) {
                 if (range.max() < range.min())
                     throw new ConfigAnnotationException("Invalid @Range annotation for field " + fieldMatch.field().getName() + ": Max value must be less or equal to the min value");
-                if (!(value instanceof Number)) {
+                if (!(value instanceof Number number)) {
                     throw new ConfigAnnotationException("@Range annotation unsupported for field " + fieldMatch.field().getName());
                 } else {
-                    Number number = (Number) value;
                     if (range.min() > number.doubleValue() || range.max() < number.doubleValue()) {
                         List<String> path2 = new ArrayList<>(path);
                         path2.add(fieldMatch.field().getName());
@@ -189,7 +194,7 @@ public final class ConfigHandler<T> {
             if (entry.getValue() instanceof JsonObject) {
                 fieldMatch.field().setAccessible(true);
                 validate((JsonObject) entry.getValue(), fieldMatch.field().getType(), fieldMatch.field().get(obj),
-                        Stream.concat(path.stream(), List.of(fieldMatch.field().getName()).stream()).distinct().collect(Collectors.toUnmodifiableList()));
+                        Stream.concat(path.stream(), Stream.of(fieldMatch.field().getName())).distinct().toList());
             }
         }
     }
@@ -197,7 +202,7 @@ public final class ConfigHandler<T> {
     private void appendError(File file, Exception e) throws IOException {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
-        String str = FileUtils.readFileToString(file, Charsets.UTF_8);
+        String str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
 
         String errorMessage = e.getMessage();
@@ -234,19 +239,19 @@ public final class ConfigHandler<T> {
         Path location = FabricLoader.getInstance().getConfigDir();
         File config = location.toFile();
         File configFile = null;
-        for (File file : config.listFiles()) {
+        for (File file : Objects.requireNonNull(config.listFiles())) {
             if (file.getName().equals(name + ".json5")) {
                 configFile = file;
                 break;
             }
         }
 
-        if (configFile == null) {
+        if (configFile == null || configFile.length() == 0) {
             save(assumed);
             this.config = assumed;
         } else {
-            try (Reader reader = new FileReader(configFile)) {
 
+            try (Reader reader = new FileReader(configFile)) {
                 try {
                     JsonObject json = gson.fromJson(reader, JsonObject.class);
                     this.config = gson.fromJson(json, (Type) assumed.getClass());
