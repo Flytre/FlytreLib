@@ -46,13 +46,16 @@ public class BlockManipulator {
     }
 
 
+    /**
+     * Bounds are inclusive
+     */
     public static Collection<BlockPos> getBlocksInRegion(BlockPos one, BlockPos two) {
         BlockPos min = new BlockPos(Math.min(one.getX(), two.getX()), Math.min(one.getY(), two.getY()), Math.min(one.getZ(), two.getZ()));
         BlockPos max = new BlockPos(Math.max(one.getX(), two.getX()), Math.max(one.getY(), two.getY()), Math.max(one.getZ(), two.getZ()));
         Set<BlockPos> result = new HashSet<>();
-        for (int i = min.getX(); i < max.getX(); i++) {
-            for (int j = min.getY(); j < max.getY(); j++) {
-                for (int k = min.getZ(); k < max.getZ(); k++) {
+        for (int i = min.getX(); i <= max.getX(); i++) {
+            for (int j = min.getY(); j <= max.getY(); j++) {
+                for (int k = min.getZ(); k <= max.getZ(); k++) {
                     result.add(new BlockPos(i, j, k));
                 }
             }
