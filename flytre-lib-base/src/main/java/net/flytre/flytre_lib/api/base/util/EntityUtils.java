@@ -3,6 +3,8 @@ package net.flytre.flytre_lib.api.base.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
@@ -11,6 +13,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class EntityUtils {
+
+    private EntityUtils() {
+        throw new AssertionError();
+    }
 
     public static HitResult raycastNoFluid(Entity entity, double maxDistance) {
         Vec3d origin = new Vec3d(entity.getX(), entity.getY() + entity.getEyeHeight(entity.getPose()), entity.getZ());
@@ -72,6 +78,20 @@ public class EntityUtils {
             }
         }
         return new LookedAtEntities(foundEntity, foundEntities);
+    }
+
+    /**
+     * @return the yaw and pitch of the entity needed to face directly towards location
+     */
+    public static Vec2f getFacingAngle(Entity entity, Vec3d location) {
+        Vec3d vec3d = entity.getPos();
+        double d = location.x - vec3d.x;
+        double e = location.y - vec3d.y;
+        double f = location.z - vec3d.z;
+        double g = Math.sqrt(d * d + f * f);
+        float h = MathHelper.wrapDegrees((float) (-(MathHelper.atan2(e, g) * 57.2957763671875D)));
+        float i = MathHelper.wrapDegrees((float) (MathHelper.atan2(f, d) * 57.2957763671875D) - 90.0F);
+        return new Vec2f(h, i);
     }
 
     private record LookedAtEntities(Entity main, Set<Entity> all) {
