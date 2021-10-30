@@ -38,8 +38,8 @@ public class BlockNbtMatchC2SPacket implements Packet<ServerPlayPacketListener> 
         BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof Filtered)
             ((Filtered) entity).getFilter().setMatchNbt(mode == 1);
-        if (entity instanceof FilterEventHandler filterEventHandler) {
-            filterEventHandler.onPacketReceived();
+        if (entity instanceof FilterEventHandler) {
+            ((FilterEventHandler) entity).onPacketReceived();
         }
     }
 }
