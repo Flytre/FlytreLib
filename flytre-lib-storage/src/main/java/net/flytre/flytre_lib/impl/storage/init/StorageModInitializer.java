@@ -13,7 +13,6 @@ import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPac
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
 import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Internal
 public class StorageModInitializer implements ModInitializer {
 
     @Override
