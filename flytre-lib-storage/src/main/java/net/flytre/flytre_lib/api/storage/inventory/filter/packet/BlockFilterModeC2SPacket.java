@@ -38,5 +38,8 @@ public class BlockFilterModeC2SPacket implements Packet<ServerPlayPacketListener
         BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof Filtered)
             ((Filtered) entity).getFilter().setFilterType(mode);
+        if (entity instanceof FilterEventHandler filterEventHandler) {
+            filterEventHandler.onPacketReceived();
+        }
     }
 }
