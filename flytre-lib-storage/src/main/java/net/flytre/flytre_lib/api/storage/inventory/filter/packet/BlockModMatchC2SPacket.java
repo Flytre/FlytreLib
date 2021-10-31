@@ -6,6 +6,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -33,13 +34,14 @@ public class BlockModMatchC2SPacket implements Packet<ServerPlayPacketListener> 
 
     @Override
     public void apply(ServerPlayPacketListener listener) {
-        ServerPlayNetworkHandler handler = ((ServerPlayNetworkHandler) listener);
-        World world = handler.getPlayer().world;
-        BlockEntity entity = world.getBlockEntity(pos);
-        if (entity instanceof Filtered)
-            ((Filtered) entity).getFilter().setMatchMod(mode == 1);
-        if (entity instanceof FilterEventHandler) {
-            ((FilterEventHandler) entity).onPacketReceived();
-        }
+        ServerWorld world = ((ServerPlayNetworkHandler) listener).getPlayer().getServerWorld();
+        world.getServer().execute(() -> {
+            BlockEntity entity = world.getBlockEntity(pos);
+            if (entity instanceof Filtered)
+                ((Filtered) entity).getFilter().setMatchMod(mode == 1);
+            if (entity instanceof FilterEventHandler) {
+                ((FilterEventHandler) entity).onPacketReceived();
+            }
+        });
     }
 }
