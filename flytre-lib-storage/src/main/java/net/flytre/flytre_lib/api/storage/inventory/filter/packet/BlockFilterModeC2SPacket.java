@@ -6,6 +6,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
@@ -33,8 +34,12 @@ public class BlockFilterModeC2SPacket implements Packet<ServerPlayPacketListener
 
     @Override
     public void apply(ServerPlayPacketListener listener) {
-        ServerWorld world = ((ServerPlayNetworkHandler) listener).getPlayer().getServerWorld();
+        ServerPlayerEntity player = ((ServerPlayNetworkHandler) listener).getPlayer();
+        ServerWorld world = player.getServerWorld();
         world.getServer().execute(() -> {
+            if (pos.getSquaredDistance(player.getX(), player.getY(), player.getZ(), false) > 36)
+                return;
+
             BlockEntity entity = world.getBlockEntity(pos);
             if (entity instanceof Filtered)
                 ((Filtered) entity).getFilter().setFilterType(mode);
