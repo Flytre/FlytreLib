@@ -23,6 +23,6 @@
   "accessWidener": "flytre-lib-base.accessWidener",
   "depends": {
     "fabricloader": ">=0.11.1",
-    "minecraft": "1.17.*"
+    "minecraft": "1.18.*"
   }
 }

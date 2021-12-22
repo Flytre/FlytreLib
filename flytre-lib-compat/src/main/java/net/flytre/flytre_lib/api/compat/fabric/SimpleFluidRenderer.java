@@ -52,7 +52,7 @@ public final class SimpleFluidRenderer {
             MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder bb = tess.getBuffer();
-            Matrix4f matrix = matrices.peek().getModel();
+            Matrix4f matrix = matrices.peek().getPositionMatrix();
             if (height / width >= 1) {
                 int times = (int) Math.ceil((double) height / width);
                 for (int i = 0; i < times; i++) {

@@ -173,7 +173,7 @@ public class RenderUtils {
     @Environment(EnvType.CLIENT)
     public static void renderBlockSprite(VertexConsumer builder, MatrixStack stack, Sprite sprite, int light, int overlay, int[] color) {
 
-        renderBlockSprite(builder, stack.peek().getModel(), sprite, light, overlay, 0f, 1f, 0f, 1f, 0f, 1f, color);
+        renderBlockSprite(builder, stack.peek().getPositionMatrix(), sprite, light, overlay, 0f, 1f, 0f, 1f, 0f, 1f, color);
     }
 
     /**
@@ -532,7 +532,7 @@ public class RenderUtils {
 
         RenderSystem.bindTexture(framebuffer.getColorAttachment());
 
-        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        RenderSystem.assertOnRenderThread();
         GlStateManager._pixelStore(3333, 4);
 
         int pixelDataFormat = 6408;

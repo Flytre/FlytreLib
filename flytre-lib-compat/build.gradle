@@ -8,6 +8,6 @@ repositories {
 moduleDependencies(project, [])
 
 dependencies {
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.264-alpha"
-    modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:6.0.264-alpha"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:7.1.356"
+    modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:7.1.356"
 }

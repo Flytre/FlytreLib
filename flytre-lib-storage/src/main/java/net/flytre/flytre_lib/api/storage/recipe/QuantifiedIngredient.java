@@ -23,7 +23,7 @@ public final class QuantifiedIngredient implements Predicate<ItemStack> {
     }
 
     public static QuantifiedIngredient fromJson(JsonElement json) {
-        Ingredient ingredient = RecipeUtils.fromJson(json);
+        Ingredient ingredient = Ingredient.fromJson(json);
         int quantity = 1;
         if (json.isJsonObject() && JsonHelper.hasPrimitive((JsonObject) json, "count")) {
             quantity = JsonHelper.getInt((JsonObject) json, "count");

@@ -35,8 +35,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         fluidHandlerSyncHandler = new FluidHandlerSyncHandler.Impl((ServerPlayerEntity) (Object) this);
     }
 
-    @Inject(method = "onSpawn(Lnet/minecraft/screen/ScreenHandler;)V", at = @At("TAIL"))
-    public void flytre_lib$onSpawn(ScreenHandler screenHandler, CallbackInfo ci) {
+    @Inject(method = "onScreenHandlerOpened(Lnet/minecraft/screen/ScreenHandler;)V", at = @At("TAIL"))
+    public void flytre_lib$onScreenHandlerOpened(ScreenHandler screenHandler, CallbackInfo ci) {
         if (screenHandler instanceof FluidHandler)
             ((FluidHandler) screenHandler).updateSyncHandler(this.fluidHandlerSyncHandler);
 

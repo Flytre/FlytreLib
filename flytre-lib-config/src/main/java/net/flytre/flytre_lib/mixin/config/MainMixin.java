@@ -2,13 +2,13 @@ package net.flytre.flytre_lib.mixin.config;
 
 
 import com.mojang.authlib.Agent;
+import com.mojang.authlib.UserType;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import com.mojang.util.UUIDTypeAdapter;
 import net.flytre.flytre_lib.api.config.ConfigRegistry;
 import net.flytre.flytre_lib.impl.config.init.ClientConfigInitializer;
-import net.flytre.flytre_lib.impl.config.init.ConfigInitializer;
 import net.minecraft.client.main.Main;
 import net.minecraft.client.util.Session;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.net.Proxy;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -38,12 +40,12 @@ public class MainMixin {
 
 
     @Inject(method = "main", at = @At("HEAD"))
-    private static void hoco_sg$login(String[] args, CallbackInfo ci) {
+    private static void flytre_lib$login(String[] args, CallbackInfo ci) {
 
         ConfigRegistry.registerClientConfig(ClientConfigInitializer.HANDLER);
 
 
-        if(!ClientConfigInitializer.HANDLER.getConfig().login.shouldLogin) {
+        if (!ClientConfigInitializer.HANDLER.getConfig().login.shouldLogin) {
             return;
         }
 
@@ -68,12 +70,13 @@ public class MainMixin {
     }
 
     @Redirect(method = "main", at = @At(value = "NEW", target = "net/minecraft/client/util/Session"))
-    private static Session hoco_sg$auth_me(String username, String uuid2, String accessToken, String accountType) {
+    private static Session flytre_lib$auth_me(String username, String uuid2, String accessToken, Optional<String> xuid, Optional<String> clientId, Session.AccountType accountType) {
 
+        //TODO: TEST 1.18
         if (successful)
-            return new Session(name, uuid, token, type);
+            return new Session(name, uuid, token, Optional.empty(), Optional.empty(), Objects.equals(type, UserType.LEGACY.getName()) ? Session.AccountType.LEGACY : Session.AccountType.MOJANG);
         else
-            return new Session(username, uuid2, accessToken, accountType);
+            return new Session(username, uuid2, accessToken, xuid, clientId, accountType);
     }
 
 

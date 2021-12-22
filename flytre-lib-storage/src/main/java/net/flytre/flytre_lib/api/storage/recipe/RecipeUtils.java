@@ -45,40 +45,6 @@ public class RecipeUtils {
         throw new AssertionError();
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.18")
-    public static void clearCache() {
-        CACHE.clear();
-        CACHE_HANDLER.clear();
-    }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.18")
-    public static Ingredient fromJson(@Nullable JsonElement json) {
-        return json == null || isIngredientInvalid(json) ? Ingredient.EMPTY : Ingredient.fromJson(json);
-    }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.18")
-    public static boolean isIngredientInvalid(@Nullable JsonElement json) {
-        if (json != null && !json.isJsonNull()) {
-            if (json.isJsonObject()) {
-                return nullCheck(json.getAsJsonObject());
-            } else if (json.isJsonArray()) {
-                JsonArray jsonArray = json.getAsJsonArray();
-                if (jsonArray.size() == 0) {
-                    return true;
-                } else {
-                    return StreamSupport.stream(jsonArray.spliterator(), false).anyMatch((jsonElement) -> nullCheck(JsonHelper.asObject(jsonElement, "item")));
-                }
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    }
-
     private static boolean nullCheck(JsonObject json) {
         if (json.has("item") && json.has("tag")) {
             return true;

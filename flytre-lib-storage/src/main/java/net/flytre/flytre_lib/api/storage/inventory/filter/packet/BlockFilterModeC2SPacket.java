@@ -35,7 +35,7 @@ public class BlockFilterModeC2SPacket implements Packet<ServerPlayPacketListener
     @Override
     public void apply(ServerPlayPacketListener listener) {
         ServerPlayerEntity player = ((ServerPlayNetworkHandler) listener).getPlayer();
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = player.getWorld();
         world.getServer().execute(() -> {
             if (pos.getSquaredDistance(player.getX(), player.getY(), player.getZ(), false) > 36)
                 return;

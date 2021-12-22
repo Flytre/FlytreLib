@@ -3,15 +3,15 @@ plugins {
     id "eclipse"
     id "idea"
     id "maven-publish"
-    id "fabric-loom" version "0.8.12" apply false
+    id "fabric-loom" version "0.10-SNAPSHOT" apply false
 }
 
 class Globals {
-    static def baseVersion = "1.4.2"
-    static def mcVersion = "1.17.1"
-    static def yarnVersion = "+build.59"
+    static def baseVersion = "1.4.4"
+    static def mcVersion = "1.18.1"
+    static def yarnVersion = "+build.7"
     static def loaderVersion = "0.11.3"
-    static def fabricVersion = "0.40.1+1.17"
+    static def fabricVersion = "0.44.0+1.18"
 }
 
 version = Globals.baseVersion
@@ -74,7 +74,7 @@ allprojects {
     }
 
     loom {
-        shareCaches = true
+        shareRemapCaches = true
     }
 
     repositories {
@@ -164,7 +164,7 @@ dependencies {
     afterEvaluate {
         subprojects.each {
             include project("${it.name}:")
-//            api project(path: ":${it.name}", configuration: "dev")
+            api project(path: ":${it.name}", configuration: "dev")
         }
     }
     include fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)

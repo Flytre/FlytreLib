@@ -6,9 +6,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class ParticleUtils {
+
+    private ParticleUtils() {
+        throw new AssertionError();
+    }
 
     public static void drawLineTo(Vec3d a, Vec3d b, ParticleEffect particle, ServerWorld world) {
         drawLineTo(a, b, particle, world, 1, true);
@@ -31,10 +34,9 @@ public class ParticleUtils {
 
     //PlayerLookup::tracking
     private static Collection<ServerPlayerEntity> tracking(ServerWorld world, BlockPos pos) {
-        return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(new ChunkPos(pos), false).collect(Collectors.toList());
+        return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(new ChunkPos(pos), false);
 
     }
-
 
     public static Vec3d caretToAbsolute(Vec3d caretValues, Vec2f rotation, Vec3d anchorPosition) {
         float f = MathHelper.cos((rotation.y + 90.0F) * 0.017453292F);
@@ -50,10 +52,5 @@ public class ParticleUtils {
         double e = vec3d2.y * caretValues.z + vec3d3.y * caretValues.y + vec3d4.y * caretValues.x;
         double l = vec3d2.z * caretValues.z + vec3d3.z * caretValues.y + vec3d4.z * caretValues.x;
         return new Vec3d(anchorPosition.x + d, anchorPosition.y + e, anchorPosition.z + l);
-    }
-
-
-    private ParticleUtils() {
-        throw new AssertionError();
     }
 }
