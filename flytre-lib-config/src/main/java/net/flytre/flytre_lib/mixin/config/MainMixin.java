@@ -72,7 +72,6 @@ public class MainMixin {
     @Redirect(method = "main", at = @At(value = "NEW", target = "net/minecraft/client/util/Session"))
     private static Session flytre_lib$auth_me(String username, String uuid2, String accessToken, Optional<String> xuid, Optional<String> clientId, Session.AccountType accountType) {
 
-        //TODO: TEST 1.18
         if (successful)
             return new Session(name, uuid, token, Optional.empty(), Optional.empty(), Objects.equals(type, UserType.LEGACY.getName()) ? Session.AccountType.LEGACY : Session.AccountType.MOJANG);
         else
