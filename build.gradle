@@ -53,10 +53,10 @@ allprojects {
 
 //Add each passed dependency as an API dependency and list it in the pom file
 def moduleDependencies(project, List<String> depNames) {
-    def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+    def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it") }
     project.dependencies {
         deps.each {
-            api it
+            compileOnly it
         }
     }
     project.publishing {
