@@ -16,6 +16,7 @@ repositories {
 apply from: '../gradle/property_helper.gradle'
 
 archivesBaseName = "${mod_id}-${minecraft_version}-fabric"
+version = project.properties.get("version")
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"

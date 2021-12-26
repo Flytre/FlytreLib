@@ -7,6 +7,8 @@ buildscript {
     }
 }
 
+version = project.properties.get("version")
+
 apply from: 'gradle/property_loader.gradle'
 apply from: 'gradle/git_changelog.gradle'
 
