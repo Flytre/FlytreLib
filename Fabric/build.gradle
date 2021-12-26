@@ -30,9 +30,14 @@ dependencies {
     modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}"
 
     modRuntime "com.terraformersmc:modmenu:${modmenu_version}"
-
-    api project(":Common")
 }
+
+
+moduleDependencies(project, [
+        "Common"
+])
+
+
 
 loom {
     runs {

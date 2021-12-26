@@ -43,5 +43,36 @@ subprojects {
     dependencies {
         implementation group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
     }
+}
 
+allprojects {
+    configurations {
+        dev
+    }
+}
+
+//Add each passed dependency as an API dependency and list it in the pom file
+def moduleDependencies(project, List<String> depNames) {
+    def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+    project.dependencies {
+        deps.each {
+            api it
+        }
+    }
+    project.publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                pom.withXml {
+                    def depsNode = asNode().appendNode("dependencies")
+                    deps.each {
+                        def depNode = depsNode.appendNode("dependency")
+                        depNode.appendNode("groupId", it.group)
+                        depNode.appendNode("artifactId", it.name)
+                        depNode.appendNode("version", it.version)
+                        depNode.appendNode("scope", "compile")
+                    }
+                }
+            }
+        }
+    }
 }

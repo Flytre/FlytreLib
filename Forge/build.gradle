@@ -13,9 +13,11 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-    implementation project(":Common")
 }
+
+moduleDependencies(project, [
+        "Common"
+])
 
 loom {
     runs {
