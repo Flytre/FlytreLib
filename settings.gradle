@@ -1,19 +1,19 @@
 pluginManagement {
-	repositories {
-		gradlePluginPortal()
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-		mavenLocal()
-	}
+    repositories {
+        gradlePluginPortal()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'Sponge Snapshots'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://files.minecraftforge.net/maven/" }
+    }
 }
 
-rootProject.name = "flytre-lib"
-
-include 'flytre-lib-base'
-include 'flytre-lib-config'
-include 'flytre-lib-gui'
-include 'flytre-lib-compat'
-include 'flytre-lib-storage'
-include 'flytre-lib-event'
+rootProject.name = "FlytreLib v1.18 - Combined"
+include('Common', 'Fabric', 'Forge')
