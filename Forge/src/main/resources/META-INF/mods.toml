@@ -6,7 +6,7 @@ logoFile="icon.png"
 
 [[mods]]
 modId="${mod_id}"
-version="${version}"
+version="${mod_version}"
 displayName="${mod_name}"
 displayURL="${mod_homepage}"
 credits=""

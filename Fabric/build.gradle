@@ -16,7 +16,6 @@ repositories {
 apply from: '../gradle/property_helper.gradle'
 
 archivesBaseName = "${mod_id}-${minecraft_version}-fabric"
-version = project.properties.get("version")
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -130,7 +129,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 
     apiToken = auth.getProperty("curseforge_token")
 
-    def mainFile = upload(curse_project, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+    def mainFile = upload(curse_project, file("${project.buildDir}/libs/${archivesBaseName}-${mod_version}.jar"))
     mainFile.changelogType = 'markdown'
     mainFile.changelog = project.ext.mod_changelog
     mainFile.addJavaVersion('Java 17')

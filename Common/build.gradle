@@ -5,7 +5,6 @@ plugins {
 apply from: '../gradle/property_helper.gradle'
 
 archivesBaseName = "Common"
-version = project.properties.get("version")
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
