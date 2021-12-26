@@ -40,14 +40,16 @@ project.publishing {
             // Base mod archive.
             artifact jar
 
-            // Adds the sources as an artifact.
-            artifact project.sourcesJar {
-                classifier 'sources'
+            // Base mod archive.
+            artifact(remapJar) {
+
+                builtBy remapJar
             }
 
-            // Adds the javadocs as an artifact.
-            artifact project.javadocJar {
-                classifier 'javadoc'
+            // Adds the soruces as an artifact.
+            artifact(sourcesJar) {
+
+                builtBy remapSourcesJar
             }
         }
     }
