@@ -109,7 +109,11 @@ project.publishing {
 
 
 def auth = new Properties()
-file("../auth.properties").withInputStream { auth.load(it) }
+try {
+    file("../auth.properties").withInputStream { auth.load(it) }
+} catch (ignored) {
+    file("../auth_fallback.properties").withInputStream { auth.load(it) }
+}
 
 // CurseForge Publishing
 task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
@@ -123,8 +127,11 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     mainFile.addJavaVersion('Java 18')
     mainFile.releaseType = 'beta'
     mainFile.addModLoader('Fabric')
-    mainFile.addGameVersion("1.18")
-    mainFile.addGameVersion("1.18.1")
+
+    def versions = supported_versions.split(",")
+    versions.each(v -> {
+        mainFile.addGameVersion(v)
+    })
 
     doLast {
 
