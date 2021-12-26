@@ -113,6 +113,8 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     mainFile.addJavaVersion('Java 18')
     mainFile.releaseType = 'beta'
     mainFile.addModLoader('Forge')
+    mainFile.addGameVersion("1.18")
+    mainFile.addGameVersion("1.18.1")
 
     doLast {
 
