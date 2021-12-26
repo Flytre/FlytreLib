@@ -1,2 +1,0 @@
-TODO: Edit server configs client side
-TODO: OBJECT LISTS IN CONFIG

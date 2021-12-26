@@ -1,193 +1,52 @@
-plugins {
-    id "java-library"
-    id "eclipse"
-    id "idea"
-    id "maven-publish"
-    id "fabric-loom" version "0.10-SNAPSHOT" apply false
-}
-
-class Globals {
-    static def baseVersion = "1.4.4"
-    static def mcVersion = "1.18.1"
-    static def yarnVersion = "+build.7"
-    static def loaderVersion = "0.11.3"
-    static def fabricVersion = "0.44.0+1.18"
-}
-
-version = Globals.baseVersion
-logger.lifecycle("Building Flytre Lib: " + version)
-
-
-import net.fabricmc.loom.task.RemapJarTask
-
-def getSubprojectVersion(project, version) {
-    return version
-}
-
-//Add each passed dependency as an API dependency and list it in the pom file
-def moduleDependencies(project, List<String> depNames) {
-    def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
-    project.dependencies {
-        deps.each {
-            api it
-        }
-    }
-    project.publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                pom.withXml {
-                    def depsNode = asNode().appendNode("dependencies")
-                    deps.each {
-                        def depNode = depsNode.appendNode("dependency")
-                        depNode.appendNode("groupId", it.group)
-                        depNode.appendNode("artifactId", it.name)
-                        depNode.appendNode("version", it.version)
-                        depNode.appendNode("scope", "compile")
-                    }
-                }
-            }
-        }
-    }
-}
-
-allprojects {
-    apply plugin: "java-library"
-    apply plugin: "maven-publish"
-    apply plugin: "fabric-loom"
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.release = 16
-    }
-
-    group = "net.flytre.flytre_lib"
-
-    dependencies {
-        minecraft "com.mojang:minecraft:$Globals.mcVersion"
-        mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-        modApi "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
-        modCompileOnly("net.fabricmc.fabric-api:fabric-api:${Globals.fabricVersion}")
-        modImplementation fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)
-    }
-
-    configurations {
-        dev
-    }
-
-    loom {
-        shareRemapCaches = true
-    }
+// TODO remove buildscript block
+buildscript {
 
     repositories {
-        mavenLocal()
+    
+        mavenCentral()
     }
-
-    jar {
-        archiveClassifier = "dev"
-    }
-
-    afterEvaluate {
-        remapJar {
-            input = file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar")
-            archiveName = "${archivesBaseName}-${version}.jar"
-        }
-
-        artifacts {
-            dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: jar
-        }
-
-        processResources {
-            inputs.property "version", project.version
-
-            filesMatching("fabric.mod.json") {
-                expand "version": project.version
-            }
-        }
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        archiveClassifier = "sources"
-        from sourceSets.main.allSource
-    }
-
-    tasks.withType(AbstractArchiveTask) {
-        preserveFileTimestamps = false
-        reproducibleFileOrder = true
-    }
-
-    // configure the maven publication
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                // add all the jars that should be included when publishing to maven
-
-                artifact jar
-                artifact remapJar
-                artifact sourcesJar
-            }
-        }
-
-        // select the repositories you want to publish to
-        repositories {
-            // uncomment to publish to the local maven
-            mavenLocal()
-        }
-    }
-
 }
+
+apply from: 'gradle/property_loader.gradle'
+apply from: 'gradle/git_changelog.gradle'
 
 subprojects {
 
-    task remapMavenJar(type: Copy, dependsOn: remapJar) {
-        afterEvaluate {
-            from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
-            into("${project.buildDir}/libs/")
-            rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
+    apply plugin: 'maven-publish'
+    
+    apply from: '../gradle/property_loader.gradle'
+    apply from: '../gradle/java.gradle'
+    apply from: '../gradle/git_changelog.gradle'
+    apply from: '../gradle/minify_jsons.gradle'
+    apply from: '../gradle/signing.gradle'
+    
+    // Disables Gradle's custom module metadata from being published to maven. The 
+    // metadata includes mapped dependencies which are not reasonably consumable by
+    // other mod developers.
+    tasks.withType(GenerateModuleMetadata) {
+
+        enabled = false
+    }
+
+    repositories {
+
+        mavenCentral()
+
+        maven {
+            name = 'Sponge / Mixin'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+        
+        maven {
+            name = 'Mod Menu'
+            url = 'https://maven.terraformersmc.com/releases/'
         }
     }
 
-    artifacts {
-        archives sourcesJar
+
+
+    dependencies {
+        implementation group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
     }
 
-    javadoc.enabled = false
 }
-
-task remapMavenJar(type: RemapJarTask, dependsOn: jar) {
-    afterEvaluate {
-        input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-        archiveName = "${archivesBaseName}-${version}-maven.jar"
-        addNestedDependencies = false
-    }
-}
-
-dependencies {
-    afterEvaluate {
-        subprojects.each {
-            include project("${it.name}:")
-            api project(path: ":${it.name}", configuration: "dev")
-        }
-    }
-    include fabricApi.module("fabric-resource-loader-v0", Globals.fabricVersion)
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            pom.withXml {
-                def depsNode = asNode().appendNode("dependencies")
-                subprojects.each {
-                    def depNode = depsNode.appendNode("dependency")
-                    depNode.appendNode("groupId", it.group)
-                    depNode.appendNode("artifactId", it.name)
-                    depNode.appendNode("version", it.version)
-                    depNode.appendNode("scope", "compile")
-                }
-            }
-        }
-    }
-}
-
-
-task licenseFormatAll
-subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
-subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }

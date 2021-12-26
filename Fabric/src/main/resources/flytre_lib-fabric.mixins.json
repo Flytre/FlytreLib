@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.flytre.flytre_lib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "storage.fluid.BucketItemAccessor", "storage.fluid.FluidBlockAccessor", "storage.fluid.ScreenHandlerMixin",
+    "storage.fluid.ServerPlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": ["loader.MainMixin", "base.ParticleManagerMixin", "storage.fluid.HandledScreenMixin"]
+}
+  

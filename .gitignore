@@ -1,41 +1,26 @@
-# Gradle
-.gradle/
-loom-cache/
-
-
-# VSCode
-.settings/
-.vscode/
-
-# Eclipse
-.checkstyle
-.classpath
-.metadata
-.settings
-.project
+# eclipse
+bin
 *.launch
+.settings
+.metadata
+.classpath
+.project
 
-# Intellij/Idea
-.factorypath
-.idea
-*.iml
+# idea
+out
 *.ipr
 *.iws
+*.iml
+.idea
 
-# Build artifacts
-bin/
-build/
-jars/
-out/
-classes/
+# vscode
+.vscode
 
-# Debug artifacts
+# gradle
+build
+.gradle
+
+# other
+eclipse
 run
-*.log
-
-# Windows
-*.db
-$RECYCLE.BIN/
-
-# Mac
-.DS_Store
+auth.properties
