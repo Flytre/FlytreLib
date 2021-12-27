@@ -21,6 +21,6 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "${mod_id}-${minecraft_version}-${loader}-refmap.json"
+  "refmap": "${mod_id}-${minecraft_version}-${mod_version}-${loader}-refmap.json"
 }
   

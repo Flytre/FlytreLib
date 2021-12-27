@@ -50,6 +50,5 @@
         "modmenu.curseforge": "${mod_homepage}"
       }
     }
-  },
-  "refmap": "${mod_id}-${minecraft_version}-fabric.json"
+  }
 }
