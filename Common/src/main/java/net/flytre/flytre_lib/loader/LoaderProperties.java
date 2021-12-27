@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import java.nio.file.Path;
 import java.util.function.Function;
 
+
 public final class LoaderProperties {
     public static ConfigHandler<FlytreLibConfig> HANDLER = null;
     private static boolean DEV_ENVIRONMENT = false;
