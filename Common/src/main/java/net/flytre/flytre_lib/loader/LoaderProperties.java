@@ -13,7 +13,6 @@ import net.minecraft.item.Item;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-
 public final class LoaderProperties {
     public static ConfigHandler<FlytreLibConfig> HANDLER = null;
     private static boolean DEV_ENVIRONMENT = false;
@@ -63,17 +62,17 @@ public final class LoaderProperties {
         ITEM_REGISTERER = itemRegisterer;
     }
 
-    public static <T extends Block> T registerBlock(T block, String mod, String id) {
+    public static <T extends Block> T register(T block, String mod, String id) {
         assert BLOCK_REGISTERER != null;
         return BLOCK_REGISTERER.register(block, mod, id);
     }
 
-    public static <T extends Item> T registerItem(T item, String mod, String id) {
+    public static <T extends Item> T register(T item, String mod, String id) {
         assert ITEM_REGISTERER != null;
         return ITEM_REGISTERER.register(item, mod, id);
     }
 
-    public static <E extends Entity, T extends EntityType<E>> T registerEntity(T entity, String mod, String id) {
+    public static <E extends Entity, T extends EntityType<E>> T register(T entity, String mod, String id) {
         assert ENTITY_REGISTER != null;
         return ENTITY_REGISTER.register(entity, mod, id);
     }

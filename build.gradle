@@ -2,7 +2,7 @@
 buildscript {
 
     repositories {
-    
+
         mavenCentral()
     }
 }
@@ -15,13 +15,13 @@ version = mod_version
 subprojects {
 
     apply plugin: 'maven-publish'
-    
+
     apply from: '../gradle/property_loader.gradle'
     apply from: '../gradle/java.gradle'
     apply from: '../gradle/git_changelog.gradle'
     apply from: '../gradle/minify_jsons.gradle'
     apply from: '../gradle/signing.gradle'
-    
+
     // Disables Gradle's custom module metadata from being published to maven. The 
     // metadata includes mapped dependencies which are not reasonably consumable by
     // other mod developers.
@@ -41,7 +41,6 @@ subprojects {
     }
 
 
-
     dependencies {
         implementation group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
     }
@@ -53,28 +52,12 @@ allprojects {
     }
 }
 
-//Add each passed dependency as an API dependency and list it in the pom file
+//Compile-time dependencies that are not exported
 def moduleDependencies(project, List<String> depNames) {
     def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it") }
     project.dependencies {
         deps.each {
             compileOnly it
-        }
-    }
-    project.publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                pom.withXml {
-                    def depsNode = asNode().appendNode("dependencies")
-                    deps.each {
-                        def depNode = depsNode.appendNode("dependency")
-                        depNode.appendNode("groupId", it.group)
-                        depNode.appendNode("artifactId", it.name)
-                        depNode.appendNode("version", it.version)
-                        depNode.appendNode("scope", "compile")
-                    }
-                }
-            }
         }
     }
 }
