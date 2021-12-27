@@ -24,10 +24,12 @@
       "net.flytre.flytre_lib.impl.config.ClientConfigInitializer",
       "net.flytre.flytre_lib.impl.storage.init.StorageClientModInitializer"
     ],
-    "server": [
-      "net.flytre.flytre_lib.FlytreLibServer",
+    "main": [
       "net.flytre.flytre_lib.impl.config.ConfigInitializer",
       "net.flytre.flytre_lib.impl.storage.init.StorageModInitializer"
+    ],
+    "server": [
+      "net.flytre.flytre_lib.FlytreLibServer"
     ]
   },
   "mixins": [

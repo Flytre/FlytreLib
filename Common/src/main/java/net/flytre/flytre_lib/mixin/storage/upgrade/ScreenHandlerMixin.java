@@ -44,38 +44,41 @@ public abstract class ScreenHandlerMixin implements UpgradeHandler {
 
     @Unique
     public DefaultedList<UpgradeSlot> upgradeSlots = DefaultedList.of();
-
+    @Shadow
+    @Final
+    public DefaultedList<Slot> slots;
     @Unique
     private DefaultedList<ItemStack> trackedUpgradeStacks = DefaultedList.of();
-
     @Unique
     private DefaultedList<ItemStack> previousTrackedUpgradeStacks = DefaultedList.of();
-
     @Unique
     private @Nullable UpgradeHandlerSyncHandler upgradeSyncHandler;
-
     @Shadow
     @Final
     private List<ScreenHandlerListener> listeners;
+    @Shadow
+    @Final
+    @Nullable
+    private ScreenHandlerType<?> type;
+    @Shadow
+    private boolean disableSync;
 
-    @Shadow @Final @Nullable private ScreenHandlerType<?> type;
+    @Shadow
+    public abstract void syncState();
 
+    @Shadow
+    public abstract ItemStack getCursorStack();
 
-    @Shadow public abstract void syncState();
+    @Shadow
+    public abstract void setCursorStack(ItemStack stack);
 
-    @Shadow private boolean disableSync;
+    @Shadow
+    public abstract void sendContentUpdates();
 
-    @Shadow public abstract ItemStack getCursorStack();
+    @Shadow
+    protected abstract boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast);
 
-    @Shadow public abstract void setCursorStack(ItemStack stack);
-
-    @Shadow public abstract void sendContentUpdates();
-
-    @Shadow protected abstract boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast);
-
-    @Shadow @Final public DefaultedList<Slot> slots;
-
-    @Inject(method="<init>*", at = @At("TAIL"))
+    @Inject(method = "<init>*", at = @At("TAIL"))
     public void flytre_lib$init(ScreenHandlerType<?> type, int syncId, CallbackInfo ci) {
         upgradeSlots = DefaultedList.of();
         trackedUpgradeStacks = DefaultedList.of();
@@ -172,7 +175,6 @@ public abstract class ScreenHandlerMixin implements UpgradeHandler {
     }
 
 
- 
     @Override
     public void updateUpgradeSlotStacks(List<ItemStack> stacks) {
         for (int i = 0; i < stacks.size(); ++i) {
@@ -228,7 +230,8 @@ public abstract class ScreenHandlerMixin implements UpgradeHandler {
                     return;
                 }
 
-                for (stack = this.transferUpgradeSlot(playerEntity, slotId); !stack.isEmpty() && ItemStack.areItemsEqualIgnoreDamage(slot.getStack(), stack); stack = this.transferUpgradeSlot(playerEntity, slotId)) ;
+                for (stack = this.transferUpgradeSlot(playerEntity, slotId); !stack.isEmpty() && ItemStack.areItemsEqualIgnoreDamage(slot.getStack(), stack); stack = this.transferUpgradeSlot(playerEntity, slotId))
+                    ;
             } else {
                 if (slotId < 0) {
                     return;
@@ -401,4 +404,11 @@ public abstract class ScreenHandlerMixin implements UpgradeHandler {
         }
         return stack;
     }
+
+
+    @Override
+    public ScreenHandler get() {
+        return (ScreenHandler) (Object) this;
+    }
+
 }

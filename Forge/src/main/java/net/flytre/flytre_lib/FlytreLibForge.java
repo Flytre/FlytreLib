@@ -5,9 +5,11 @@ import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockFilterMode
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockModMatchC2SPacket;
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockNbtMatchC2SPacket;
 import net.flytre.flytre_lib.impl.config.ConfigS2CPacket;
+import net.flytre.flytre_lib.impl.loader.LoaderPropertyInitializer;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeClickSlotC2SPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -28,7 +30,12 @@ public class FlytreLibForge {
         PacketUtils.registerS2CPacket(UpgradeInventoryS2CPacket.class, UpgradeInventoryS2CPacket::new);
         PacketUtils.registerS2CPacket(UpgradeSlotUpdateS2CPacket.class, UpgradeSlotUpdateS2CPacket::new);
         PacketUtils.registerC2SPacket(UpgradeClickSlotC2SPacket.class, UpgradeClickSlotC2SPacket::new);
+
+        new ForgeEventBus();
+
+        LoaderPropertyInitializer.register();
     }
+
 
     @SubscribeEvent
     public static void onLoadComplete(FMLLoadCompleteEvent event) {
@@ -36,6 +43,5 @@ public class FlytreLibForge {
 
     @SubscribeEvent
     public void preInit(FMLCommonSetupEvent event) {
-
     }
 }

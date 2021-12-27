@@ -117,11 +117,6 @@ public abstract class ScreenHandlerMixin implements FluidHandler {
         }
     }
 
-    @Override
-    public ScreenHandler get() {
-        return (ScreenHandler) (Object) this;
-    }
-
     @Inject(method = "sendContentUpdates", at = @At("RETURN"))
     public void flytre_lib$sendFluidContentUpdates(CallbackInfo ci) {
         for (int j = 0; j < this.fluidSlots.size(); ++j) {

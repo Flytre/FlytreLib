@@ -7,8 +7,7 @@
     "base.AbstractBlockAccessor", "base.ClientConnectionMixin", "base.DefaultAttributeRegistryInvoker",
     "base.DefaultAttributeRegistryMixin", "base.EulaReaderMixin", "base.MinecraftServerMixin",
     "base.MiningToolItemAccessor", "base.ServerPropertiesHandlerMixin", "config.MinecraftServerMixin",
-    "config.PlayerManagerMixin", "config.ReloadableResourceManagerImplMixin", "event.CommandManagerMixin",
-    "event.LootManagerMixin", "event.LootTableBuilderMixin", "event.LootTableMixin",
+    "config.PlayerManagerMixin", "config.ReloadableResourceManagerImplMixin",
     "storage.upgrade.ScreenHandlerMixin", "storage.upgrade.ServerPlayerEntityMixin"
   ],
   "client": [

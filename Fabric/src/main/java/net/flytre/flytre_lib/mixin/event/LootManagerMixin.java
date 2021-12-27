@@ -20,8 +20,8 @@ import java.util.Map;
 
 @Mixin(LootManager.class)
 public class LootManagerMixin {
-    @Shadow
-    private Map<Identifier, LootTable> tables;
+
+    @Shadow private Map<Identifier, LootTable> tables;
 
     @Inject(method = "apply*", at = @At("RETURN"))
     private void flytre_lib$modify(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {

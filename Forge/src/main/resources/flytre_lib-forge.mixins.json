@@ -4,7 +4,7 @@
   "package": "net.flytre.flytre_lib.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "loader.MainMixin"
+    "loader.MainMixin", "loader.BootstrapMixin"
   ],
   "injectors": {
     "defaultRequire": 1
