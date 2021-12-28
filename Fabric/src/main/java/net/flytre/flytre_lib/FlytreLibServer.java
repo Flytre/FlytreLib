@@ -12,7 +12,7 @@ public class FlytreLibServer implements DedicatedServerModInitializer {
 //            if (server.isDedicatedServer()) {
 //
 //                RegistryHelper<Attribute> registry = new AttributeRegistryHelper();
-//                AttributeConfig.load(FabricLoader.getInstance().getConfigDir().resolve(Constants.MOD_ID + ".json").toFile(), registry).applyChanges(registry);
+//                AttributeConfig.load(FabricLoader.getInstance().getConfigDir().resolve(FlytreLibConstants.MOD_ID + ".json").toFile(), registry).applyChanges(registry);
 //            }
 //        });
     }

@@ -9,14 +9,17 @@ import net.flytre.flytre_lib.impl.loader.LoaderPropertyInitializer;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeClickSlotC2SPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
-@Mod(Constants.MOD_ID)
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod(FlytreLibConstants.MOD_ID)
+@Mod.EventBusSubscriber(modid = FlytreLibConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class FlytreLibForge {
 
     public FlytreLibForge() {
@@ -32,8 +35,12 @@ public class FlytreLibForge {
         PacketUtils.registerC2SPacket(UpgradeClickSlotC2SPacket.class, UpgradeClickSlotC2SPacket::new);
 
         new ForgeEventBus();
-
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientEvents::registerRenderers);
         LoaderPropertyInitializer.register();
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            //DO SOMETHING
+        }
     }
 
 

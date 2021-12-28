@@ -1,0 +1,22 @@
+
+
+Fabric:
+
+Register Main: ModInitializer
+Register Client: ClientModInitializer
+
+
+Forge:
+
+Register Main: BootstrapMixin:
+(@Inject(method = "initialize", at = @At("RETURN"))
+
+Register Client: Mod File Constructor:
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            //DO SOMETHING
+        }
+
+Changelog:
+API for registering cross-platform
+Gradle stability fixes
+Fixed bugs preventing the program from working correctly on dedicated servers

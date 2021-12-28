@@ -2,10 +2,12 @@ package net.flytre.flytre_lib.loader;
 
 import net.flytre.flytre_lib.api.config.ConfigHandler;
 import net.flytre.flytre_lib.impl.config.init.FlytreLibConfig;
-import net.flytre.flytre_lib.loader.registry.BlockRegisterer;
-import net.flytre.flytre_lib.loader.registry.EntityRegisterer;
-import net.flytre.flytre_lib.loader.registry.ItemRegisterer;
+import net.flytre.flytre_lib.loader.registry.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -22,6 +24,8 @@ public final class LoaderProperties {
     private static BlockRegisterer BLOCK_REGISTERER;
     private static EntityRegisterer ENTITY_REGISTER;
     private static ItemRegisterer ITEM_REGISTERER;
+    private static BlockEntityRendererRegisterer BLOCK_ENTITY_RENDERER_REGISTERER;
+    private static EntityRendererRegisterer ENTITY_RENDERER_REGISTERER;
 
     public static Path getModConfigDirectory() {
         return MOD_CONFIG_DIRECTORY;
@@ -62,6 +66,14 @@ public final class LoaderProperties {
         ITEM_REGISTERER = itemRegisterer;
     }
 
+    public static void setBlockEntityRendererRegisterer(BlockEntityRendererRegisterer blockEntityRendererRegisterer) {
+        BLOCK_ENTITY_RENDERER_REGISTERER = blockEntityRendererRegisterer;
+    }
+
+    public static void setEntityRendererRegisterer(EntityRendererRegisterer entityRendererRegisterer) {
+        ENTITY_RENDERER_REGISTERER = entityRendererRegisterer;
+    }
+
     public static <T extends Block> T register(T block, String mod, String id) {
         assert BLOCK_REGISTERER != null;
         return BLOCK_REGISTERER.register(block, mod, id);
@@ -75,6 +87,16 @@ public final class LoaderProperties {
     public static <E extends Entity, T extends EntityType<E>> T register(T entity, String mod, String id) {
         assert ENTITY_REGISTER != null;
         return ENTITY_REGISTER.register(entity, mod, id);
+    }
+
+    public static <T extends Entity> void register(EntityType<? extends T> type, EntityRendererFactory<T> factory) {
+        assert ENTITY_RENDERER_REGISTERER != null;
+        ENTITY_RENDERER_REGISTERER.register(type, factory);
+    }
+
+    public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+        assert BLOCK_ENTITY_RENDERER_REGISTERER != null;
+        BLOCK_ENTITY_RENDERER_REGISTERER.register(blockEntityType, blockEntityRendererFactory);
     }
 
 

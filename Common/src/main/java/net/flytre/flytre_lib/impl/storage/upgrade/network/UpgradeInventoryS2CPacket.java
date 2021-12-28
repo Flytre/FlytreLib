@@ -40,17 +40,17 @@ public class UpgradeInventoryS2CPacket implements Packet<ClientPlayPacketListene
         PacketUtils.toPacket(buf, stacks, (stack, p) -> p.writeItemStack(stack));
     }
 
+
+    public int getSyncId() {
+        return syncId;
+    }
+
+    public DefaultedList<ItemStack> getStacks() {
+        return stacks;
+    }
+
     @Override
- 
     public void apply(ClientPlayPacketListener listener) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        PlayerEntity playerEntity = client.player;
-        client.execute(() -> {
-            if(playerEntity == null)
-                return;
-            if (syncId == playerEntity.currentScreenHandler.syncId && playerEntity.currentScreenHandler instanceof UpgradeHandler) {
-                ((UpgradeHandler) playerEntity.currentScreenHandler).updateUpgradeSlotStacks(stacks);
-            }
-        });
+        ClientHelper.apply(this, listener);
     }
 }

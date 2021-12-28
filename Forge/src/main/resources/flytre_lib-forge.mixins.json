@@ -4,7 +4,13 @@
   "package": "net.flytre.flytre_lib.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "loader.MainMixin", "loader.BootstrapMixin"
+    "loader.BootstrapMixin", "loader.GameDataMixin"
+  ],
+  "client": [
+    "loader.MainMixin"
+  ],
+  "server": [
+    "loader.MainServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
