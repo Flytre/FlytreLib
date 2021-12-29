@@ -38,7 +38,7 @@ public class LoaderPropertyInitializer {
         var configDir = Paths.get(optionSet.valueOf(gameDir).toString(), FMLPaths.CONFIGDIR.relative().toString());
 
         LoaderProperties.setModConfigDirectory(configDir);
-        LoaderProperties.setDevEnvironment(FMLEnvironment.production);
+        LoaderProperties.setDevEnvironment(!FMLEnvironment.production);
         LoaderProperties.setModIdToName(id -> ModList.get().getModContainerById(id)
                 .map(modContainer -> modContainer.getModInfo().getDisplayName())
                 .orElse(StringUtils.capitalize(id)));
