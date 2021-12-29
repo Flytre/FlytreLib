@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -37,7 +38,7 @@ public class LoaderPropertyInitializer {
         var configDir = Paths.get(optionSet.valueOf(gameDir).toString(), FMLPaths.CONFIGDIR.relative().toString());
 
         LoaderProperties.setModConfigDirectory(configDir);
-        LoaderProperties.setDevEnvironment(false);
+        LoaderProperties.setDevEnvironment(FMLEnvironment.production);
         LoaderProperties.setModIdToName(id -> ModList.get().getModContainerById(id)
                 .map(modContainer -> modContainer.getModInfo().getDisplayName())
                 .orElse(StringUtils.capitalize(id)));
@@ -67,13 +68,13 @@ public class LoaderPropertyInitializer {
 
 
     public static void register() {
-        for(var reg : BLOCK_REGISTRIES.values()) {
+        for (var reg : BLOCK_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
-        for(var reg : ITEM_REGISTRIES.values()) {
+        for (var reg : ITEM_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
-        for(var reg : ENTITY_REGISTRIES.values()) {
+        for (var reg : ENTITY_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
     }
