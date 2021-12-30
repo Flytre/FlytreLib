@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class LoaderPropertyInitializer {
 
@@ -84,5 +85,5 @@ public class LoaderPropertyInitializer {
         }
     }
 
-    public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType, DefaultAttributeContainer.Builder attributes) {}
+    public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType, Supplier<DefaultAttributeContainer.Builder> attributes) {}
 }

@@ -25,7 +25,7 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setBlockRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setItemRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
-        LoaderProperties.setEntityAttributeRegisterer(EntityAttributeRegistry::register);
+        LoaderProperties.setEntityAttributeRegisterer(((entityType, attributes) -> EntityAttributeRegistry.register(entityType,attributes.get())));
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {

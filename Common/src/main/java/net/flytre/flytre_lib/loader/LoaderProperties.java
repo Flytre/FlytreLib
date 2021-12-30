@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 
 import java.nio.file.Path;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class LoaderProperties {
     public static ConfigHandler<FlytreLibConfig> HANDLER = null;
@@ -81,7 +82,7 @@ public final class LoaderProperties {
         ENTITY_ATTRIBUTE_REGISTERER = entityAttributeRegisterer;
     }
 
-    public static void register(EntityType<? extends LivingEntity> entityType, DefaultAttributeContainer.Builder attributes) {
+    public static void register(EntityType<? extends LivingEntity> entityType, Supplier<DefaultAttributeContainer.Builder> attributes) {
         assert ENTITY_ATTRIBUTE_REGISTERER != null;
         ENTITY_ATTRIBUTE_REGISTERER.register(entityType, attributes);
     }

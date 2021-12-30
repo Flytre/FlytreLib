@@ -10,10 +10,7 @@ import net.flytre.flytre_lib.impl.loader.LoaderPropertyInitializer;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeClickSlotC2SPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
-import net.minecraft.entity.attribute.DefaultAttributeRegistry;
-import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -53,6 +50,6 @@ public class FlytreLibForge {
 
     @SubscribeEvent
     public void preInit(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> LoaderPropertyInitializer.ENTITY_ATTRIBUTES.forEach(i -> EntityAttributeRegistry.register(i.entityType(), i.attributes())));
+        event.enqueueWork(() -> LoaderPropertyInitializer.ENTITY_ATTRIBUTES.forEach(i -> EntityAttributeRegistry.register(i.entityType(), i.attributes().get())));
     }
 }
