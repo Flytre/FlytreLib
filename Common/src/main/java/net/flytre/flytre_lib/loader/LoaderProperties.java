@@ -10,6 +10,8 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
 
 import java.nio.file.Path;
@@ -26,6 +28,7 @@ public final class LoaderProperties {
     private static ItemRegisterer ITEM_REGISTERER;
     private static BlockEntityRendererRegisterer BLOCK_ENTITY_RENDERER_REGISTERER;
     private static EntityRendererRegisterer ENTITY_RENDERER_REGISTERER;
+    private static EntityAttributeRegisterer ENTITY_ATTRIBUTE_REGISTERER;
 
     public static Path getModConfigDirectory() {
         return MOD_CONFIG_DIRECTORY;
@@ -72,6 +75,15 @@ public final class LoaderProperties {
 
     public static void setEntityRendererRegisterer(EntityRendererRegisterer entityRendererRegisterer) {
         ENTITY_RENDERER_REGISTERER = entityRendererRegisterer;
+    }
+
+    public static void setEntityAttributeRegisterer(EntityAttributeRegisterer entityAttributeRegisterer) {
+        ENTITY_ATTRIBUTE_REGISTERER = entityAttributeRegisterer;
+    }
+
+    public static void register(EntityType<? extends LivingEntity> entityType, DefaultAttributeContainer.Builder attributes) {
+        assert ENTITY_ATTRIBUTE_REGISTERER != null;
+        ENTITY_ATTRIBUTE_REGISTERER.register(entityType, attributes);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {

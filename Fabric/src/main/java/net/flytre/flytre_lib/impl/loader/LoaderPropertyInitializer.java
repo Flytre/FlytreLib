@@ -3,6 +3,7 @@ package net.flytre.flytre_lib.impl.loader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.flytre.flytre_lib.api.base.registry.EntityAttributeRegistry;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -24,7 +25,7 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setBlockRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setItemRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
-
+        LoaderProperties.setEntityAttributeRegisterer(EntityAttributeRegistry::register);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {

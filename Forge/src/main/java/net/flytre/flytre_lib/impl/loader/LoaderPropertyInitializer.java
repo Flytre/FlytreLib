@@ -9,6 +9,8 @@ import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,7 +22,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoaderPropertyInitializer {
@@ -28,6 +32,7 @@ public class LoaderPropertyInitializer {
     public static Map<String, DeferredRegister<Block>> BLOCK_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<Item>> ITEM_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<EntityType<?>>> ENTITY_REGISTRIES = new HashMap<>();
+    public static List<EntityAttributeEntries> ENTITY_ATTRIBUTES = new ArrayList<>();
 
     public static void init(String[] args) {
         OptionParser parser = new OptionParser();
@@ -45,7 +50,7 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setBlockRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setItemRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
-
+        LoaderProperties.setEntityAttributeRegisterer((entityType, attributes) -> ENTITY_ATTRIBUTES.add(new EntityAttributeEntries(entityType,attributes)));
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {
@@ -78,4 +83,6 @@ public class LoaderPropertyInitializer {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
     }
+
+    public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType, DefaultAttributeContainer.Builder attributes) {}
 }
