@@ -49,7 +49,7 @@ public class FlytreLibForge {
     }
 
     @SubscribeEvent
-    public void preInit(FMLCommonSetupEvent event) {
+    public static void preInit(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> LoaderPropertyInitializer.ENTITY_ATTRIBUTES.forEach(i -> EntityAttributeRegistry.register(i.entityType(), i.attributes().get())));
     }
 }
