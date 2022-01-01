@@ -6,6 +6,8 @@ import net.flytre.flytre_lib.loader.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
@@ -13,23 +15,28 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
 
 import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class LoaderProperties {
+
+    private static final String ASSERTION_MESSAGE = "Used an unsupported register method. Ensure this method is being called on the right side (Client/Server). If on Fabric, Install Fabric API.";
     public static ConfigHandler<FlytreLibConfig> HANDLER = null;
+    public static ScreenRegisterer SCREEN_REGISTERER;
     private static boolean DEV_ENVIRONMENT = false;
     private static Function<String, String> MOD_ID_TO_NAME = null;
     private static Path MOD_CONFIG_DIRECTORY;
-
     private static BlockRegisterer BLOCK_REGISTERER;
     private static EntityRegisterer ENTITY_REGISTER;
     private static ItemRegisterer ITEM_REGISTERER;
     private static BlockEntityRendererRegisterer BLOCK_ENTITY_RENDERER_REGISTERER;
     private static EntityRendererRegisterer ENTITY_RENDERER_REGISTERER;
     private static EntityAttributeRegisterer ENTITY_ATTRIBUTE_REGISTERER;
+    private static ScreenHandlerRegisterer SCREEN_HANDLER_REGISTERER;
 
     public static Path getModConfigDirectory() {
         return MOD_CONFIG_DIRECTORY;
@@ -82,35 +89,57 @@ public final class LoaderProperties {
         ENTITY_ATTRIBUTE_REGISTERER = entityAttributeRegisterer;
     }
 
+    public static void setScreenHandlerRegisterer(ScreenHandlerRegisterer screenHandlerRegisterer) {
+        SCREEN_HANDLER_REGISTERER = screenHandlerRegisterer;
+    }
+
+    public static void setScreenRegisterer(ScreenRegisterer screenRegisterer) {
+        SCREEN_REGISTERER = screenRegisterer;
+    }
+
     public static void register(EntityType<? extends LivingEntity> entityType, Supplier<DefaultAttributeContainer.Builder> attributes) {
-        assert ENTITY_ATTRIBUTE_REGISTERER != null;
+        assert ENTITY_ATTRIBUTE_REGISTERER != null : ASSERTION_MESSAGE;
         ENTITY_ATTRIBUTE_REGISTERER.register(entityType, attributes);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {
-        assert BLOCK_REGISTERER != null;
+        assert BLOCK_REGISTERER != null : ASSERTION_MESSAGE;
         return BLOCK_REGISTERER.register(block, mod, id);
     }
 
     public static <T extends Item> T register(T item, String mod, String id) {
-        assert ITEM_REGISTERER != null;
+        assert ITEM_REGISTERER != null : ASSERTION_MESSAGE;
         return ITEM_REGISTERER.register(item, mod, id);
     }
 
     public static <E extends Entity, T extends EntityType<E>> T register(T entity, String mod, String id) {
-        assert ENTITY_REGISTER != null;
+        assert ENTITY_REGISTER != null : ASSERTION_MESSAGE;
         return ENTITY_REGISTER.register(entity, mod, id);
     }
 
     public static <T extends Entity> void register(EntityType<? extends T> type, EntityRendererFactory<T> factory) {
-        assert ENTITY_RENDERER_REGISTERER != null;
+        assert ENTITY_RENDERER_REGISTERER != null : ASSERTION_MESSAGE;
         ENTITY_RENDERER_REGISTERER.register(type, factory);
     }
 
     public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
-        assert BLOCK_ENTITY_RENDERER_REGISTERER != null;
+        assert BLOCK_ENTITY_RENDERER_REGISTERER != null : ASSERTION_MESSAGE;
         BLOCK_ENTITY_RENDERER_REGISTERER.register(blockEntityType, blockEntityRendererFactory);
     }
 
+    public static <T extends ScreenHandler> ScreenHandlerType<T> register(ScreenHandlerRegisterer.SimpleFactory<T> factory, String mod, String id) {
+        assert SCREEN_HANDLER_REGISTERER != null : ASSERTION_MESSAGE;
+        return SCREEN_HANDLER_REGISTERER.register(factory, mod, id);
+    }
+
+    public static <T extends ScreenHandler> ScreenHandlerType<T> register(ScreenHandlerRegisterer.ExtendedFactory<T> factory, String mod, String id) {
+        assert SCREEN_HANDLER_REGISTERER != null : ASSERTION_MESSAGE;
+        return SCREEN_HANDLER_REGISTERER.register(factory, mod, id);
+    }
+
+    public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenRegisterer.Factory<H, S> screenFactory) {
+        assert SCREEN_REGISTERER != null : ASSERTION_MESSAGE;
+        SCREEN_REGISTERER.register(type, screenFactory);
+    }
 
 }

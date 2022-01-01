@@ -6,12 +6,20 @@ import joptsimple.OptionSet;
 import joptsimple.util.PathConverter;
 import joptsimple.util.PathProperties;
 import net.flytre.flytre_lib.loader.LoaderProperties;
+import net.flytre.flytre_lib.loader.registry.ScreenHandlerRegisterer;
+import net.flytre.flytre_lib.loader.registry.ScreenRegisterer;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -33,6 +41,7 @@ public class LoaderPropertyInitializer {
     public static Map<String, DeferredRegister<Block>> BLOCK_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<Item>> ITEM_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<EntityType<?>>> ENTITY_REGISTRIES = new HashMap<>();
+    public static Map<String, DeferredRegister<ScreenHandlerType<?>>> SCREEN_HANDLER_REGISTRIES = new HashMap<>();
     public static List<EntityAttributeEntries> ENTITY_ATTRIBUTES = new ArrayList<>();
 
     public static void init(String[] args) {
@@ -51,7 +60,26 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setBlockRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setItemRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
-        LoaderProperties.setEntityAttributeRegisterer((entityType, attributes) -> ENTITY_ATTRIBUTES.add(new EntityAttributeEntries(entityType,attributes)));
+        LoaderProperties.setEntityAttributeRegisterer((entityType, attributes) -> ENTITY_ATTRIBUTES.add(new EntityAttributeEntries(entityType, attributes)));
+        LoaderProperties.setScreenHandlerRegisterer(new ScreenHandlerRegisterer() {
+            @Override
+            public <T extends ScreenHandler> ScreenHandlerType<T> register(SimpleFactory<T> factory, String mod, String id) {
+                SCREEN_HANDLER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.CONTAINERS, mod));
+                ScreenHandlerType<T> type = IForgeMenuType.create((syncId, playerInv, packet) -> factory.create(syncId, playerInv));
+                SCREEN_HANDLER_REGISTRIES.get(mod).register(id, () -> type);
+                return type;
+            }
+
+            @Override
+            public <T extends ScreenHandler> ScreenHandlerType<T> register(ExtendedFactory<T> factory, String mod, String id) {
+                SCREEN_HANDLER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.CONTAINERS, mod));
+                ScreenHandlerType<T> type = IForgeMenuType.create(factory::create);
+                SCREEN_HANDLER_REGISTRIES.get(mod).register(id, () -> type);
+                return type;
+            }
+        });
+
+        LoaderProperties.setScreenRegisterer(LoaderPropertyInitializer::register);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {
@@ -73,6 +101,10 @@ public class LoaderPropertyInitializer {
     }
 
 
+    public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenRegisterer.Factory<H, S> screenFactory) {
+        HandledScreens.register(type, screenFactory::create);
+    }
+
     public static void register() {
         for (var reg : BLOCK_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -85,5 +117,7 @@ public class LoaderPropertyInitializer {
         }
     }
 
-    public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType, Supplier<DefaultAttributeContainer.Builder> attributes) {}
+    public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType,
+                                         Supplier<DefaultAttributeContainer.Builder> attributes) {
+    }
 }

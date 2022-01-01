@@ -26,6 +26,9 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setItemRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityAttributeRegisterer(((entityType, attributes) -> EntityAttributeRegistry.register(entityType,attributes.get())));
+
+        if (FabricLoader.getInstance().isModLoaded("fabric"))
+            FabricLoaderPropertyInitializer.init();
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {

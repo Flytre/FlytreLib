@@ -1,0 +1,4 @@
+
+-Separate loader properties into internal and external file
+-Separate loader properties into client and sever
+-Obfuscate inner workings of the lib, only keep the API method names/classes unobfuscated
