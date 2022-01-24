@@ -37,6 +37,7 @@ public final class LoaderProperties {
     private static EntityRendererRegisterer ENTITY_RENDERER_REGISTERER;
     private static EntityAttributeRegisterer ENTITY_ATTRIBUTE_REGISTERER;
     private static ScreenHandlerRegisterer SCREEN_HANDLER_REGISTERER;
+    private static BlockEntityRegisterer BLOCK_ENTITY_REGISTERER;
 
     public static Path getModConfigDirectory() {
         return MOD_CONFIG_DIRECTORY;
@@ -97,6 +98,10 @@ public final class LoaderProperties {
         SCREEN_REGISTERER = screenRegisterer;
     }
 
+    public static void setBlockEntityRegisterer(BlockEntityRegisterer blockEntityRegisterer) {
+        BLOCK_ENTITY_REGISTERER = blockEntityRegisterer;
+    }
+
     public static void register(EntityType<? extends LivingEntity> entityType, Supplier<DefaultAttributeContainer.Builder> attributes) {
         assert ENTITY_ATTRIBUTE_REGISTERER != null : ASSERTION_MESSAGE;
         ENTITY_ATTRIBUTE_REGISTERER.register(entityType, attributes);
@@ -140,6 +145,11 @@ public final class LoaderProperties {
     public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenRegisterer.Factory<H, S> screenFactory) {
         assert SCREEN_REGISTERER != null : ASSERTION_MESSAGE;
         SCREEN_REGISTERER.register(type, screenFactory);
+    }
+
+    public static<K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
+        assert BLOCK_ENTITY_REGISTERER != null : ASSERTION_MESSAGE;
+        return BLOCK_ENTITY_REGISTERER.register(type, mod, id);
     }
 
 }

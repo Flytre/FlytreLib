@@ -10,7 +10,7 @@ import net.minecraft.particle.ParticleType;
  */
 public interface ParticleManagerRegistry {
 
-    public<T extends ParticleEffect>  void altRegister(ParticleType<T> type, SpriteAwareFactory<T> factory);
+    <T extends ParticleEffect> void altRegister(ParticleType<T> type, SpriteAwareFactory<T> factory);
 
 
     interface SpriteAwareFactory<T extends ParticleEffect> {
