@@ -66,6 +66,7 @@ public class LoaderPropertyInitializer {
             public <T extends ScreenHandler> ScreenHandlerType<T> register(SimpleFactory<T> factory, String mod, String id) {
                 SCREEN_HANDLER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.CONTAINERS, mod));
                 ScreenHandlerType<T> type = IForgeMenuType.create((syncId, playerInv, packet) -> factory.create(syncId, playerInv));
+                type.setRegistryName(mod, id);
                 SCREEN_HANDLER_REGISTRIES.get(mod).register(id, () -> type);
                 return type;
             }
@@ -78,8 +79,6 @@ public class LoaderPropertyInitializer {
                 return type;
             }
         });
-
-        LoaderProperties.setScreenRegisterer(LoaderPropertyInitializer::register);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {
@@ -100,10 +99,6 @@ public class LoaderPropertyInitializer {
         return entity;
     }
 
-
-    public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenRegisterer.Factory<H, S> screenFactory) {
-        HandledScreens.register(type, screenFactory::create);
-    }
 
     public static void register() {
         for (var reg : BLOCK_REGISTRIES.values()) {
