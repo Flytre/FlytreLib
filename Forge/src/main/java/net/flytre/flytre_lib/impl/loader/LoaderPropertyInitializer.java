@@ -110,6 +110,10 @@ public class LoaderPropertyInitializer {
         for (var reg : ENTITY_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
+
+        for (var reg : SCREEN_HANDLER_REGISTRIES.values()) {
+            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
+        }
     }
 
     public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType,
