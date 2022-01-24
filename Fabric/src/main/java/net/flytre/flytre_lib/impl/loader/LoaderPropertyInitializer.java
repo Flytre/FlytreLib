@@ -6,6 +6,8 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.flytre.flytre_lib.api.base.registry.EntityAttributeRegistry;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -25,8 +27,8 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setBlockRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setItemRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
-        LoaderProperties.setEntityAttributeRegisterer(((entityType, attributes) -> EntityAttributeRegistry.register(entityType,attributes.get())));
-
+        LoaderProperties.setEntityAttributeRegisterer(((entityType, attributes) -> EntityAttributeRegistry.register(entityType, attributes.get())));
+        LoaderProperties.setBlockEntityRegisterer(LoaderPropertyInitializer::register);
         if (FabricLoader.getInstance().isModLoaded("fabric"))
             FabricLoaderPropertyInitializer.init();
     }
@@ -43,4 +45,8 @@ public class LoaderPropertyInitializer {
         return Registry.register(Registry.ENTITY_TYPE, new Identifier(mod, id), entity);
     }
 
+
+    public static <K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
+        return Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(mod, id), type);
+    }
 }

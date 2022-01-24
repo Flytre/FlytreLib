@@ -6,6 +6,10 @@ apply from: '../gradle/property_helper.gradle'
 
 archivesBaseName = "Common"
 
+loom {
+    accessWidenerPath = file("src/main/resources/${mod_id}.accessWidener")
+}
+
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"

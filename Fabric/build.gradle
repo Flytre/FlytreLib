@@ -54,8 +54,7 @@ loom {
             runDir("run")
         }
     }
-    accessWidenerPath = file("src/main/resources/${mod_id}.accessWidener")
-
+    accessWidenerPath = file("../Common/src/main/resources/${mod_id}.accessWidener")
 }
 
 processResources {
@@ -67,6 +66,8 @@ processResources {
 
         expand buildProps
     }
+
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
 
 tasks.withType(JavaCompile) {

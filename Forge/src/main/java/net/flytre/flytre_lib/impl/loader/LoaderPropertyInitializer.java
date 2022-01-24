@@ -7,11 +7,9 @@ import joptsimple.util.PathConverter;
 import joptsimple.util.PathProperties;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.flytre.flytre_lib.loader.registry.ScreenHandlerRegisterer;
-import net.flytre.flytre_lib.loader.registry.ScreenRegisterer;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -42,6 +40,7 @@ public class LoaderPropertyInitializer {
     public static Map<String, DeferredRegister<Item>> ITEM_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<EntityType<?>>> ENTITY_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<ScreenHandlerType<?>>> SCREEN_HANDLER_REGISTRIES = new HashMap<>();
+    public static Map<String, DeferredRegister<BlockEntityType<?>>> BLOCK_ENTITY_REGISTRIES = new HashMap<>();
     public static List<EntityAttributeEntries> ENTITY_ATTRIBUTES = new ArrayList<>();
 
     public static void init(String[] args) {
@@ -78,6 +77,7 @@ public class LoaderPropertyInitializer {
                 return type;
             }
         });
+        LoaderProperties.setBlockEntityRegisterer(LoaderPropertyInitializer::register);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {
@@ -99,6 +99,12 @@ public class LoaderPropertyInitializer {
     }
 
 
+    public static <K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
+        BLOCK_ENTITY_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, mod));
+        BLOCK_ENTITY_REGISTRIES.get(mod).register(id, () -> type);
+        return type;
+    }
+
     public static void register() {
         for (var reg : BLOCK_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -111,6 +117,10 @@ public class LoaderPropertyInitializer {
         }
 
         for (var reg : SCREEN_HANDLER_REGISTRIES.values()) {
+            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
+        }
+
+        for (var reg : BLOCK_ENTITY_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
     }

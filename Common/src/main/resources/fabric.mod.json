@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "accessWidener": "flytre_lib.accessWidener"
+}
