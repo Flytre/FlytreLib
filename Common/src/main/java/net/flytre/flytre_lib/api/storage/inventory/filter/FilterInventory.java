@@ -1,5 +1,6 @@
 package net.flytre.flytre_lib.api.storage.inventory.filter;
 
+import net.flytre.flytre_lib.api.base.util.Formatter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
@@ -9,17 +10,16 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
-A filtered inventory - blacklist and whitelist options!
+ * A filtered inventory - blacklist and whitelist options!
  */
 public class FilterInventory implements Inventory {
     private final int height;
@@ -44,6 +44,54 @@ public class FilterInventory implements Inventory {
         DefaultedList<ItemStack> items = DefaultedList.ofSize(height * 9, ItemStack.EMPTY);
         Inventories.readNbt(tag, items);
         return new FilterInventory(items, filterType, height, matchNbt, matchMod);
+    }
+
+    public static void appendFilterToTooltip(FilterInventory inv, List<Text> tooltip) {
+
+        Style itemStyle = Style.EMPTY.withColor(Formatting.GRAY).withItalic(true);
+        Style modStyle = Style.EMPTY.withColor(Formatting.BLUE).withItalic(true);
+
+        int len = 0;
+        int sz;
+        if (!inv.matchMod) {
+            Set<Item> filter = inv.getFilterItems();
+            sz = filter.size();
+            for (Item i : filter) {
+                tooltip.add((new TranslatableText(i.getTranslationKey())).setStyle(itemStyle));
+                if (++len > 8)
+                    break;
+            }
+        } else {
+            Set<String> mods = inv.items.stream().map(i -> Formatter.getModFromModId(Registry.ITEM.getId(i.getItem()).getNamespace())).collect(Collectors.toSet());
+            sz = mods.size();
+            for (String mod : mods) {
+                tooltip.add((new LiteralText(mod)).setStyle(itemStyle));
+                if (++len > 8)
+                    break;
+            }
+        }
+
+        if (len >= 9) {
+            tooltip.add((new LiteralText("§7§o"))
+                    .append(new TranslatableText("flytre_lib.filter.tooltip", sz - 9).setStyle(itemStyle)));
+        }
+
+
+        Style red_text = Style.EMPTY.withColor(Formatting.RED);
+        Style green_text = Style.EMPTY.withColor(Formatting.GREEN);
+        MutableText whitelist = new TranslatableText("flytre_lib.filter.whitelist").setStyle(green_text);
+        MutableText blacklist = new TranslatableText("flytre_lib.filter.blacklist").setStyle(red_text);
+
+        MutableText matchMod = new TranslatableText("flytre_lib.filter.mod_match.true").setStyle(green_text);
+        MutableText ignoreMod = new TranslatableText("flytre_lib.filter.mod_match.false").setStyle(red_text);
+
+        MutableText matchNbt = new TranslatableText("flytre_lib.filter.nbt_match.true").setStyle(green_text);
+        MutableText ignoreNbt = new TranslatableText("flytre_lib.filter.nbt_match.false").setStyle(red_text);
+
+
+        tooltip.add(new LiteralText("").append(inv.getFilterType() == 0 ? whitelist : blacklist));
+        tooltip.add(new LiteralText("").append(inv.isMatchMod() ? matchMod : ignoreMod));
+        tooltip.add(new LiteralText("").append(inv.isMatchNbt() ? matchNbt : ignoreNbt));
     }
 
     @Override
@@ -140,9 +188,13 @@ public class FilterInventory implements Inventory {
         Set<Item> filterItems = getFilterItems();
 
         if (matchMod) {
-            Set<String> mods = filterItems.stream().map(Registry.ITEM::getId).map(Identifier::getNamespace).collect(Collectors.toSet());
-            String itemId = Registry.ITEM.getId(stack.getItem()).getNamespace();
-            return (filterType == 0) == mods.contains(itemId);
+            String stackMod = Registry.ITEM.getId(stack.getItem()).getNamespace();
+
+            if (matchNbt) {
+                return (filterType == 0) == items.stream().anyMatch(test -> stackMod.equals(Registry.ITEM.getId(test.getItem()).getNamespace()) && ItemStack.areNbtEqual(test, stack));
+            } else {
+                return (filterType == 0) == filterItems.stream().anyMatch(test -> stackMod.equals(Registry.ITEM.getId(test).getNamespace()));
+            }
         }
 
         boolean bl = (filterType == 0) == filterItems.contains(stack.getItem());
@@ -225,6 +277,5 @@ public class FilterInventory implements Inventory {
         player.playSound(SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.PLAYERS, 1f, 1f);
         player.playSound(SoundEvents.BLOCK_METAL_HIT, SoundCategory.PLAYERS, 1f, 1f);
     }
-
 
 }
