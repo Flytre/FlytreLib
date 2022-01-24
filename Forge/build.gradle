@@ -51,6 +51,8 @@ processResources {
         expand buildProps
     }
 
+    exclude("fabric.mod.json","*.accessWidener")
+
 }
 
 tasks.withType(JavaCompile) {
