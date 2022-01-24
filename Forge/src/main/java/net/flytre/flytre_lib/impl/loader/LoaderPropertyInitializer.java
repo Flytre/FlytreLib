@@ -66,7 +66,6 @@ public class LoaderPropertyInitializer {
             public <T extends ScreenHandler> ScreenHandlerType<T> register(SimpleFactory<T> factory, String mod, String id) {
                 SCREEN_HANDLER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.CONTAINERS, mod));
                 ScreenHandlerType<T> type = IForgeMenuType.create((syncId, playerInv, packet) -> factory.create(syncId, playerInv));
-                type.setRegistryName(mod, id);
                 SCREEN_HANDLER_REGISTRIES.get(mod).register(id, () -> type);
                 return type;
             }
