@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 
@@ -38,6 +39,7 @@ public final class LoaderProperties {
     private static EntityAttributeRegisterer ENTITY_ATTRIBUTE_REGISTERER;
     private static ScreenHandlerRegisterer SCREEN_HANDLER_REGISTERER;
     private static BlockEntityRegisterer BLOCK_ENTITY_REGISTERER;
+    private static RecipeSerializerRegisterer RECIPE_SERIALIZER_REGISTERER;
 
     public static Path getModConfigDirectory() {
         return MOD_CONFIG_DIRECTORY;
@@ -102,6 +104,10 @@ public final class LoaderProperties {
         BLOCK_ENTITY_REGISTERER = blockEntityRegisterer;
     }
 
+    public static void setRecipeSerializerRegisterer(RecipeSerializerRegisterer recipeSerializerRegisterer) {
+        RECIPE_SERIALIZER_REGISTERER = recipeSerializerRegisterer;
+    }
+
     public static void register(EntityType<? extends LivingEntity> entityType, Supplier<DefaultAttributeContainer.Builder> attributes) {
         assert ENTITY_ATTRIBUTE_REGISTERER != null : ASSERTION_MESSAGE;
         ENTITY_ATTRIBUTE_REGISTERER.register(entityType, attributes);
@@ -147,9 +153,14 @@ public final class LoaderProperties {
         SCREEN_REGISTERER.register(type, screenFactory);
     }
 
-    public static<K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
+    public static <K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
         assert BLOCK_ENTITY_REGISTERER != null : ASSERTION_MESSAGE;
         return BLOCK_ENTITY_REGISTERER.register(type, mod, id);
+    }
+
+    public static <T extends RecipeSerializer<?>> T register(T recipe, String mod, String id) {
+        assert RECIPE_SERIALIZER_REGISTERER != null : ASSERTION_MESSAGE;
+        return RECIPE_SERIALIZER_REGISTERER.register(recipe, mod, id);
     }
 
 }

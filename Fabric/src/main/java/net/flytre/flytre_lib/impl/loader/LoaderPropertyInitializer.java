@@ -11,6 +11,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -29,6 +30,7 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setEntityRegister(LoaderPropertyInitializer::register);
         LoaderProperties.setEntityAttributeRegisterer(((entityType, attributes) -> EntityAttributeRegistry.register(entityType, attributes.get())));
         LoaderProperties.setBlockEntityRegisterer(LoaderPropertyInitializer::register);
+        LoaderProperties.setRecipeSerializerRegisterer(LoaderPropertyInitializer::register);
         if (FabricLoader.getInstance().isModLoaded("fabric"))
             FabricLoaderPropertyInitializer.init();
     }
@@ -48,5 +50,9 @@ public class LoaderPropertyInitializer {
 
     public static <K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(mod, id), type);
+    }
+
+    public static <T extends RecipeSerializer<?>> T register(T recipe, String mod, String id) {
+        return Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(mod, id), recipe);
     }
 }

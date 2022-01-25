@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -41,6 +42,7 @@ public class LoaderPropertyInitializer {
     public static Map<String, DeferredRegister<EntityType<?>>> ENTITY_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<ScreenHandlerType<?>>> SCREEN_HANDLER_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<BlockEntityType<?>>> BLOCK_ENTITY_REGISTRIES = new HashMap<>();
+    public static Map<String, DeferredRegister<RecipeSerializer<?>>> RECIPE_SERIALIZER_REGISTRIES = new HashMap<>();
     public static List<EntityAttributeEntries> ENTITY_ATTRIBUTES = new ArrayList<>();
 
     public static void init(String[] args) {
@@ -78,6 +80,7 @@ public class LoaderPropertyInitializer {
             }
         });
         LoaderProperties.setBlockEntityRegisterer(LoaderPropertyInitializer::register);
+        LoaderProperties.setRecipeSerializerRegisterer(LoaderPropertyInitializer::register);
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {
@@ -105,6 +108,12 @@ public class LoaderPropertyInitializer {
         return type;
     }
 
+    public static <T extends RecipeSerializer<?>> T register(T recipe, String mod, String id) {
+        RECIPE_SERIALIZER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, mod));
+        RECIPE_SERIALIZER_REGISTRIES.get(mod).register(id, () -> recipe);
+        return recipe;
+    }
+
     public static void register() {
         for (var reg : BLOCK_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -121,6 +130,10 @@ public class LoaderPropertyInitializer {
         }
 
         for (var reg : BLOCK_ENTITY_REGISTRIES.values()) {
+            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
+        }
+
+        for (var reg : RECIPE_SERIALIZER_REGISTRIES.values()) {
             reg.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
     }
