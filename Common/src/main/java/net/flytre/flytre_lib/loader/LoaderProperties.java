@@ -15,9 +15,15 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonSerializer;
+import net.minecraft.util.registry.Registry;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -162,5 +168,10 @@ public final class LoaderProperties {
         assert RECIPE_SERIALIZER_REGISTERER != null : ASSERTION_MESSAGE;
         return RECIPE_SERIALIZER_REGISTERER.register(recipe, mod, id);
     }
+
+    public static LootConditionType register(JsonSerializer<? extends LootCondition> serializer, String mod, String id) {
+        return Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier(mod, id), new LootConditionType(serializer));
+    }
+
 
 }

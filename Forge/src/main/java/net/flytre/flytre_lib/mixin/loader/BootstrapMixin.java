@@ -1,6 +1,7 @@
 package net.flytre.flytre_lib.mixin.loader;
 
 
+import net.flytre.flytre_lib.impl.storage.upgrade.StorageRegistry;
 import net.minecraft.Bootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,7 +21,7 @@ public class BootstrapMixin {
     @Inject(method = "initialize", at = @At("RETURN"))
     private static void flytre_lib$load(CallbackInfo ci) {
         if (!ranInit) {
-            //DO SOMETHING
+            StorageRegistry.init();
         }
         ranInit = true;
     }

@@ -11,6 +11,8 @@ import net.flytre.flytre_lib.api.config.annotation.Description;
 import net.flytre.flytre_lib.api.config.annotation.Range;
 import net.flytre.flytre_lib.impl.config.ConfigHelper;
 import net.flytre.flytre_lib.loader.LoaderProperties;
+import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.apache.commons.io.FileUtils;
