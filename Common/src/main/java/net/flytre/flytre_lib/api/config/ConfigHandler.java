@@ -26,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -94,7 +93,7 @@ public final class ConfigHandler<T> {
     private String formattedGsonToJson5(String str) {
 
 
-        Pattern commentPattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": (.+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}",Pattern.DOTALL);
+        Pattern commentPattern = Pattern.compile("([ \\t]*)\"(\\w*)\":\\s*\\{\\s*\"value\": (.+?),\\s*\"comment\": \"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"\\s*}", Pattern.DOTALL);
 
         Matcher m = commentPattern.matcher(str);
         while (m.find()) {
@@ -235,23 +234,20 @@ public final class ConfigHandler<T> {
      * Return false if an error was found, or true if none was
      */
     public boolean handle() {
-        boolean error = false;
-        Path location = LoaderProperties.getModConfigDirectory();
-        File config = location.toFile();
-        File configFile = null;
-        for (File file : Objects.requireNonNull(config.listFiles())) {
-            if (file.getName().equals(name + ".json5")) {
-                configFile = file;
-                break;
-            }
-        }
+        Path base = LoaderProperties.getModConfigDirectory();
+        Path loc = Paths.get(base.toString(), name + ".json5");
+        return handle(new File(loc.toString()));
+    }
 
-        if (configFile == null || configFile.length() == 0) {
+    public boolean handle(File config) {
+        boolean error = false;
+
+        if (config == null || !config.exists() || config.length() == 0) {
             save(assumed);
             this.config = assumed;
         } else {
 
-            try (Reader reader = new FileReader(configFile)) {
+            try (Reader reader = new FileReader(config)) {
                 try {
                     JsonObject json = gson.fromJson(reader, JsonObject.class);
                     this.config = gson.fromJson(json, (Type) assumed.getClass());
@@ -259,7 +255,7 @@ public final class ConfigHandler<T> {
                 } catch (JsonParseException | NumberFormatException | InvalidIdentifierException | ValidationException e) {
                     this.config = assumed;
                     DevUtils.LOGGER.error("Unable to load config " + name + ".json5 : " + e.getMessage() + ". Loading default config instead.");
-                    appendError(configFile, e);
+                    appendError(config, e);
                     error = true;
                 }
             } catch (IOException | IllegalAccessException e) {
