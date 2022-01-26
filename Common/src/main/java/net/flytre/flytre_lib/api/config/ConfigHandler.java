@@ -77,11 +77,15 @@ public final class ConfigHandler<T> {
      * Save a config to the config file location
      */
     public void save(T config) {
-        Path location = LoaderProperties.getModConfigDirectory();
-        Path path = Paths.get(location.toString(), name + ".json5");
+        Path base = LoaderProperties.getModConfigDirectory();
+        Path loc = Paths.get(base.toString(), name + ".json5");
+        save(config, new File(loc.toString()));
+    }
+
+    public void save(T config, File file) {
         Writer writer;
         try {
-            writer = new FileWriter(path.toFile());
+            writer = new FileWriter(file);
             JsonElement parsed = commentFormattedGson(gson.toJsonTree(config), config);
             writer.write(StringEscapeUtils.unescapeJava(formattedGsonToJson5(gson.toJson(parsed))));
             writer.close();
@@ -243,7 +247,7 @@ public final class ConfigHandler<T> {
         boolean error = false;
 
         if (config == null || !config.exists() || config.length() == 0) {
-            save(assumed);
+            save(assumed, config);
             this.config = assumed;
         } else {
 
