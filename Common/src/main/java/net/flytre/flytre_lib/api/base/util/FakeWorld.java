@@ -7,6 +7,7 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.OptionalLong;
@@ -22,7 +23,7 @@ public class FakeWorld extends ClientWorld {
     private static FakeWorld INSTANCE;
 
     private FakeWorld() {
-        super(NETWORK_HANDLER, new Properties(Difficulty.EASY, false, true), null, DIMENSION_TYPE,
+        super(NETWORK_HANDLER, new Properties(Difficulty.EASY, false, true), World.OVERWORLD, DIMENSION_TYPE,
                 0, 0, () -> null, null, false, 0L);
     }
 

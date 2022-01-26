@@ -12,6 +12,7 @@ import net.flytre.flytre_lib.impl.storage.upgrade.gui.UpgradeHandlerSyncHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.HopperScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.ScreenHandlerType;
@@ -393,13 +394,26 @@ public abstract class ScreenHandlerMixin implements UpgradeHandler {
         return upgradeSlots;
     }
 
+
+    /**
+     * @return the remainder of the stack after the transfer. empty = success
+     */
     @Override
     public ItemStack transferUpgradeSlot(PlayerEntity player, int index) {
         UpgradeSlot slot = this.upgradeSlots.get(index);
         ItemStack stack = ItemStack.EMPTY;
         if (slot.hasStack()) {
             stack = slot.getStack();
-            if (!this.insertItem(stack, 0, slots.size(), false))
+
+            int minIndex = 0;
+            while (minIndex < slots.size() && !slots.get(minIndex).inventory.equals(player.getInventory()))
+                minIndex++;
+
+            int maxIndex = minIndex;
+            while (maxIndex < slots.size() && slots.get(maxIndex).inventory.equals(player.getInventory()))
+                maxIndex++;
+
+            if (!this.insertItem(stack, minIndex, maxIndex, false))
                 return ItemStack.EMPTY;
         }
         return stack;
