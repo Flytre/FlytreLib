@@ -18,7 +18,7 @@ public class BootstrapMixin {
     private static boolean ranInit = false;
 
 
-    @Inject(method = "initialize", at = @At("RETURN"))
+    @Inject(method = "initialize", at = @At("TAIL"))
     private static void flytre_lib$load(CallbackInfo ci) {
         if (!ranInit) {
             StorageRegistry.init();
