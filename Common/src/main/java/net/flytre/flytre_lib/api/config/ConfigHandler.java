@@ -227,8 +227,7 @@ public final class ConfigHandler<T> {
         String logLine = "//[" + format.format(date) + "]" + " ERROR: " + errorMessage;
         str = logLine + "\n" + str;
 
-        Path path = Paths.get(LoaderProperties.getModConfigDirectory().toString(), name + ".json5");
-        FileWriter writer = new FileWriter(path.toFile());
+        FileWriter writer = new FileWriter(file);
         writer.write(str);
         writer.close();
     }
