@@ -20,10 +20,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -208,5 +205,28 @@ public class InventoryUtils {
         temp.put("Items", tag.get(key));
         Inventories.readNbt(temp, stacks);
         return tag;
+    }
+
+
+    public static int getFirstEmptySlot(DefaultedList<ItemStack> stacks) {
+        return getFirstEmptySlot(stacks, 0, stacks.size());
+    }
+
+    /**
+     *
+     * @param stacks
+     * @param min
+     * @param max exclusive
+     * @return the first empty slot in an inventory
+     */
+    public static int getFirstEmptySlot(DefaultedList<ItemStack> stacks, int min, int max) {
+        int index = -1;
+        for (int i = min; i < max; i++) {
+            if (stacks.get(i).isEmpty()) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 }
