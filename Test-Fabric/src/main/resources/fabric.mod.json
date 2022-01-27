@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "icon": "icon.png",
+  "authors": [
+    "Flytre"
+  ],
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.flytre.flytre_lib_test.TestInitializer"
+    ],
+    "client": [
+      "net.flytre.flytre_lib_test.ClientTestInitializer"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}-fabric.mixins.json"
+  ]
+}

@@ -16,4 +16,4 @@ pluginManagement {
 }
 
 rootProject.name = "FlytreLib v1.18 - Combined"
-include('Common', 'Fabric', 'Forge')
+include('Common', 'Fabric', 'Forge', 'Test-Common', 'Test-Fabric', 'Test-Forge')

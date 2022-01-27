@@ -1,16 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.flytre.flytre_lib.mixin",
+  "package": "net.flytre.flytre_lib_test.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "loader.GameDataMixin"
   ],
   "client": [
-    "loader.MainMixin"
   ],
   "server": [
-    "loader.MainServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

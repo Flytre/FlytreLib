@@ -38,4 +38,7 @@ Flytre Lib is a Library mod created and maintained by Flytre that provides commo
 
 [Config](CONFIG_HELP.md)
 
+
+-Basic Api for Dual Development for Fabric and Forge
+
 ###### Copyright Flytre © 2021 - All Rights Reserved

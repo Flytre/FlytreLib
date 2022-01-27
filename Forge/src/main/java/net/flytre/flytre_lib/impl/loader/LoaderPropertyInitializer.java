@@ -29,10 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class LoaderPropertyInitializer {
@@ -44,6 +41,7 @@ public class LoaderPropertyInitializer {
     public static Map<String, DeferredRegister<BlockEntityType<?>>> BLOCK_ENTITY_REGISTRIES = new HashMap<>();
     public static Map<String, DeferredRegister<RecipeSerializer<?>>> RECIPE_SERIALIZER_REGISTRIES = new HashMap<>();
     public static List<EntityAttributeEntries> ENTITY_ATTRIBUTES = new ArrayList<>();
+    public static Set<String> REGISTERED_MODS = new HashSet<>();
 
     public static void init(String[] args) {
         OptionParser parser = new OptionParser();
@@ -114,28 +112,30 @@ public class LoaderPropertyInitializer {
         return recipe;
     }
 
-    public static void register() {
-        for (var reg : BLOCK_REGISTRIES.values()) {
-            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
-        for (var reg : ITEM_REGISTRIES.values()) {
-            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
-        for (var reg : ENTITY_REGISTRIES.values()) {
-            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
+    private static List<Map<String, ? extends DeferredRegister<?>>> getRegistries() {
+        return List.of(
+                BLOCK_REGISTRIES,
+                ITEM_REGISTRIES,
+                ENTITY_REGISTRIES,
+                SCREEN_HANDLER_REGISTRIES,
+                BLOCK_ENTITY_REGISTRIES,
+                RECIPE_SERIALIZER_REGISTRIES
+        );
+    }
 
-        for (var reg : SCREEN_HANDLER_REGISTRIES.values()) {
-            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
-
-        for (var reg : BLOCK_ENTITY_REGISTRIES.values()) {
-            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
-
-        for (var reg : RECIPE_SERIALIZER_REGISTRIES.values()) {
-            reg.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
+    /**
+     * For mods to manually register themselves after running their init funtion
+     */
+    public static void register(String mod) {
+        if (REGISTERED_MODS.contains(mod))
+            return;
+        REGISTERED_MODS.add(mod);
+        getRegistries().forEach(map ->
+                Optional.ofNullable(map.get(mod)).ifPresent(
+                        reg -> reg.register(FMLJavaModLoadingContext.get().getModEventBus()
+                        )
+                )
+        );
     }
 
     public record EntityAttributeEntries(EntityType<? extends LivingEntity> entityType,

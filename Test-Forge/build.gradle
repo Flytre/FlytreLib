@@ -1,0 +1,63 @@
+plugins {
+    id 'dev.architectury.loom' version '0.10.0-SNAPSHOT'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+    forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    implementation project(path: ":Forge", configuration: "namedElements")
+
+
+}
+
+moduleDependencies(project, [
+        "Test-Common", "Common"
+])
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("Test Forge Client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("Test Forge Server")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+
+    forge {
+        mixinConfig("${mod_id}.mixins.json", "${mod_id}-forge.mixins.json",
+                "${project(":Forge").mod_id}.mixins.json","${project(":Forge").mod_id}-forge.mixins.json")
+
+        localMods {
+            forge {
+                it.add(project(":Forge").sourceSets.main)
+            }
+        }
+    }
+}
+
+processResources {
+
+    from project(":Test-Common").sourceSets.main.resources
+
+    def buildProps = project.properties.clone()
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta', '*.mixins.json']) {
+
+        expand buildProps
+    }
+
+    exclude("fabric.mod.json", "*.accessWidener")
+
+}
+
+tasks.withType(JavaCompile) {
+    source(project(":Test-Common").sourceSets.main.allSource)
+}

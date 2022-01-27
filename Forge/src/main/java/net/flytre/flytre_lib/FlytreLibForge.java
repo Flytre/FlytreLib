@@ -2,11 +2,13 @@ package net.flytre.flytre_lib;
 
 import net.flytre.flytre_lib.api.base.registry.EntityAttributeRegistry;
 import net.flytre.flytre_lib.api.base.util.PacketUtils;
+import net.flytre.flytre_lib.api.loader.LoaderCore;
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockFilterModeC2SPacket;
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockModMatchC2SPacket;
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockNbtMatchC2SPacket;
 import net.flytre.flytre_lib.impl.config.ConfigS2CPacket;
 import net.flytre.flytre_lib.impl.loader.LoaderPropertyInitializer;
+import net.flytre.flytre_lib.impl.storage.upgrade.StorageRegistry;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeClickSlotC2SPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
@@ -36,11 +38,8 @@ public class FlytreLibForge {
 
         new ForgeEventBus();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientEvents::registerRenderers);
-        LoaderPropertyInitializer.register();
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            //DO SOMETHING
-        }
+        LoaderCore.registerForgeMod("flytre_lib", StorageRegistry::init);
     }
 
 
