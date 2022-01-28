@@ -202,6 +202,10 @@ public class InventoryUtils {
      */
     public static NbtCompound readNbt(NbtCompound tag, DefaultedList<ItemStack> stacks, String key) {
         NbtCompound temp = new NbtCompound();
+
+        if (tag.get(key) == null)
+            return tag;
+
         temp.put("Items", tag.get(key));
         Inventories.readNbt(temp, stacks);
         return tag;
@@ -213,10 +217,9 @@ public class InventoryUtils {
     }
 
     /**
-     *
      * @param stacks
      * @param min
-     * @param max exclusive
+     * @param max    exclusive
      * @return the first empty slot in an inventory
      */
     public static int getFirstEmptySlot(DefaultedList<ItemStack> stacks, int min, int max) {
