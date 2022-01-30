@@ -11,8 +11,6 @@ import net.flytre.flytre_lib.api.config.annotation.Description;
 import net.flytre.flytre_lib.api.config.annotation.Range;
 import net.flytre.flytre_lib.impl.config.ConfigHelper;
 import net.flytre.flytre_lib.loader.LoaderProperties;
-import net.minecraft.loot.condition.LootConditionType;
-import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.apache.commons.io.FileUtils;
@@ -87,6 +85,8 @@ public final class ConfigHandler<T> {
     public void save(T config, File file) {
         Writer writer;
         try {
+            if (!file.exists())
+                file.getParentFile().mkdirs();
             writer = new FileWriter(file);
             JsonElement parsed = commentFormattedGson(gson.toJsonTree(config), config);
             writer.write(StringEscapeUtils.unescapeJava(formattedGsonToJson5(gson.toJson(parsed))));

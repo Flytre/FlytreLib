@@ -28,7 +28,7 @@ public class ConfigHelper {
         try {
             field = val.getClass().getField(val.name());
         } catch (NoSuchFieldException e) {
-            throw new AssertionError(); //will never happen
+            throw new AssertionError("Enum value " + val + " was remapped. Tell the developer to modify obfuscation settings."); //will never happen
         }
 
         DisplayName display = field.getAnnotation(DisplayName.class);
@@ -61,10 +61,16 @@ public class ConfigHelper {
     public static String enumAsStringArray(Class<?> type) {
         assert type.isEnum();
         Enum<?>[] objs = (Enum<?>[]) type.getEnumConstants();
+
+
+        if (objs == null) {
+            return "[Error: could not get possible values]";
+        }
+
         List<String> result = new ArrayList<>();
 
         for (Enum<?> val : objs)
-            result.add(ConfigHelper.getEnumName(val,false));
+            result.add(ConfigHelper.getEnumName(val, false));
 
         return result.toString();
     }
