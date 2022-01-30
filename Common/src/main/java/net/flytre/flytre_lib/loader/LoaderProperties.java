@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 
 public final class LoaderProperties {
 
-    private static final String ASSERTION_MESSAGE = "Used an unsupported register method. Ensure this method is being called on the right side (Client/Server). If on Fabric, Install Fabric API.";
+    public static final String ASSERTION_MESSAGE = "Used an unsupported register method. Ensure this method is being called on the right side (Client/Server). If on Fabric, Install Fabric API.";
     public static ConfigHandler<FlytreLibConfig> HANDLER = null;
     public static ScreenRegisterer SCREEN_REGISTERER;
     private static boolean DEV_ENVIRONMENT = false;
