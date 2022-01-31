@@ -24,6 +24,10 @@ Flytre Lib is a Library mod created and maintained by Flytre that provides commo
 
 -Config API (below)
 
+-Basic Api for dual development between Fabric and Forge
+
+-An ever expanding repetoire of utility classes to make development a breeze!
+
 ### Config API
 
 -Ability to register client or server side configs. The former is reloaded any time resources are reloaded or with `F3 + Y`, while the latter uses `/reloadconfig`
@@ -38,7 +42,5 @@ Flytre Lib is a Library mod created and maintained by Flytre that provides commo
 
 [Config](CONFIG_HELP.md)
 
-
--Basic Api for Dual Development for Fabric and Forge
 
 ###### Copyright Flytre © 2021 - All Rights Reserved
