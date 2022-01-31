@@ -1,12 +1,16 @@
 package net.flytre.flytre_lib.impl.loader;
 
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.flytre.flytre_lib.api.loader.client.ItemTabCreator;
 import net.flytre.flytre_lib.api.loader.screen.ScreenLoaderUtils;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.flytre.flytre_lib.loader.registry.ScreenHandlerRegisterer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -14,6 +18,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 public class FabricLoaderPropertyInitializer {
 
@@ -34,7 +40,7 @@ public class FabricLoaderPropertyInitializer {
             }
         });
 
-        ScreenLoaderUtils.setScreenOpener(((player, factory) -> player.openHandledScreen(new ExtendedScreenHandlerFactory() {
+        ScreenLoaderUtils.setDelegate(((player, factory) -> player.openHandledScreen(new ExtendedScreenHandlerFactory() {
             @Override
             public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
                 factory.sendPacket(buf);
@@ -51,5 +57,7 @@ public class FabricLoaderPropertyInitializer {
                 return factory.createMenu(syncId, inv, player);
             }
         })));
+
+        ItemTabCreator.setDelegate(FabricItemGroupBuilder::build);
     }
 }

@@ -5,6 +5,7 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.util.PathConverter;
 import joptsimple.util.PathProperties;
+import net.flytre.flytre_lib.api.loader.client.ItemTabCreator;
 import net.flytre.flytre_lib.api.loader.screen.ScreenLoaderUtils;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.flytre.flytre_lib.loader.registry.ScreenHandlerRegisterer;
@@ -16,6 +17,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -29,6 +32,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -82,7 +86,15 @@ public class LoaderPropertyInitializer {
         LoaderProperties.setBlockEntityRegisterer(LoaderPropertyInitializer::register);
         LoaderProperties.setRecipeSerializerRegisterer(LoaderPropertyInitializer::register);
 
-        ScreenLoaderUtils.setScreenOpener(((player, factory) -> NetworkHooks.openGui(player, factory, factory::sendPacket)));
+        ScreenLoaderUtils.setDelegate(((player, factory) -> NetworkHooks.openGui(player, factory, factory::sendPacket)));
+
+        ItemTabCreator.setDelegate((name, icon) -> new ItemGroup(String.format("%s.%s", name.getNamespace(), name.getPath())) {
+            @Override
+            @Nonnull
+            public ItemStack createIcon() {
+                return icon.get();
+            }
+        });
     }
 
     public static <T extends Block> T register(T block, String mod, String id) {

@@ -47,6 +47,10 @@ public final class LoaderProperties {
     private static BlockEntityRegisterer BLOCK_ENTITY_REGISTERER;
     private static RecipeSerializerRegisterer RECIPE_SERIALIZER_REGISTERER;
 
+    private LoaderProperties() {
+
+    }
+
     public static Path getModConfigDirectory() {
         return MOD_CONFIG_DIRECTORY;
     }

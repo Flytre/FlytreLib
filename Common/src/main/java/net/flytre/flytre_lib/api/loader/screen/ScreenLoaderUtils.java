@@ -3,22 +3,24 @@ package net.flytre.flytre_lib.api.loader.screen;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.OptionalInt;
+public final class ScreenLoaderUtils {
 
-public class ScreenLoaderUtils {
+    private static ScreenOpener DELEGATE;
 
-    private static ScreenOpener SCREEN_OPENER;
+    private ScreenLoaderUtils() {
+
+    }
 
     public static void openScreen(ServerPlayerEntity player, CustomScreenHandlerFactory factory) {
-        assert SCREEN_OPENER != null : LoaderProperties.ASSERTION_MESSAGE;
-        SCREEN_OPENER.open(player, factory);
+        assert DELEGATE != null : LoaderProperties.ASSERTION_MESSAGE;
+        DELEGATE.open(player, factory);
     }
 
-    public static void setScreenOpener(ScreenOpener screenOpener) {
-        SCREEN_OPENER = screenOpener;
+    public static void setDelegate(ScreenOpener delegate) {
+        ScreenLoaderUtils.DELEGATE = delegate;
     }
 
-    @FunctionalInterface
+
     public interface ScreenOpener {
         void open(ServerPlayerEntity player, CustomScreenHandlerFactory factory);
     }
