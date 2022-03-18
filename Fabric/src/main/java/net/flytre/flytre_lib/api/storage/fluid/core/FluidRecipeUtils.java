@@ -6,7 +6,10 @@ import net.minecraft.util.JsonHelper;
 
 import java.util.HashSet;
 
-public class FluidRecipeUtils {
+public final class FluidRecipeUtils {
+
+    private FluidRecipeUtils() {
+    }
 
     /**
      * Craft the fluid part of the output of a recipe containing fluids.

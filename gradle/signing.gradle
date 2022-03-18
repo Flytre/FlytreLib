@@ -19,7 +19,7 @@
  1) gpg --no-default-keyring --keyring ./mod_signing.gpg --full-generate-key
  
     This command will generate a new keyring file in the working directory.
-    It will then prompt you to generate a new key. My personal recomendation is
+    It will then prompt you to generate a new key. My personal recommendation is
     an "RSA and RSA" key type with 4096 bits. I also recommend no expiration 
     date for Minecraft mods. The password used when generating the key is used
     as the value for signing.password.

@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 
 /**
  * ItemStacks but for fluids!
@@ -232,7 +230,7 @@ public class FluidStack {
 
     public List<Text> toTooltip(boolean multiline) {
         ArrayList<Text> tooltip = new ArrayList<>();
-        for (FluidBlock block : FluidBlocks.FLUID_BLOCKS) {
+        for (FluidBlock block : FluidBlocks.getInstance().getFluidBlocks()) {
             FlowableFluid fluid = ((FluidBlockAccessor) block).getFluid();
             if (fluid == getFluid()) {
                 if (multiline) {

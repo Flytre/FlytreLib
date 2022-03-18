@@ -55,7 +55,7 @@ usually sorted when serialized, so they look nicer in the config:
 ```
 
 However, this implementation only allows you to use vanilla / your mod's / dependency mods' entities, blocks, etc. in your config. It also doesn't work for values like biomes
-that are controlled dyanmically by datapacks. To gain access to these things, you'll need to use the [References api](src/main/java/net/flytre/flytre_lib/config/reference). 
+that are controlled dynamically by datapacks. To gain access to these things, you'll need to use the [References api](src/main/java/net/flytre/flytre_lib/config/reference). 
 
 ```java
     public Set<BiomeReference> biomes = Set.of(
@@ -183,8 +183,8 @@ own custom one by editing the server config file in their config folder to cause
 server.
 
 In case that didn't make sense, here's a more in depth explanation: The actual server has a config file with the mod's
-server config. However, the client also has a server config file for the mod, so it can use that file for singleplayer.
-This is the file that is loaded for the client regardless of whether the client is in singleplayer or multiplayer: This means totally wrong values
+server config. However, the client also has a server config file for the mod, so it can use that file for single-player.
+This is the file that is loaded for the client regardless of whether the client is playing single-player or multiplayer: This means totally wrong values
 could be loaded if the client and server don't have matching configs, causing issues if the client needs an up-to-date copy of the server config like the above example.
 
 

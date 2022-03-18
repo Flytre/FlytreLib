@@ -8,7 +8,6 @@ import net.flytre.flytre_lib.impl.storage.fluid.gui.FluidHandlerSyncHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.ApiStatus;

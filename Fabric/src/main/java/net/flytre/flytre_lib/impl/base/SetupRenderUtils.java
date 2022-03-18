@@ -13,7 +13,10 @@ import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SetupRenderUtils {
+public final class SetupRenderUtils {
+
+    private SetupRenderUtils() {
+    }
 
     public static Sprite getSprite(World world, BlockPos pos, Fluid fluid) {
         FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);

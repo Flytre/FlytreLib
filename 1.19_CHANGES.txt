@@ -1,16 +1,3 @@
-
--Separate loader properties into internal and external file
--Separate loader properties into client and sever
-
--Obfuscate inner workings of the lib, only keep the API method names/classes obfuscated
-    -OR-
--Remove the API folder entirely and create package-private shits
-
--Move loader.registry.class inner classes to a public package, keep the rest private
--Replace interfaces with delegate pattern
-
--Rename loader property initalizer files
-
 TODO:
 -Disable music in dev by default
 -Mute Couldn't look up profile properties for com.mojang.authlib.GameProfile@6fc98c70[id=380df991-f603-344c-a090-369bad2a924a,name=Dev,properties={},legacy=false]

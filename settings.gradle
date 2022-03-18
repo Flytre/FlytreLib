@@ -17,3 +17,8 @@ pluginManagement {
 
 rootProject.name = "FlytreLib v1.18 - Combined"
 include('Common', 'Fabric', 'Forge', 'Test-Common', 'Test-Fabric', 'Test-Forge')
+
+startParameter.excludedTaskNames << ':Common:build'
+startParameter.excludedTaskNames << ':Test-Common:build'
+startParameter.excludedTaskNames << ':Test-Fabric:build'
+startParameter.excludedTaskNames << ':Test-Forge:build'

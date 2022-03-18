@@ -2,6 +2,7 @@ package net.flytre.flytre_lib.api.storage.fluid.core;
 
 
 import net.flytre.flytre_lib.api.storage.inventory.IOType;
+import net.flytre.flytre_lib.api.storage.inventory.IOType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;

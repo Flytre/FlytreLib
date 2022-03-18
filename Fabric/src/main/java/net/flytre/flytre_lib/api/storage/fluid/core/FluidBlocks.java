@@ -7,15 +7,30 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Used to cache all blocks that have fluids (water , lava, molten perlium, etc)
+ * Used to cache all blocks that have fluids (water , lava, molten perlium, etc.)
  */
-public class FluidBlocks {
-    public static final Collection<FluidBlock> FLUID_BLOCKS = new HashSet<>();
+public final class FluidBlocks {
 
-    static {
-        Registry.BLOCK.forEach(i -> {
-            if(i instanceof FluidBlock)
-                FLUID_BLOCKS.add((FluidBlock) i);
-        });
+    private static FluidBlocks INSTANCE;
+    private final Collection<FluidBlock> fluidBlocks = new HashSet<>();
+
+    private FluidBlocks() {
+    }
+
+    public static FluidBlocks getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new FluidBlocks();
+        }
+        return INSTANCE;
+    }
+
+    public Collection<FluidBlock> getFluidBlocks() {
+        if (fluidBlocks.isEmpty()) {
+            Registry.BLOCK.forEach(i -> {
+                if (i instanceof FluidBlock)
+                    fluidBlocks.add((FluidBlock) i);
+            });
+        }
+        return fluidBlocks;
     }
 }

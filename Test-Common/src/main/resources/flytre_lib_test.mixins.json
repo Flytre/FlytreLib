@@ -4,6 +4,7 @@
   "package": "net.flytre.flytre_lib_test.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ChunkHolderMixin"
   ],
   "client": [
   ],

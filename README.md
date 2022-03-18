@@ -8,7 +8,7 @@ Flytre Lib is a Library mod created and maintained by Flytre that provides commo
 
 -Basic abstract REI implementations classes to make REI compat easier
 
--Transparent GUI options (cycling buttons, normal buttons, sliders) to make nicer looking GUIs. Additionally a simple toggle / multistate image button option to make quick and dirty cycling buttons based on images!
+-Transparent GUI options (cycling buttons, normal buttons, sliders) to make nicer looking GUIs. Additionally, a simple toggle / multi-state image button option to make quick and dirty cycling buttons based on images!
 
 -Very simple render utils to make drawing sprites in 3D easier
 
@@ -18,7 +18,7 @@ Flytre Lib is a Library mod created and maintained by Flytre that provides commo
 
 -Recipe Utils to make it easy to add recipes that take quantified ingredients and produce tagged outputs (essentially ore dictionary output on recipes)
 
--A ton of util classes to make raycasting, packet management, experience calculation, inventory management, item attribute manaagement, json-nbt conversion, and particle math easier
+-A ton of util classes to make raycasting, packet management, experience calculation, inventory management, item attribute management, json-nbt conversion, and particle math easier
 
 -Automatic eula agreement, server.properties online-mode off and op-granting in development environments
 
@@ -26,7 +26,7 @@ Flytre Lib is a Library mod created and maintained by Flytre that provides commo
 
 -Basic Api for dual development between Fabric and Forge
 
--An ever expanding repetoire of utility classes to make development a breeze!
+-An ever expanding repertoire of utility classes to make development a breeze!
 
 ### Config API
 

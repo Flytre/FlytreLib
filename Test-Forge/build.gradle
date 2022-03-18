@@ -8,8 +8,10 @@ dependencies {
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation project(path: ":Forge", configuration: "namedElements")
+}
 
-
+build {
+    onlyIf { false }
 }
 
 moduleDependencies(project, [

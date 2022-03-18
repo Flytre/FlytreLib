@@ -2,6 +2,9 @@ plugins {
     id 'fabric-loom' version '0.10-SNAPSHOT'
 }
 
+build {
+    onlyIf { false }
+}
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"

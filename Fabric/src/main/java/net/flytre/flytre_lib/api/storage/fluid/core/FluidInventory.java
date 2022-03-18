@@ -14,10 +14,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 
@@ -339,7 +336,7 @@ public interface FluidInventory extends Clearable {
     void markDirty();
 
     /**
-     * Unused as its not needed.
+     * Unused as it's not needed.
      *
      * @param player the player
      * @return the boolean
@@ -428,12 +425,12 @@ public interface FluidInventory extends Clearable {
     }
 
     /**
-     * Self explanatory.
+     * Checks if any of the passed in fluids is present in this inventory in any quantity
      *
      * @param fluids the fluids
      * @return the boolean
      */
-    default boolean containsAnyFluid(Set<Fluid> fluids) {
+    default boolean containsAnyFluid(Collection<Fluid> fluids) {
         for (int i = 0; i < this.slots(); ++i) {
             FluidStack fluidStack = this.getFluidStack(i);
             if (fluids.contains(fluidStack.getFluid()) && fluidStack.getAmount() > 0) {

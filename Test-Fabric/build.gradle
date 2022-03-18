@@ -10,6 +10,10 @@ repositories {
     }
 }
 
+build {
+    onlyIf { false }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings "net.fabricmc:yarn:${yarn_mappings}:v2"

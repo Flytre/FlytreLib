@@ -1,3 +1,5 @@
+import net.fabricmc.loom.task.RemapJarTask
+
 plugins {
     id 'dev.architectury.loom' version '0.10.0-SNAPSHOT'
     id 'net.darkhax.curseforgegradle' version '1.0.7'
@@ -74,7 +76,7 @@ project.publishing {
                 builtBy remapJar
             }
 
-            // Adds the soruces as an artifact.
+            // Adds the sources as an artifact.
             artifact(sourcesJar) {
 
                 builtBy remapSourcesJar
@@ -100,6 +102,96 @@ project.publishing {
             url getDefaultString('mavenURL', 'undefined', true)
         }
     }
+}
+
+build {
+    finalizedBy('finalizeObfuscatedJar')
+}
+
+task finalizeObfuscatedJar() {
+
+    task prepareForObfuscation(type: Exec) {
+        workingDir '../proguard'
+        String rootDir = file(".").toPath().toString()
+        String buildDir = file("build/libs")
+        commandLine 'python', "prepare_obfuscation.py", "${rootDir}", "${buildDir}", "${archivesBaseName}", "${mod_id}"
+    }
+
+
+    task obfuscateStep1(type: proguard.gradle.ProGuardTask) {
+        outputs.upToDateWhen { false }
+        doFirst {
+            injars("build/libs/${archivesBaseName}-mod.jar")
+            outjars("build/libs/${archivesBaseName}-dev-obfus.jar")
+
+            configurations.runtimeClasspath.each {
+                libraryjars(it.path + "")
+            }
+
+            configuration("../proguard/proguard.cfg")
+            repackageclasses("net.flytre.${mod_id}.impl")
+            printmapping("../proguard/mappings/${archivesBaseName}.mappings")
+        }
+    }
+
+    task obfuscateStep2(type: proguard.gradle.ProGuardTask) {
+        outputs.upToDateWhen { false }
+        doFirst {
+            injars("build/libs/${archivesBaseName}-dev-obfus.jar")
+            outjars("build/libs/${archivesBaseName}-dev-obfus2.jar")
+
+            configurations.runtimeClasspath.each {
+                libraryjars(it.path + "")
+            }
+
+            configuration("../proguard/proguard2.cfg")
+            repackageclasses("net.flytre.${mod_id}.mixin")
+            printmapping("../proguard/mappings/${archivesBaseName}-mixin.mappings")
+        }
+    }
+
+    task fixMixinNames(type: Exec) {
+        workingDir '../proguard'
+        String rootDir = file(".").toPath().toString()
+        String buildDir = file("build/libs")
+        commandLine 'python', "fix_mixin_names.py", "${rootDir}", "${buildDir}", "${archivesBaseName}", "${mod_id}"
+    }
+
+    task fixMetadata(type: Exec) {
+        workingDir '../proguard'
+        String rootDir = file(".").toPath().toString()
+        String buildDir = file("build/libs")
+        commandLine 'python', "fix_metadata.py", "${rootDir}", "${buildDir}", "${archivesBaseName}", "${mod_id}"
+    }
+
+
+    task remap(type: RemapJarTask) {
+        input = file("build/libs/${archivesBaseName}-meta-inf.jar")
+        addNestedDependencies = false
+        remapAccessWidener = true;
+    }
+
+    task cleanUp(type: Exec) {
+        workingDir '../proguard'
+        String rootDir = file(".").toPath().toString()
+        String buildDir = file("build/libs")
+        commandLine 'python', "clean_up.py", "${rootDir}", "${buildDir}", "${archivesBaseName}"
+    }
+
+    dependsOn 'prepareForObfuscation'
+    dependsOn 'obfuscateStep1'
+    dependsOn 'obfuscateStep2'
+    dependsOn 'fixMixinNames'
+    dependsOn 'cleanUp'
+    dependsOn 'remap'
+    dependsOn 'fixMetadata'
+
+    tasks.findByName('obfuscateStep1').mustRunAfter 'prepareForObfuscation'
+    tasks.findByName('obfuscateStep2').mustRunAfter 'obfuscateStep1'
+    tasks.findByName('fixMixinNames').mustRunAfter 'obfuscateStep2'
+    tasks.findByName('fixMetadata').mustRunAfter 'fixMixinNames'
+    tasks.findByName('remap').mustRunAfter 'fixMetadata'
+    tasks.findByName('cleanUp').mustRunAfter 'remap'
 }
 
 

@@ -1,26 +1,1 @@
-{
-  "required": true,
-  "minVersion": "0.8",
-  "package": "net.flytre.flytre_lib.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "base.AbstractBlockAccessor", "base.ClientConnectionMixin", "base.DefaultAttributeRegistryInvoker",
-    "base.DefaultAttributeRegistryMixin", "base.EulaReaderMixin", "base.MinecraftServerMixin",
-    "base.MiningToolItemAccessor", "base.ServerPropertiesHandlerMixin", "config.MinecraftServerMixin",
-    "config.PlayerManagerMixin", "config.ReloadableResourceManagerImplMixin",
-    "storage.upgrade.ScreenHandlerMixin", "storage.upgrade.ServerPlayerEntityMixin"
-  ],
-  "client": [
-    "base.EntityRenderersInvoker", "base.GameOptionsMixin", "base.KeyBindingAccessor", "base.LivingEntityRendererMixin",
-    "config.ClientPlayNetworkHandlerMixin", "config.EntryListWidgetAccessor", "config.KeyboardMixin",
-    "config.MainMixin", "config.MinecraftClientMixin", "config.SliderWidgetAccessor", "config.TitleScreenMixin",
-    "event.ClientWorldMixin", "event.InGameHudMixin", "gui.EntryListWidgetAccessor",
-    "storage.upgrade.HandledScreenMixin"
-  ],
-  "server": ["base.DedicatedServerWatchdogMixin"],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "refmap": "${mod_id}-${minecraft_version}-${mod_version}-${loader}-refmap.json"
-}
-  
+{  "required": true,  "minVersion": "0.8",  "package": "net.flytre.flytre_lib.mixin",  "compatibilityLevel": "JAVA_17",  "mixins": [    "base.AbstractBlockAccessor", "base.ClientConnectionMixin", "base.DefaultAttributeRegistryInvoker",    "base.DefaultAttributeRegistryMixin", "base.EulaReaderMixin", "base.MinecraftServerMixin",    "base.MiningToolItemAccessor", "base.ServerPropertiesHandlerMixin", "config.MinecraftServerMixin",    "config.PlayerManagerMixin", "config.ReloadableResourceManagerImplMixin",    "storage.upgrade.ScreenHandlerMixin", "storage.upgrade.ServerPlayerEntityMixin"  ],  "client": [    "base.EntityRenderersInvoker", "base.GameOptionsMixin", "base.KeyBindingAccessor", "base.LivingEntityRendererMixin",    "config.ClientPlayNetworkHandlerMixin", "config.EntryListWidgetAccessor", "config.KeyboardMixin",    "config.MainMixin", "config.MinecraftClientMixin", "config.SliderWidgetAccessor", "config.TitleScreenMixin",    "event.ClientWorldMixin", "event.InGameHudMixin", "gui.EntryListWidgetAccessor",    "storage.upgrade.HandledScreenMixin"  ],  "server": ["base.DedicatedServerWatchdogMixin"],  "injectors": {    "defaultRequire": 1  },  "refmap": "${mod_id}-${minecraft_version}-${mod_version}-${loader}-refmap.json"}  

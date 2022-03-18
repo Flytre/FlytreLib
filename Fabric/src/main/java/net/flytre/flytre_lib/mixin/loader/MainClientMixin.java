@@ -1,8 +1,8 @@
 package net.flytre.flytre_lib.mixin.loader;
 
 
-import net.flytre.flytre_lib.impl.loader.ClientLoaderPropertyInitializer;
-import net.flytre.flytre_lib.impl.loader.LoaderPropertyInitializer;
+import net.flytre.flytre_lib.loader.ClientLoaderPropertyInitializer;
+import net.flytre.flytre_lib.loader.LoaderPropertyInitializer;
 import net.minecraft.client.main.Main;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

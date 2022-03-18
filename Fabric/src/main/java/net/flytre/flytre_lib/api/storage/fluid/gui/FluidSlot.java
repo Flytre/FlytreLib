@@ -16,7 +16,7 @@ public class FluidSlot {
     public final int y;
     private final int index;
     public int id;
-    public boolean compact;
+    public final boolean compact;
 
     public FluidSlot(FluidInventory inventory, int index, int x, int y) {
         this(inventory, index, x, y, false);
