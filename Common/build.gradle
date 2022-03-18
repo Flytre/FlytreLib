@@ -1,1 +1,84 @@
-plugins {    id 'fabric-loom' version '0.10-SNAPSHOT'}apply from: '../gradle/property_helper.gradle'archivesBaseName = "Common"loom {    accessWidenerPath = file("src/main/resources/${mod_id}.accessWidener")}build {    onlyIf { false }}dependencies {    minecraft "com.mojang:minecraft:${minecraft_version}"    mappings "net.fabricmc:yarn:${yarn_mappings}:v2"    //Red herring: Don't actually use this, its here to compile mixin    modCompileOnly("net.fabricmc:fabric-loader:${fabric_loader_version}")}task prepareWorkspace {}processResources {    def buildProps = project.properties.clone()    filesMatching(['pack.mcmeta']) {        expand buildProps    }}// -- MAVEN PUBLISHING --project.publishing {    publications {        mavenJava(MavenPublication) {            artifactId project.archivesBaseName            // Base mod archive.            artifact jar            // Base mod archive.            artifact(remapJar) {                builtBy remapJar            }            // Adds the sources as an artifact.            artifact(sourcesJar) {                builtBy remapSourcesJar            }        }    }    repositories {        maven {            // Sets maven credentials if they are provided. This is generally            // only used for external/remote uploads.            if (project.hasProperty('mavenUsername') && project.hasProperty('mavenPassword')) {                credentials {                    username findProperty('mavenUsername')                    password findProperty('mavenPassword')                }            }            url getDefaultString('mavenURL', 'undefined', true)        }    }}
+plugins {
+    id 'fabric-loom' version '0.10-SNAPSHOT'
+}
+
+apply from: '../gradle/property_helper.gradle'
+
+archivesBaseName = "Common"
+
+loom {
+    accessWidenerPath = file("src/main/resources/${mod_id}.accessWidener")
+}
+
+build {
+    onlyIf { false }
+}
+
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+
+    //Red herring: Don't actually use this, its here to compile mixin
+    modCompileOnly("net.fabricmc:fabric-loader:${fabric_loader_version}")
+}
+
+task prepareWorkspace {
+
+}
+
+processResources {
+
+    def buildProps = project.properties.clone()
+
+    filesMatching(['pack.mcmeta']) {
+
+        expand buildProps
+    }
+}
+
+// -- MAVEN PUBLISHING --
+project.publishing {
+
+    publications {
+
+        mavenJava(MavenPublication) {
+
+            artifactId project.archivesBaseName
+
+            // Base mod archive.
+            artifact jar
+
+            // Base mod archive.
+            artifact(remapJar) {
+
+                builtBy remapJar
+            }
+
+            // Adds the sources as an artifact.
+            artifact(sourcesJar) {
+
+                builtBy remapSourcesJar
+            }
+        }
+    }
+
+    repositories {
+
+        maven {
+
+            // Sets maven credentials if they are provided. This is generally
+            // only used for external/remote uploads.
+            if (project.hasProperty('mavenUsername') && project.hasProperty('mavenPassword')) {
+
+                credentials {
+
+                    username findProperty('mavenUsername')
+                    password findProperty('mavenPassword')
+                }
+            }
+
+            url getDefaultString('mavenURL', 'undefined', true)
+        }
+    }
+}
