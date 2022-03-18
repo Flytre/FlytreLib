@@ -25,13 +25,13 @@ public interface FluidHandlerSyncHandler {
 
         @Override
         public void updateFluidState(FluidHandler handler, DefaultedList<FluidStack> stacks) {
-            me.networkHandler.sendPacket(new FluidInventoryS2CPacket(handler.get().syncId,stacks));
+            me.networkHandler.sendPacket(new FluidInventoryS2CPacket(handler.get().syncId, stacks));
             me.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(ScreenHandlerSlotUpdateS2CPacket.UPDATE_CURSOR_SYNC_ID, handler.get().nextRevision(), -1, me.currentScreenHandler.getCursorStack()));
         }
 
         @Override
         public void updateSlot(FluidHandler handler, int slot, FluidStack stack) {
-            me.networkHandler.sendPacket(new FluidSlotUpdateS2CPacket(handler.get().syncId,slot,stack));
+            me.networkHandler.sendPacket(new FluidSlotUpdateS2CPacket(handler.get().syncId, slot, stack));
         }
     }
 }

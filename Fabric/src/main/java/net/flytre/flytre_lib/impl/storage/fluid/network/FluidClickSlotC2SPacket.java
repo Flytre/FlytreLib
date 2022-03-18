@@ -55,7 +55,7 @@ public class FluidClickSlotC2SPacket implements Packet<ServerPlayPacketListener>
 
     @Override
     public void apply(ServerPlayPacketListener listener) {
-        ServerPlayerEntity player = ((ServerPlayNetworkHandler)listener).getPlayer();
+        ServerPlayerEntity player = ((ServerPlayNetworkHandler) listener).getPlayer();
         MinecraftServer server = player.getServer();
         assert server != null;
         server.execute(() -> run(player));

@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ParticleManager.class)
 public abstract class ParticleManagerMixin implements ParticleManagerRegistry {
 
-    @Shadow protected abstract <T extends ParticleEffect> void registerFactory(ParticleType<T> type, ParticleManager.SpriteAwareFactory<T> factory);
+    @Shadow
+    protected abstract <T extends ParticleEffect> void registerFactory(ParticleType<T> type, ParticleManager.SpriteAwareFactory<T> factory);
 
     @Override
     public <T extends ParticleEffect> void altRegister(ParticleType<T> type, ParticleManagerRegistry.SpriteAwareFactory<T> factory) {

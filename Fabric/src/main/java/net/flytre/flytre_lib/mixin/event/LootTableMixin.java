@@ -16,11 +16,16 @@ import java.util.List;
 @Mixin(LootTable.class)
 public class LootTableMixin implements LootContainer {
 
-    @Shadow @Final LootFunction[] functions;
+    @Shadow
+    @Final
+    LootFunction[] functions;
 
-    @Shadow @Final LootContextType type;
+    @Shadow
+    @Final
+    LootContextType type;
 
-    @Shadow @Final
+    @Shadow
+    @Final
     LootPool[] pools;
 
     @Override

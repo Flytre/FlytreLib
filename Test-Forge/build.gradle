@@ -36,7 +36,7 @@ loom {
 
     forge {
         mixinConfig("${mod_id}.mixins.json", "${mod_id}-forge.mixins.json",
-                "${project(":Forge").mod_id}.mixins.json","${project(":Forge").mod_id}-forge.mixins.json")
+                "${project(":Forge").mod_id}.mixins.json", "${project(":Forge").mod_id}-forge.mixins.json")
 
         localMods {
             forge {

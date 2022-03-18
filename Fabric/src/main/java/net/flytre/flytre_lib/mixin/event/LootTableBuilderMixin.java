@@ -14,11 +14,16 @@ import java.util.List;
 
 @Mixin(LootTable.Builder.class)
 public class LootTableBuilderMixin implements LootContainer {
-    @Shadow @Final private List<LootPool> pools;
+    @Shadow
+    @Final
+    private List<LootPool> pools;
 
-    @Shadow @Final private List<LootFunction> functions;
+    @Shadow
+    @Final
+    private List<LootFunction> functions;
 
-    @Shadow private LootContextType type;
+    @Shadow
+    private LootContextType type;
 
     @Override
     public List<LootPool> flytre_lib$getPools() {

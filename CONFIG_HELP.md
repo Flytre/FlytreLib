@@ -1,17 +1,16 @@
 # How to use the Config API
 
-
 ### Creation and Registering
 
 1. Make a blank config class. Package it wherever and call the class wherever you want. I typically call it `Config`
 
 
-2. Determine if the config is client side (rendering) or server side (logic). In some mods you might have two configs, one for each. In your mod initializer, or optionally a mixin if you don't have an initializer,
-create a static `ConfigHandler` with a type parameter of your config class. The first constructor parameter is the default config, while the second parameter is the name of the config,
-i.e. "flytre_lib" for the file to be named `flytre_lib.json5`. The 3rd parameter, which is optional, is a custom Gson serializer if you don't want to use the comprehensive default one.
-Register the config in the `ConfigRegistry` class as a client or server config.
-
-
+2. Determine if the config is client side (rendering) or server side (logic). In some mods you might have two configs,
+   one for each. In your mod initializer, or optionally a mixin if you don't have an initializer, create a
+   static `ConfigHandler` with a type parameter of your config class. The first constructor parameter is the default
+   config, while the second parameter is the name of the config, i.e. "flytre_lib" for the file to be
+   named `flytre_lib.json5`. The 3rd parameter, which is optional, is a custom Gson serializer if you don't want to use
+   the comprehensive default one. Register the config in the `ConfigRegistry` class as a client or server config.
 
 ```java
 //In Client Mod Initializer:
@@ -25,15 +24,19 @@ public void onInitializeClient() {
 
 ### Adding Config Options
 
-To add an option to the config, simply make a field in the config class. It's recommended for the field to be public rather than using getters, as getters add a lot of extra boilerplate, 
-and for the default value to be the initialized value to avoid long constructors. For example, for a primitive data type:
+To add an option to the config, simply make a field in the config class. It's recommended for the field to be public
+rather than using getters, as getters add a lot of extra boilerplate, and for the default value to be the initialized
+value to avoid long constructors. For example, for a primitive data type:
+
 ```java
 public double zombieMoveSpeed = 1.5d;
 ```
 
-Using the default serializer, aside from primitive types, you can also serialize `String`s, `Identifier`s, `EntityType`s, `Fluid`s, `StatusEffect`s,
-`Block`s, `Enchantment`s, `Item`s, `EntityAttribute`s, `SoundEvent`s, and `VillagerProfession`s directly. You can also serialize Sets of these types, which are
-usually sorted when serialized, so they look nicer in the config:
+Using the default serializer, aside from primitive types, you can also serialize `String`s, `Identifier`s, `EntityType`
+s, `Fluid`s, `StatusEffect`s,
+`Block`s, `Enchantment`s, `Item`s, `EntityAttribute`s, `SoundEvent`s, and `VillagerProfession`s directly. You can also
+serialize Sets of these types, which are usually sorted when serialized, so they look nicer in the config:
+
 ```java
    public Set<Block> blocks = Set.of(
             Blocks.DIORITE,
@@ -54,8 +57,9 @@ usually sorted when serialized, so they look nicer in the config:
   ]
 ```
 
-However, this implementation only allows you to use vanilla / your mod's / dependency mods' entities, blocks, etc. in your config. It also doesn't work for values like biomes
-that are controlled dynamically by datapacks. To gain access to these things, you'll need to use the [References api](src/main/java/net/flytre/flytre_lib/config/reference). 
+However, this implementation only allows you to use vanilla / your mod's / dependency mods' entities, blocks, etc. in
+your config. It also doesn't work for values like biomes that are controlled dynamically by datapacks. To gain access to
+these things, you'll need to use the [References api](src/main/java/net/flytre/flytre_lib/config/reference).
 
 ```java
     public Set<BiomeReference> biomes = Set.of(
@@ -69,7 +73,6 @@ that are controlled dynamically by datapacks. To gain access to these things, yo
     );
 ```
 
-
 ```json
   "biomes": [
     "minecraft:badlands",
@@ -81,7 +84,8 @@ that are controlled dynamically by datapacks. To gain access to these things, yo
   ],
 ```
 
-In order to access the value of a reference, you'll need a `World` (either client / server) as values can be datapack dependent (i.e. datapacks can add custom dimensions or biomes). Here's how to check if a value is in a references set:
+In order to access the value of a reference, you'll need a `World` (either client / server) as values can be datapack
+dependent (i.e. datapacks can add custom dimensions or biomes). Here's how to check if a value is in a references set:
 
 ```java
 new BiomeReference(biomeObject, worldObject).isIn(setOfReferences);
@@ -89,9 +93,10 @@ new BiomeReference(biomeObject, worldObject).isIn(setOfReferences);
 setOfReferences.contains(new BiomeReference(biomeObject, worldObject));
 ```
 
-
-Tags (a feature of vanilla Minecraft) are groups of values that are commonly referenced, to make accessing them easier. If we want our config to support tags, i.e. `#minecraft:skeletons` or `#minecraft:carpets`, there are classes that extend `TagReference` that can reference entity tags,
-item tags, etc. In order to have a mixed set of say, block tags and blocks, we need to do something like this:
+Tags (a feature of vanilla Minecraft) are groups of values that are commonly referenced, to make accessing them easier.
+If we want our config to support tags, i.e. `#minecraft:skeletons` or `#minecraft:carpets`, there are classes that
+extend `TagReference` that can reference entity tags, item tags, etc. In order to have a mixed set of say, block tags
+and blocks, we need to do something like this:
 
 ```java
     @SerializedName("block_set")
@@ -106,7 +111,8 @@ item tags, etc. In order to have a mixed set of say, block tags and blocks, we n
     );
 ```
 
-Interfaces that start with Config in the Reference API are used for this purpose: `ConfigBlock`, `ConfigEntity`, `ConfigFluid`, and `ConfigItem`. These are the optimal interfaces to use for these data types:
+Interfaces that start with Config in the Reference API are used for this purpose: `ConfigBlock`, `ConfigEntity`
+, `ConfigFluid`, and `ConfigItem`. These are the optimal interfaces to use for these data types:
 
 ```json
   "block_set": [
@@ -120,58 +126,59 @@ Interfaces that start with Config in the Reference API are used for this purpose
   ],
 ```
 
-
-#####Summary:
+##### Summary:
 
 For primitives, Strings, and Identifiers: Use the class directly
 
-For blocks, entities, fluids, and items: If you want just a single value, use the Reference class. If you want a set of values, use the ConfigName
-class so users can specify tag groups to make it much easier for them.
+For blocks, entities, fluids, and items: If you want just a single value, use the Reference class. If you want a set of
+values, use the ConfigName class so users can specify tag groups to make it much easier for them.
 
 For other identifier based data types like sound events, attributes, and villager professions: Use the reference class
 
-
 ### Adding Additional Data to Config Options via Annotations
 
-Enums will automatically have the list of possible values printed as a comment.
-They are very useful for having a distinct number of preset options.
+Enums will automatically have the list of possible values printed as a comment. They are very useful for having a
+distinct number of preset options.
 
-Json uses snake_case while Java variables use camelCase. Thus, you'll want to use the `@SerializedName` annotation, which determines 
-   the name of the option in the json config: 
+Json uses snake_case while Java variables use camelCase. Thus, you'll want to use the `@SerializedName` annotation,
+which determines the name of the option in the json config:
+
    ```java
    @SerializedName("zombie_move_speed)
    public double zombieMoveSpeed = 1.5d;
    ```
-   
 
-Sometimes, config options aren't clear to the user. You can use the custom `@Description` annotation to add a comment 
-to the field in the json file: 
+Sometimes, config options aren't clear to the user. You can use the custom `@Description` annotation to add a comment to
+the field in the json file:
+
 ```java
    @Description("How fast zombies should move")
    @SerializedName("zombie_move_speed)
    public double zombieMoveSpeed = 1.5d;
 ```
 
-Additionally, numerical values, like the chance of something happening, often have a range. You can specify a range using the `@Range` annotation:
+Additionally, numerical values, like the chance of something happening, often have a range. You can specify a range
+using the `@Range` annotation:
 
 ```java
     @Range(min = 0.0f, max = 1.0f)
     @SerializedName("nether_star_drop_rate")
     public float netherStarDropRate = 0.2f;
 ```
-This will give the user an error if the value is outside the range and cause the default config to be loaded.
 
+This will give the user an error if the value is outside the range and cause the default config to be loaded.
 
 ### Custom Serialization & Config Events
 
-Configs can implement the `ConfigEventAcceptor` interface to run code on config events, which is currently just `onReload`.
-onReload runs whenever the config is loaded or re-loaded, and can be used to do additional config parsing! Very useful when combined with `transient` fields, which are not serialized.
+Configs can implement the `ConfigEventAcceptor` interface to run code on config events, which is currently
+just `onReload`. onReload runs whenever the config is loaded or re-loaded, and can be used to do additional config
+parsing! Very useful when combined with `transient` fields, which are not serialized.
 
-
-Sometimes, you'll want to have custom serialization. In these cases, you should use the `GsonHelper.GSON_BUILDER` field to 
-preserve all the default custom serialization and then add your own adapters to that. `GsonHelper` also has a custom map serializer class to
-help you serialize maps with identifier based types as the keys (i.e. blocks can be converted to identifiers so its identifier-based).
-Just remember to use `GsonBuilder::enableComplexMapKeySerialization()` when working with maps.
+Sometimes, you'll want to have custom serialization. In these cases, you should use the `GsonHelper.GSON_BUILDER` field
+to preserve all the default custom serialization and then add your own adapters to that. `GsonHelper` also has a custom
+map serializer class to help you serialize maps with identifier based types as the keys (i.e. blocks can be converted to
+identifiers so its identifier-based). Just remember to use `GsonBuilder::enableComplexMapKeySerialization()` when
+working with maps.
 
 ### Syncing Configs
 
@@ -184,21 +191,21 @@ server.
 
 In case that didn't make sense, here's a more in depth explanation: The actual server has a config file with the mod's
 server config. However, the client also has a server config file for the mod, so it can use that file for single-player.
-This is the file that is loaded for the client regardless of whether the client is playing single-player or multiplayer: This means totally wrong values
-could be loaded if the client and server don't have matching configs, causing issues if the client needs an up-to-date copy of the server config like the above example.
+This is the file that is loaded for the client regardless of whether the client is playing single-player or multiplayer:
+This means totally wrong values could be loaded if the client and server don't have matching configs, causing issues if
+the client needs an up-to-date copy of the server config like the above example.
 
+In order to sync the config to the client, the config must implement the `SyncedConfig` interface. Once this is done,
+the config will automatically be synced to the client! This means you can access the server config handler on the
+client, and it'll have the actual server config's values stored rather than values from the client's server config file.
 
-In order to sync the config to the client, the config must implement the `SyncedConfig` interface. Once this is done, the config will
-automatically be synced to the client! This means you can access the server config handler on the client, and it'll have the actual server config's
-values stored rather than values from the client's server config file.
-
-Note: implement this interface any time you need to sync the server config to the client for any reason! Remember not to make your configs too big when using this interface,
-as packets can only store so much data.
+Note: implement this interface any time you need to sync the server config to the client for any reason! Remember not to
+make your configs too big when using this interface, as packets can only store so much data.
 
 ### Example Config:
 
-Note: Because this server side config implements `SyncedConfig`, no matter what the values are set to on the server and client,
-the client will see the exact same config values as the server! Awesome, right?
+Note: Because this server side config implements `SyncedConfig`, no matter what the values are set to on the server and
+client, the client will see the exact same config values as the server! Awesome, right?
 
 ```java
 public class ServerConfig implements SyncedConfig {
@@ -255,6 +262,7 @@ the `/reloadconfig` command.
 them easy to find!
 
 Example of an error message in a config file:
+
 ```json5
 //[18:39:48] ERROR: Value 1.2 for field percentDropRate is not in range [min: 0, max: 1]. Default config was loaded.
 {

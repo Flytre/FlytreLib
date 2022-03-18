@@ -1,13 +1,13 @@
-modLoader="javafml"
-loaderVersion="[39,)"
-license="${mod_license}"
-logoFile="icon.png"
+modLoader = "javafml"
+loaderVersion = "[39,)"
+license = "${mod_license}"
+logoFile = "icon.png"
 
 [[mods]]
-modId="${mod_id}"
-version="${mod_version}"
-displayName="${mod_name}"
-authors="${mod_author}"
-description='''
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_author}"
+description = '''
 ${mod_description}
 '''

@@ -3,7 +3,6 @@ package net.flytre.flytre_lib.impl.storage.fluid.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.api.base.util.PacketUtils;
-import net.flytre.flytre_lib.api.base.util.PacketUtils;
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidStack;
 import net.flytre.flytre_lib.api.storage.fluid.gui.FluidHandler;
 import net.minecraft.client.MinecraftClient;
@@ -47,7 +46,7 @@ public class FluidInventoryS2CPacket implements Packet<ClientPlayPacketListener>
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity playerEntity = client.player;
         client.execute(() -> {
-            if(playerEntity == null)
+            if (playerEntity == null)
                 return;
             if (syncId == playerEntity.currentScreenHandler.syncId && playerEntity.currentScreenHandler instanceof FluidHandler) {
                 ((FluidHandler) playerEntity.currentScreenHandler).updateFluidSlotStacks(stacks);

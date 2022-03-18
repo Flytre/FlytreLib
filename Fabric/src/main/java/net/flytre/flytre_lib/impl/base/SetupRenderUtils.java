@@ -24,7 +24,7 @@ public final class SetupRenderUtils {
         return sprites[0];
     }
 
-    public static int getColor(World world, BlockPos pos,Fluid fluid) {
+    public static int getColor(World world, BlockPos pos, Fluid fluid) {
         int c = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(world, pos, fluid.getDefaultState());
         if (fluid.isIn(FluidTags.WATER))
             c += 0xFF000000;

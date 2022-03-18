@@ -21,7 +21,8 @@ import java.util.Map;
 @Mixin(LootManager.class)
 public class LootManagerMixin {
 
-    @Shadow private Map<Identifier, LootTable> tables;
+    @Shadow
+    private Map<Identifier, LootTable> tables;
 
     @Inject(method = "apply*", at = @At("RETURN"))
     private void flytre_lib$modify(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
@@ -29,7 +30,7 @@ public class LootManagerMixin {
 
         tables.forEach((id, table) -> {
             LootTable.Builder builder = LootProcessingEvent.copyFrom(table);
-            LootProcessingEvent.EVENT.getListeners().forEach(processor -> processor.onLootTablesProcessed(manager,(LootManager) (Object) this,id,builder,(mt) -> modifiedTables.put(id, mt)));
+            LootProcessingEvent.EVENT.getListeners().forEach(processor -> processor.onLootTablesProcessed(manager, (LootManager) (Object) this, id, builder, (mt) -> modifiedTables.put(id, mt)));
             modifiedTables.computeIfAbsent(id, (__) -> builder.build());
         });
 

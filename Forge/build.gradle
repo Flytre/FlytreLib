@@ -39,7 +39,7 @@ loom {
     }
 
     forge {
-        mixinConfig("${mod_id}.mixins.json","${mod_id}-forge.mixins.json")
+        mixinConfig("${mod_id}.mixins.json", "${mod_id}-forge.mixins.json")
     }
 }
 
@@ -48,12 +48,12 @@ processResources {
     from project(":Common").sourceSets.main.resources
 
     def buildProps = project.properties.clone()
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta',"${mod_id}.mixins.json".toString()]) {
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta', "${mod_id}.mixins.json".toString()]) {
 
         expand buildProps
     }
 
-    exclude("fabric.mod.json","*.accessWidener")
+    exclude("fabric.mod.json", "*.accessWidener")
 
 }
 

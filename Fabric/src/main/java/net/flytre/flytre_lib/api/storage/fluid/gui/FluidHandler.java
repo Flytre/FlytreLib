@@ -17,8 +17,8 @@ import java.util.List;
 
 /**
  * Implemented by ScreenHandler
- *  * Cast to this class to invoke fluid related methods, i.e. adding fluid slots
- *  * to a screen handler
+ * * Cast to this class to invoke fluid related methods, i.e. adding fluid slots
+ * * to a screen handler
  */
 public interface FluidHandler extends UpgradeHandler {
 

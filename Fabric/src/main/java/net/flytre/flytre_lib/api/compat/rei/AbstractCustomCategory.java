@@ -52,7 +52,6 @@ public abstract class AbstractCustomCategory<R extends Recipe<?>> implements Dis
     }
 
 
-
     public EntryIngredient getOutput(AbstractRecipeDisplay<R> recipeDisplay, int index) {
         List<EntryIngredient> outputs = recipeDisplay.getOutputEntries();
         return outputs.size() > index ? outputs.get(index) : EntryIngredient.empty();

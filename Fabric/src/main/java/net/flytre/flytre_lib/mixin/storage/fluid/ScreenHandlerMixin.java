@@ -58,7 +58,7 @@ public abstract class ScreenHandlerMixin implements FluidHandler {
     private @Nullable FluidHandlerSyncHandler fluidSyncHandler;
 
 
-    @Inject(method="<init>*", at = @At("TAIL"))
+    @Inject(method = "<init>*", at = @At("TAIL"))
     public void flytre_lib$init(ScreenHandlerType<?> type, int syncId, CallbackInfo ci) {
         fluidSlots = DefaultedList.of();
         trackedFluidStacks = DefaultedList.of();
@@ -68,17 +68,24 @@ public abstract class ScreenHandlerMixin implements FluidHandler {
     @Shadow
     public abstract void syncState();
 
-    @Shadow public abstract ItemStack getCursorStack();
+    @Shadow
+    public abstract ItemStack getCursorStack();
 
-    @Shadow public abstract void setCursorStack(ItemStack stack);
+    @Shadow
+    public abstract void setCursorStack(ItemStack stack);
 
-    @Shadow @Final public DefaultedList<Slot> slots;
+    @Shadow
+    @Final
+    public DefaultedList<Slot> slots;
 
-    @Shadow protected abstract boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast);
+    @Shadow
+    protected abstract boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast);
 
-    @Shadow protected abstract Slot addSlot(Slot slot);
+    @Shadow
+    protected abstract Slot addSlot(Slot slot);
 
-    @Shadow private boolean disableSync;
+    @Shadow
+    private boolean disableSync;
 
     @Override
     public FluidSlot addSlot(FluidSlot slot) {

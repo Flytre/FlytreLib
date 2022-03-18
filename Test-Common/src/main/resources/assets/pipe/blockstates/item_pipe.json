@@ -61,7 +61,6 @@
         "model": "pipe:block/item_pipe/connector"
       }
     },
-
     {
       "when": {
         "pipe_north": "servo"
