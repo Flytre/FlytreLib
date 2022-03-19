@@ -1,9 +1,9 @@
 package net.flytre.flytre_lib_test;
 
-import net.flytre.flytre_lib.base.compat.wrench.WrenchItem;
+import net.flytre.flytre_lib.api.base.compat.wrench.WrenchItem;
 import net.flytre.flytre_lib.loader.CustomScreenHandlerFactory;
 import net.flytre.flytre_lib.loader.ScreenLoaderUtils;
-import net.flytre.flytre_lib.storage.connectable.ItemPipeConnectable;
+import net.flytre.flytre_lib.api.storage.connectable.ItemPipeConnectable;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;

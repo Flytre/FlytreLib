@@ -1,6 +1,6 @@
 package net.flytre.flytre_lib_test.client;
 
-import net.flytre.flytre_lib.base.util.InventoryUtils;
+import net.flytre.flytre_lib.api.base.util.InventoryUtils;
 import net.flytre.flytre_lib_test.PipeBlock;
 import net.flytre.flytre_lib_test.PipeEntity;
 import net.flytre.flytre_lib_test.TimedPipeResult;

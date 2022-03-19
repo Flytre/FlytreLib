@@ -1,7 +1,7 @@
 package net.flytre.flytre_lib_test;
 
 import com.google.gson.annotations.SerializedName;
-import net.flytre.flytre_lib.config.annotation.Description;
+import net.flytre.flytre_lib.api.config.annotation.Description;
 
 public class Config {
 

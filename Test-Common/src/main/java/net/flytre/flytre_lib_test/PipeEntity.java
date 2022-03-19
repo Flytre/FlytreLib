@@ -1,10 +1,11 @@
 package net.flytre.flytre_lib_test;
 
-import net.flytre.flytre_lib.base.util.InventoryUtils;
+import net.flytre.flytre_lib.api.base.util.Formatter;
+import net.flytre.flytre_lib.api.base.util.InventoryUtils;
+import net.flytre.flytre_lib.api.storage.inventory.filter.FilterInventory;
+import net.flytre.flytre_lib.api.storage.inventory.filter.Filtered;
+import net.flytre.flytre_lib.api.storage.inventory.filter.packet.FilterEventHandler;
 import net.flytre.flytre_lib.loader.CustomScreenHandlerFactory;
-import net.flytre.flytre_lib.storage.inventory.filter.FilterInventory;
-import net.flytre.flytre_lib.storage.inventory.filter.Filtered;
-import net.flytre.flytre_lib.storage.inventory.filter.packet.FilterEventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

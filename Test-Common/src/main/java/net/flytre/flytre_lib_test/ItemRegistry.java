@@ -1,7 +1,7 @@
 package net.flytre.flytre_lib_test;
 
-import net.flytre.flytre_lib.base.compat.wrench.WrenchItem;
-import net.flytre.flytre_lib.base.compat.wrench.WrenchObservers;
+import net.flytre.flytre_lib.api.base.compat.wrench.WrenchItem;
+import net.flytre.flytre_lib.api.base.compat.wrench.WrenchObservers;
 import net.flytre.flytre_lib.loader.LoaderAgnosticRegistry;
 import net.flytre.flytre_lib_test.item.ServoItem;
 import net.minecraft.block.Block;

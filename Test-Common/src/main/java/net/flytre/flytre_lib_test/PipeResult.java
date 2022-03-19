@@ -1,6 +1,6 @@
 package net.flytre.flytre_lib_test;
 
-import net.flytre.flytre_lib.base.util.Formatter;
+import net.flytre.flytre_lib.api.base.util.Formatter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
