@@ -1,7 +1,6 @@
 package net.flytre.flytre_lib.api.config.reference.entity;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.tag.Tag;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -25,9 +24,9 @@ public interface ConfigEntity {
             if (entity instanceof EntityReference) {
                 result.add(((EntityReference) entity).getValue(world));
             } else {
-                Tag<EntityType<?>> list = ((EntityTagReference) entity).getValue(world);
+                Set<EntityType<?>> list = ((EntityTagReference) entity).getValue(world);
                 if (list != null)
-                    result.addAll(list.values());
+                    result.addAll(list);
             }
         }
         return result;
@@ -42,8 +41,8 @@ public interface ConfigEntity {
         return entities.stream().anyMatch(i -> {
             if (!(i instanceof EntityTagReference))
                 return false;
-            Tag<EntityType<?>> list = ((EntityTagReference) i).getValue(world);
-            return list != null && list.values().contains(entity);
+            Set<EntityType<?>> list = ((EntityTagReference) i).getValue(world);
+            return list != null && list.contains(entity);
         });
     }
 

@@ -32,4 +32,9 @@ final class LoaderPropertiesImpl implements LoaderProperties.Delegate {
     public boolean isDevEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
+
+    @Override
+    public LoaderProperties.Loader getLoader() {
+        return LoaderProperties.Loader.FABRIC;
+    }
 }

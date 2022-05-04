@@ -2,7 +2,7 @@ package net.flytre.flytre_lib.api.config.reference.block;
 
 import net.flytre.flytre_lib.api.config.reference.TagReference;
 import net.minecraft.block.Block;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -18,7 +18,7 @@ public final class BlockTagReference extends TagReference<Block> implements Conf
         super(namespace, path);
     }
 
-    public BlockTagReference(Tag.Identified<Block> tag) {
+    public BlockTagReference(TagKey<Block> tag) {
         super(tag);
     }
 

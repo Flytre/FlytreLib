@@ -2,7 +2,7 @@ package net.flytre.flytre_lib.api.config.reference.item;
 
 import net.flytre.flytre_lib.api.config.reference.TagReference;
 import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -17,7 +17,7 @@ public final class ItemTagReference extends TagReference<Item> implements Config
         super(namespace, path);
     }
 
-    public ItemTagReference(Tag.Identified<Item> tag) {
+    public ItemTagReference(TagKey<Item> tag) {
         super(tag);
     }
 

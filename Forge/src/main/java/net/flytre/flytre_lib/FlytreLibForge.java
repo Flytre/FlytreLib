@@ -5,7 +5,6 @@ import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockFilterMode
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockModMatchC2SPacket;
 import net.flytre.flytre_lib.api.storage.inventory.filter.packet.BlockNbtMatchC2SPacket;
 import net.flytre.flytre_lib.impl.config.ConfigS2CPacket;
-import net.flytre.flytre_lib.impl.storage.upgrade.StorageRegistry;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeClickSlotC2SPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeInventoryS2CPacket;
 import net.flytre.flytre_lib.impl.storage.upgrade.network.UpgradeSlotUpdateS2CPacket;
@@ -17,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 @SuppressWarnings("UtilityClassWithPublicConstructor")
 @Mod(FlytreLibConstants.MOD_ID)
@@ -38,13 +38,18 @@ public final class FlytreLibForge {
         new ForgeEventBus();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientEvents::registerRenderers);
 
-        LoaderCore.registerForgeMod("flytre_lib", StorageRegistry::init);
+        LoaderCore.registerForgeMod("flytre_lib", () -> {
+        });
+
+        if (FMLLoader.getDist().isClient())
+            new ClientForgeEventBus();
     }
 
 
     @SubscribeEvent
     public static void onLoadComplete(FMLLoadCompleteEvent event) {
     }
+
 
     @SubscribeEvent
     public static void preInit(FMLCommonSetupEvent event) {

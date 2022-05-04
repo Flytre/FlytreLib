@@ -2,7 +2,7 @@ package net.flytre.flytre_lib.api.config.reference.fluid;
 
 import net.flytre.flytre_lib.api.config.reference.TagReference;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -17,7 +17,7 @@ public final class FluidTagReference extends TagReference<Fluid> implements Conf
         super(namespace, path);
     }
 
-    public FluidTagReference(Tag.Identified<Fluid> tag) {
+    public FluidTagReference(TagKey<Fluid> tag) {
         super(tag);
     }
 

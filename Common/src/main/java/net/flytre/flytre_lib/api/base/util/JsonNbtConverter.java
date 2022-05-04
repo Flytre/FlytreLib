@@ -138,7 +138,7 @@ public final class JsonNbtConverter {
             return jsonObject;
 
             // Nbt termination tag. Should not be encountered.
-        } else if (element instanceof NbtNull) {
+        } else if (element instanceof NbtEnd) {
             throw new AssertionError("Should not encounter end tag");
         }
 

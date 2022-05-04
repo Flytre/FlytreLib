@@ -53,7 +53,7 @@ public class TranslucentCyclingButtonWidget<T> extends PressableWidget implement
         this.callback = callback;
         this.tooltipFactory = tooltipFactory;
         this.optionTextOmitted = optionTextOmitted;
-        this.valueHoveredToColor = (val, hovered) -> hovered ? 0x886b6b6b : 0x446b6b6b;
+        this.valueHoveredToColor = (val, hovered) -> RenderUtils.getModernUiColor(true, hovered);
     }
 
     /**
@@ -181,7 +181,7 @@ public class TranslucentCyclingButtonWidget<T> extends PressableWidget implement
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             MinecraftClient client = MinecraftClient.getInstance();
-            int color = active ? valueHoveredToColor.apply(value, isHovered()) : 0x440a0a0a;
+            int color = active ? valueHoveredToColor.apply(value, isHovered()) : RenderUtils.getModernUiColor(false, false);
             RenderUtils.drawRect(x, y, x + width, y + height, color);
             drawCenteredText(matrixStack, client.textRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, 0xffffff);
         }

@@ -30,6 +30,7 @@ public final class LoaderPropertyInitializer {
         ScreenLoaderUtilsImpl.init();
         ItemTabCreatorImpl.init();
         RenderLayerRegistryImpl.init();
+        LootRegistryImpl.init();
     }
 
 }

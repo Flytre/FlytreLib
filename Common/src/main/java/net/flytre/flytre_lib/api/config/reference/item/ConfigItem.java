@@ -1,7 +1,6 @@
 package net.flytre.flytre_lib.api.config.reference.item;
 
 import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -22,9 +21,9 @@ public interface ConfigItem {
             if (item instanceof ItemReference) {
                 result.add(((ItemReference) item).getValue(world));
             } else {
-                Tag<Item> list = ((ItemTagReference) item).getValue(world);
+                Set<Item> list = ((ItemTagReference) item).getValue(world);
                 if (list != null)
-                    result.addAll(list.values());
+                    result.addAll(list);
             }
         }
         return result;
@@ -39,8 +38,8 @@ public interface ConfigItem {
         return items.stream().anyMatch(i -> {
             if (!(i instanceof ItemTagReference))
                 return false;
-            Tag<Item> list = ((ItemTagReference) i).getValue(world);
-            return list != null && list.values().contains(item);
+            Set<Item> list = ((ItemTagReference) i).getValue(world);
+            return list != null && list.contains(item);
         });
     }
 

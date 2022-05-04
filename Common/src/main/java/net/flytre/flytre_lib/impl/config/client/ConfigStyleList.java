@@ -29,6 +29,7 @@ abstract class ConfigStyleList<E extends ConfigStyleList.Entry<E>> extends Eleme
         this.renderBackground(matrices);
         int i = this.getScrollbarPositionX();
         int j = i + 6;
+        //noinspection unchecked
         ((EntryListWidgetAccessor) this).setHoveredEntry(this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition2(mouseX, mouseY) : null);
         int k = this.getRowLeft();
         int l = this.top + 4 - (int) this.getScrollAmount();

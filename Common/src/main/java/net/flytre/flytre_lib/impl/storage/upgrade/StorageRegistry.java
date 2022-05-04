@@ -8,7 +8,8 @@ import org.jetbrains.annotations.ApiStatus;
 public final class StorageRegistry {
 
 
-    public static LootConditionType HAS_UPGRADE_CONDITION = LootRegistry.register(new HasUpgradeLootCondition.Serializer(), "flytre_lib", "has_upgrade");
+
+    public static final LootConditionType HAS_UPGRADE_CONDITION = LootRegistry.register(new HasUpgradeLootCondition.Serializer(), "flytre_lib", "has_upgrade");
 
     private StorageRegistry() {
     }

@@ -567,6 +567,19 @@ public final class RenderUtils {
         return b * (256 * 256) + g * (256) + r;
     }
 
+    /**
+     * Returns an interface color consistent with FlytreLib's theme
+     */
+    public static int getModernUiColor(boolean active, boolean hovered) {
+        if (!active)
+            return 0x440a0a0a;
+
+        if (hovered)
+            return 0x886b6b6b;
+
+        return 0x446b6b6b;
+    }
+
     private record Color(float red, float green, float blue, float alpha) {
         public Color(int color) {
             this((float) (color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F, (float) (color >> 24 & 255) / 255.0F);
@@ -575,6 +588,5 @@ public final class RenderUtils {
 
     private record ColoredCoordinate(double x, double y, java.awt.Color color) {
     }
-
 
 }

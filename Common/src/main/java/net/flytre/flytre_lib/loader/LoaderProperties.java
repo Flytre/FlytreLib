@@ -34,12 +34,23 @@ public final class LoaderProperties {
         return DELEGATE.isDevEnvironment();
     }
 
+    public static Loader getLoader() {
+        return DELEGATE.getLoader();
+    }
+
     interface Delegate {
         Path getModConfigDirectory();
 
         String getModName(String modId);
 
         boolean isDevEnvironment();
+
+        Loader getLoader();
+    }
+
+    public enum Loader {
+        FABRIC,
+        FORGE;
     }
 
 }

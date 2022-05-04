@@ -1,6 +1,6 @@
 package net.flytre.flytre_lib.api.base.util;
 
-import net.flytre.flytre_lib.impl.base.packet.PacketUtilsImpl;
+import net.flytre.flytre_lib.impl.base.PacketUtilsImpl;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;

@@ -11,6 +11,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 
+import java.util.function.Supplier;
+
 /**
  * Used to register client sided things
  */
@@ -22,15 +24,15 @@ public final class LoaderAgnosticClientRegistry {
         throw new AssertionError();
     }
 
-    public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenFactory<H, S> screenFactory) {
+    public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(Supplier<ScreenHandlerType<? extends H>> type, ScreenFactory<H, S> screenFactory) {
         DELEGATE.register(type, screenFactory);
     }
 
-    public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+    public static <E extends BlockEntity> void register(Supplier<BlockEntityType<E>> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
         DELEGATE.register(blockEntityType, blockEntityRendererFactory);
     }
 
-    public static <T extends Entity> void register(EntityType<? extends T> type, EntityRendererFactory<T> factory) {
+    public static <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererFactory<T> factory) {
         DELEGATE.register(type, factory);
     }
 
@@ -39,11 +41,11 @@ public final class LoaderAgnosticClientRegistry {
     }
 
     interface Delegate {
-        <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenFactory<H, S> screenFactory);
+        <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(Supplier<ScreenHandlerType<? extends H>> type, ScreenFactory<H, S> screenFactory);
 
-        <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory);
+        <E extends BlockEntity> void register(Supplier<BlockEntityType<E>> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory);
 
-        <T extends Entity> void register(EntityType<? extends T> type, EntityRendererFactory<T> factory);
+        <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererFactory<T> factory);
 
     }
 }

@@ -29,7 +29,5 @@ public class StorageModInitializer implements ModInitializer {
         PacketUtils.registerS2CPacket(UpgradeInventoryS2CPacket.class, UpgradeInventoryS2CPacket::new);
         PacketUtils.registerS2CPacket(UpgradeSlotUpdateS2CPacket.class, UpgradeSlotUpdateS2CPacket::new);
         PacketUtils.registerC2SPacket(UpgradeClickSlotC2SPacket.class, UpgradeClickSlotC2SPacket::new);
-
-        StorageRegistry.init();
     }
 }

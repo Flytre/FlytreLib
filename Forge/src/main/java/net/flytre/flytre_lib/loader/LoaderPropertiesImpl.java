@@ -36,4 +36,10 @@ final class LoaderPropertiesImpl implements LoaderProperties.Delegate {
     public boolean isDevEnvironment() {
         return !FMLEnvironment.production;
     }
+
+
+    @Override
+    public LoaderProperties.Loader getLoader() {
+        return LoaderProperties.Loader.FORGE;
+    }
 }

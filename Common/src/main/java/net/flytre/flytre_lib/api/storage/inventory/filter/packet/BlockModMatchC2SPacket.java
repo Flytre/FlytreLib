@@ -37,7 +37,7 @@ public class BlockModMatchC2SPacket implements Packet<ServerPlayPacketListener> 
         ServerPlayerEntity player = ((ServerPlayNetworkHandler) listener).getPlayer();
         ServerWorld world = player.getWorld();
         world.getServer().execute(() -> {
-            if (pos.getSquaredDistance(player.getX(), player.getY(), player.getZ(), false) > 36)
+            if (pos.getSquaredDistance(player.getX(), player.getY(), player.getZ()) > 36)
                 return;
 
             BlockEntity entity = world.getBlockEntity(pos);

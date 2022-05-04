@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
 }
 
 apply from: '../gradle/property_helper.gradle'
@@ -44,10 +44,8 @@ project.publishing {
 
         mavenJava(MavenPublication) {
 
-            artifactId project.archivesBaseName
-
-            // Base mod archive.
-            artifact jar
+            artifactId = "${mod_id}-${minecraft_version}-${loader_base}"
+            version = "${mod_version}"
 
             // Base mod archive.
             artifact(remapJar) {

@@ -94,7 +94,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
                 return true;
             }
 
-            return ((EntryListWidgetAccessor) this).getScrolling();
+            return ((EntryListWidgetAccessor<?>) this).getScrolling();
         }
     }
 
@@ -147,6 +147,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
          * Contract: option.createButton produces an instance of K
          */
         public static <K extends ClickableWidget> ButtonEntry<K> create(GameOptions options, int startX, int buttonWidth, Option option, int buttonPadding) {
+            //noinspection unchecked
             return new ButtonEntry<>((K) option.createButton(options, startX, 0, buttonWidth), option, buttonPadding);
         }
 

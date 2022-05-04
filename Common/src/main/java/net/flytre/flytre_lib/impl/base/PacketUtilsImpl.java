@@ -1,4 +1,4 @@
-package net.flytre.flytre_lib.impl.base.packet;
+package net.flytre.flytre_lib.impl.base;
 
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;

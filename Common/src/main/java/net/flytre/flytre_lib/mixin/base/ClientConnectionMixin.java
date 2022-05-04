@@ -2,7 +2,7 @@ package net.flytre.flytre_lib.mixin.base;
 
 
 import io.netty.buffer.Unpooled;
-import net.flytre.flytre_lib.impl.base.packet.PacketUtilsImpl;
+import net.flytre.flytre_lib.impl.base.PacketUtilsImpl;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;

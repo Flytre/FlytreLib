@@ -13,6 +13,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 
+import java.util.function.Supplier;
+
 final class LoaderAgnosticClientRegistryImpl implements LoaderAgnosticClientRegistry.Delegate {
 
     private LoaderAgnosticClientRegistryImpl() {
@@ -25,23 +27,23 @@ final class LoaderAgnosticClientRegistryImpl implements LoaderAgnosticClientRegi
 
 
     @Override
-    public <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, ScreenFactory<H, S> screenFactory) {
+    public <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(Supplier<ScreenHandlerType<? extends H>> type, ScreenFactory<H, S> screenFactory) {
         if (FabricLoader.getInstance().isModLoaded("fabric")) {
-            FabricLoaderAgnosticClientRegistry.register(type, screenFactory);
+            FabricLoaderAgnosticClientRegistry.register(type.get(), screenFactory);
         } else
             throw new FabricApiNotInstalledError();
     }
 
     @Override
-    public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+    public <E extends BlockEntity> void register(Supplier<BlockEntityType<E>> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
         if (FabricLoader.getInstance().isModLoaded("fabric")) {
-            FabricLoaderAgnosticClientRegistry.register(blockEntityType, blockEntityRendererFactory);
+            FabricLoaderAgnosticClientRegistry.register(blockEntityType.get(), blockEntityRendererFactory);
         } else
             throw new FabricApiNotInstalledError();
     }
 
     @Override
-    public <T extends Entity> void register(EntityType<? extends T> type, EntityRendererFactory<T> factory) {
-        EntityRendererRegistry.register(type, factory);
+    public <T extends Entity> void register(Supplier<EntityType<? extends T>> type, EntityRendererFactory<T> factory) {
+        EntityRendererRegistry.register(type.get(), factory);
     }
 }

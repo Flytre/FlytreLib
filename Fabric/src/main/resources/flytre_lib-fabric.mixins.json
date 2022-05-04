@@ -11,7 +11,7 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "client": ["base.ParticleManagerMixin", "loader.MainClientMixin", "storage.fluid.HandledScreenMixin"],
+  "client": ["base.ParticleManagerMixin", "loader.MainClientMixin", "storage.fluid.HandledScreenMixin", "config.TitleScreenMixin"],
   "server": [
     "loader.MainServerMixin"
   ]

@@ -56,8 +56,8 @@ public class NumberBox extends TranslucentTextField {
                 Rectangle top = topButton();
                 Rectangle bot = botButton();
                 int color = this.isFocused() ? 0xCC363636 : 0xCC1a1a1a;
-                RenderUtils.drawBorderedRect(top, top.contains(mouseX, mouseY) ? 0x886b6b6b : 0x446b6b6b, color, 1);
-                RenderUtils.drawBorderedRect(bot, bot.contains(mouseX, mouseY) ? 0x886b6b6b : 0x446b6b6b, color, 1);
+                RenderUtils.drawBorderedRect(top, RenderUtils.getModernUiColor(true, top.contains(mouseX, mouseY)), color, 1);
+                RenderUtils.drawBorderedRect(bot, RenderUtils.getModernUiColor(true, bot.contains(mouseX, mouseY)), color, 1);
 
                 int offset = (height / 2 - textRenderer.fontHeight) / 2 + 1;
                 drawCenteredText(matrices, textRenderer, "▲", top.getCenterX(), y + offset, 0xAACCCCCC);

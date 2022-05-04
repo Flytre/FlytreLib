@@ -20,10 +20,10 @@ class GameOptionsMixin {
     @Mutable
     @Final
     @Shadow
-    public KeyBinding[] keysAll;
+    public KeyBinding[] allKeys;
 
     @Inject(at = @At("HEAD"), method = "load()V")
     public void flytre_lib$registerCustomBinds(CallbackInfo info) {
-        keysAll = KeyBindUtilsImpl.process(keysAll);
+        allKeys = KeyBindUtilsImpl.process(allKeys);
     }
 }

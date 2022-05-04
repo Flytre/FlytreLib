@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
 
+import java.util.function.Supplier;
+
 /**
  * Used to set how to render a block or fluid
  */
@@ -20,17 +22,17 @@ public final class RenderLayerRegistry {
     }
 
 
-    public static void register(RenderLayer type, Block... blocks) {
-        DELEGATE.register(type, blocks);
+    public static void registerBlockLayer(RenderLayer type, Supplier<Block> block) {
+        DELEGATE.registerBlockLayer(type, block);
     }
 
-    public static void register(RenderLayer type, Fluid... fluids) {
-        DELEGATE.register(type, fluids);
+    public static void registerFluidLayer(RenderLayer type, Supplier<Fluid> fluid) {
+        DELEGATE.registerFluidLayer(type, fluid);
     }
 
     interface Delegate {
-        void register(RenderLayer type, Block... blocks);
+        void registerBlockLayer(RenderLayer type, Supplier<Block> block);
 
-        void register(RenderLayer type, Fluid... fluids);
+        void registerFluidLayer(RenderLayer type, Supplier<Fluid> fluid);
     }
 }

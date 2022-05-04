@@ -4,8 +4,9 @@ import net.flytre.flytre_lib.api.base.util.TagUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public final class TaggedItem {
     private final Identifier path;
     private final int qty;
 
+
     public TaggedItem(Identifier path) {
         this(path, 1);
     }
@@ -27,7 +29,7 @@ public final class TaggedItem {
     }
 
     public Item getItem() {
-        List<Item> values = TagUtils.getValues(path, ItemTags.getTagGroup());
+        List<Item> values = TagUtils.getKeyValuesAsList(Registry.ITEM, TagKey.of(Registry.ITEM.getKey(), path));
         return values.size() >= 1 ? values.get(0) : Items.AIR;
     }
 

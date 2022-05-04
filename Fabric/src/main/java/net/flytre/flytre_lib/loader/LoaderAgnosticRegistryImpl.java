@@ -13,6 +13,8 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.function.Supplier;
+
 final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegate {
 
     private LoaderAgnosticRegistryImpl() {
@@ -24,22 +26,28 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     }
 
     @Override
-    public <T extends Block> T register(T block, String mod, String id) {
-        return Registry.register(Registry.BLOCK, new Identifier(mod, id), block);
+    public <T extends Block> Supplier<T> registerBlock(Supplier<T> block, String mod, String id) {
+        block = CachedSupplier.of(block);
+        Registry.register(Registry.BLOCK, new Identifier(mod, id), block.get());
+        return block;
     }
 
     @Override
-    public <T extends Item> T register(T item, String mod, String id) {
-        return Registry.register(Registry.ITEM, new Identifier(mod, id), item);
+    public <T extends Item> Supplier<T> registerItem(Supplier<T> item, String mod, String id) {
+        item = CachedSupplier.of(item);
+        Registry.register(Registry.ITEM, new Identifier(mod, id), item.get());
+        return item;
     }
 
     @Override
-    public <E extends Entity, T extends EntityType<E>> T register(T entity, String mod, String id) {
-        return Registry.register(Registry.ENTITY_TYPE, new Identifier(mod, id), entity);
+    public <E extends Entity, T extends EntityType<E>> Supplier<T> registerEntity(Supplier<T> entity, String mod, String id) {
+        entity = CachedSupplier.of(entity);
+        Registry.register(Registry.ENTITY_TYPE, new Identifier(mod, id), entity.get());
+        return entity;
     }
 
     @Override
-    public <T extends ScreenHandler> ScreenHandlerType<T> register(SimpleScreenHandlerFactory<T> factory, String mod, String id) {
+    public <T extends ScreenHandler> Supplier<ScreenHandlerType<T>> registerSimpleScreen(SimpleScreenHandlerFactory<T> factory, String mod, String id) {
         if (FabricLoader.getInstance().isModLoaded("fabric")) {
             return FabricLoaderAgnosticRegistry.register(factory, mod, id);
         } else
@@ -47,7 +55,7 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     }
 
     @Override
-    public <T extends ScreenHandler> ScreenHandlerType<T> register(ExtendedScreenHandlerFactory<T> factory, String mod, String id) {
+    public <T extends ScreenHandler> Supplier<ScreenHandlerType<T>> registerExtendedScreen(ExtendedScreenHandlerFactory<T> factory, String mod, String id) {
         if (FabricLoader.getInstance().isModLoaded("fabric")) {
             return FabricLoaderAgnosticRegistry.register(factory, mod, id);
         } else
@@ -55,14 +63,16 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     }
 
     @Override
-    public <K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
-        return Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(mod, id), type);
-
+    public <K extends BlockEntity> Supplier<BlockEntityType<K>> registerBlockEntityType(Supplier<BlockEntityType<K>> type, String mod, String id) {
+        type = CachedSupplier.of(type);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(mod, id), type.get());
+        return type;
     }
 
     @Override
-    public <T extends RecipeSerializer<?>> T register(T recipe, String mod, String id) {
-        return Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(mod, id), recipe);
-
+    public <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id) {
+        recipe = CachedSupplier.of(recipe);
+        Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(mod, id), recipe.get());
+        return recipe;
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.scoreboard.ServerScoreboard;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * An API used to display custom sidebars that keeps the sidebar neatly formatted
@@ -32,7 +31,7 @@ public class SidebarDisplayer {
                 .stream()
                 .filter(i -> i.getScore() >= 0 && i.getScore() <= 15)
                 .sorted(Comparator.comparing(ScoreboardPlayerScore::getScore))
-                .collect(Collectors.toList());
+                .toList();
 
         this.scoreboard = scoreboard;
         this.objective = objective;

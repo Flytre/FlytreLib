@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
  */
 public final class ConfigColor {
 
-    public int value;
+    public final int value;
 
     public ConfigColor(int value) {
         this.value = value;

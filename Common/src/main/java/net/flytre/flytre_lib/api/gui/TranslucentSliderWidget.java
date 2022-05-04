@@ -18,13 +18,7 @@ public abstract class TranslucentSliderWidget extends SliderWidget {
         if (visible) {
             MinecraftClient client = MinecraftClient.getInstance();
             this.renderBackground(matrixStack, client, mouseX, mouseY);
-            int color = 0x446b6b6b;
-            if (!active) {
-                color = 0x440a0a0a;
-            } else if (isHovered()) {
-                color = 0x886b6b6b;
-            }
-
+            int color = RenderUtils.getModernUiColor(active, isHovered());
             RenderUtils.drawRect(x, y, x + width, y + height, color);
             drawCenteredText(matrixStack, client.textRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, 0xffffff);
         }

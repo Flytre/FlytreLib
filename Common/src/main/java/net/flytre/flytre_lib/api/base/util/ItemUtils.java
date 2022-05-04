@@ -13,6 +13,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.registry.Registry;
 
 import java.util.*;
 
@@ -22,12 +23,11 @@ import java.util.*;
  */
 public final class ItemUtils {
 
+    public static final Random RANDOM = new Random();
+
     private ItemUtils() {
         throw new AssertionError();
     }
-
-    public static final Random RANDOM = new Random();
-
 
     public static float getHardness(ItemStack stack) {
         assert stack.getItem() instanceof BlockItem;
@@ -137,9 +137,10 @@ public final class ItemUtils {
      * Get an effective block for the given stack if it is a vanilla tool type
      */
     public static BlockState getBlockForTool(ItemStack stack) {
-        if (stack.getItem() instanceof MiningToolItem)
-            return ((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().getRandom(RANDOM).getDefaultState();
-        else if (stack.getItem() instanceof ShearsItem)
+        if (stack.getItem() instanceof MiningToolItem) {
+            List<Block> blocks = TagUtils.getKeyValuesAsList(Registry.BLOCK, ((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks());
+            return blocks.get((int) (Math.random() * blocks.size())).getDefaultState();
+        } else if (stack.getItem() instanceof ShearsItem)
             return Blocks.COBWEB.getDefaultState();
         else
             return Blocks.AIR.getDefaultState();

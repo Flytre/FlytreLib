@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[39,)"
+loaderVersion = "[${forge_major_version},)"
 license = "${mod_license}"
 issueTrackerURL = "${mod_issues}"
 logoFile = "icon.png"

@@ -15,7 +15,20 @@ public final class LootRegistry {
         throw new AssertionError();
     }
 
+    private static Delegate DELEGATE;
+
+    static void setDelegate(Delegate DELEGATE) {
+        LootRegistry.DELEGATE = DELEGATE;
+    }
+
     public static LootConditionType register(JsonSerializer<? extends LootCondition> serializer, String mod, String id) {
+
         return Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier(mod, id), new LootConditionType(serializer));
+
+    }
+
+
+    interface Delegate {
+        LootConditionType register(JsonSerializer<? extends LootCondition> serializer, String mod, String id);
     }
 }

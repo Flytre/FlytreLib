@@ -5,6 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
 
+import java.util.function.Supplier;
+
 final class RenderLayerRegistryImpl implements RenderLayerRegistry.Delegate {
 
     private RenderLayerRegistryImpl() {
@@ -15,13 +17,12 @@ final class RenderLayerRegistryImpl implements RenderLayerRegistry.Delegate {
     }
 
     @Override
-    public void register(RenderLayer type, Block... blocks) {
-        BlockRenderLayerMap.INSTANCE.putBlocks(type, blocks);
-
+    public void registerBlockLayer(RenderLayer type, Supplier<Block> block) {
+        BlockRenderLayerMap.INSTANCE.putBlocks(type, block.get());
     }
 
     @Override
-    public void register(RenderLayer type, Fluid... fluids) {
-        BlockRenderLayerMap.INSTANCE.putFluids(type, fluids);
+    public void registerFluidLayer(RenderLayer type, Supplier<Fluid> fluid) {
+        BlockRenderLayerMap.INSTANCE.putFluids(type, fluid.get());
     }
 }

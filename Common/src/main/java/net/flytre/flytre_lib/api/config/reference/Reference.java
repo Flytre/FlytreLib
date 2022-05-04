@@ -16,11 +16,14 @@ import java.util.Objects;
  * add support for dynamic registries (i.e. biomes) without using an identifier set
  * <p>
  * Remember that some registries default so please use the identifier constructor if the value could possibly default!
+ *  For example, entities default to pigs
  */
 public abstract class Reference<T> {
 
     protected final @NotNull Identifier identifier;
-    protected final @Nullable T value;
+
+    //lazy-loaded
+    protected @Nullable T value;
 
 
     /**

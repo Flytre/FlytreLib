@@ -11,8 +11,7 @@ import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.tag.ServerTagManagerHolder;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
@@ -53,8 +52,8 @@ public final class RecipeUtils {
             } else if (json.has("tag")) {
                 identifier2 = new Identifier(JsonHelper.getString(json, "tag"));
                 try {
-                    Tag<Item> tag = ServerTagManagerHolder.getTagManager().getTag(Registry.ITEM_KEY, identifier2, (exc) -> new JsonSyntaxException("Unknown item tag '" + exc + "'"));
-                    return tag == null;
+                    var messy = Registry.ITEM.getEntryList(TagKey.of(Registry.ITEM_KEY, identifier2)).orElseThrow(() -> new JsonSyntaxException("Unknown item tag '" + identifier2 + "'"));
+                    return messy != null;
                 } catch (JsonSyntaxException e) {
                     return true;
                 }
@@ -116,7 +115,7 @@ public final class RecipeUtils {
     public static boolean craftingInputMatch(CraftingRecipe recipe, Inventory inv, int lower, int upper) {
         //Get only non-empty ingredients
         DefaultedList<Ingredient> ingredients = recipe.getIngredients();
-        List<Ingredient> actual = ingredients.stream().filter(i -> !i.isEmpty()).collect(Collectors.toList());
+        List<Ingredient> nonEmptyIngredients = ingredients.stream().filter(i -> !i.isEmpty()).toList();
 
         //Copy the inventory and use that for parsing as u can decrement
         ArrayList<ItemStack> copy = new ArrayList<>();
@@ -124,7 +123,7 @@ public final class RecipeUtils {
             copy.add(i, inv.getStack(i).copy());
         }
 
-        for (Ingredient ingredient : actual) {
+        for (Ingredient ingredient : nonEmptyIngredients) {
             boolean matched = false;
             for (int i = lower; i < upper; i++) {
                 if (ingredient.test(copy.get(i))) {
@@ -142,7 +141,7 @@ public final class RecipeUtils {
     public static void actuallyCraft(CraftingRecipe recipe, Inventory inv, int lower, int upper) {
         //Get only non-empty ingredients
         DefaultedList<Ingredient> ingredients = recipe.getIngredients();
-        List<Ingredient> actual = ingredients.stream().filter(i -> !i.isEmpty()).collect(Collectors.toList());
+        List<Ingredient> actual = ingredients.stream().filter(i -> !i.isEmpty()).toList();
 
         for (Ingredient ingredient : actual)
             for (int i = lower; i < upper; i++)

@@ -17,6 +17,7 @@ public final class LoaderPropertyInitializer {
         LoaderPropertiesImpl.init();
         LoaderAgnosticRegistryImpl.init();
         EntityAttributeSetterImpl.init();
+        LootRegistryImpl.init();
 
         if (FabricLoader.getInstance().isModLoaded("fabric")) {
             ScreenLoaderUtilsImpl.init();

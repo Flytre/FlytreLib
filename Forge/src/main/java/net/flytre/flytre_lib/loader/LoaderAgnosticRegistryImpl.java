@@ -15,6 +15,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegate {
 
@@ -61,53 +62,59 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     }
 
     @Override
-    public <T extends Block> T register(T block, String mod, String id) {
+    public <T extends Block> Supplier<T> registerBlock(Supplier<T> block, String mod, String id) {
+        block = CachedSupplier.of(block);
         BLOCK_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.BLOCKS, mod));
-        BLOCK_REGISTRIES.get(mod).register(id, () -> block);
+        BLOCK_REGISTRIES.get(mod).register(id, block);
         return block;
     }
 
+
     @Override
-    public <T extends Item> T register(T item, String mod, String id) {
+    public <T extends Item> Supplier<T> registerItem(Supplier<T> item, String mod, String id) {
+        item = CachedSupplier.of(item);
         ITEM_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.ITEMS, mod));
-        ITEM_REGISTRIES.get(mod).register(id, () -> item);
+        ITEM_REGISTRIES.get(mod).register(id,item);
         return item;
     }
 
     @Override
-    public <E extends Entity, T extends EntityType<E>> T register(T entity, String mod, String id) {
+    public <E extends Entity, T extends EntityType<E>> Supplier<T> registerEntity(Supplier<T> entity, String mod, String id) {
+        entity = CachedSupplier.of(entity);
         ENTITY_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.ENTITIES, mod));
-        ENTITY_REGISTRIES.get(mod).register(id, () -> entity);
+        ENTITY_REGISTRIES.get(mod).register(id, entity);
         return entity;
     }
 
     @Override
-    public <T extends ScreenHandler> ScreenHandlerType<T> register(SimpleScreenHandlerFactory<T> factory, String mod, String id) {
+    public <T extends ScreenHandler> Supplier<ScreenHandlerType<T>> registerSimpleScreen(SimpleScreenHandlerFactory<T> factory, String mod, String id) {
         SCREEN_HANDLER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.CONTAINERS, mod));
-        ScreenHandlerType<T> type = IForgeMenuType.create((syncId, playerInv, packet) -> factory.create(syncId, playerInv));
-        SCREEN_HANDLER_REGISTRIES.get(mod).register(id, () -> type);
+        Supplier<ScreenHandlerType<T>> type = CachedSupplier.of(() -> IForgeMenuType.create((syncId, playerInv, packet) -> factory.create(syncId, playerInv)));
+        SCREEN_HANDLER_REGISTRIES.get(mod).register(id, type);
         return type;
     }
 
     @Override
-    public <T extends ScreenHandler> ScreenHandlerType<T> register(ExtendedScreenHandlerFactory<T> factory, String mod, String id) {
+    public <T extends ScreenHandler> Supplier<ScreenHandlerType<T>> registerExtendedScreen(ExtendedScreenHandlerFactory<T> factory, String mod, String id) {
         SCREEN_HANDLER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.CONTAINERS, mod));
-        ScreenHandlerType<T> type = IForgeMenuType.create(factory::create);
-        SCREEN_HANDLER_REGISTRIES.get(mod).register(id, () -> type);
+        Supplier<ScreenHandlerType<T>> type = CachedSupplier.of(() -> IForgeMenuType.create(factory::create));
+        SCREEN_HANDLER_REGISTRIES.get(mod).register(id, type);
         return type;
     }
 
     @Override
-    public <K extends BlockEntity> BlockEntityType<K> register(BlockEntityType<K> type, String mod, String id) {
+    public <K extends BlockEntity> Supplier<BlockEntityType<K>> registerBlockEntityType(Supplier<BlockEntityType<K>> type, String mod, String id) {
+        type = CachedSupplier.of(type);
         BLOCK_ENTITY_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, mod));
-        BLOCK_ENTITY_REGISTRIES.get(mod).register(id, () -> type);
+        BLOCK_ENTITY_REGISTRIES.get(mod).register(id, type);
         return type;
     }
 
     @Override
-    public <T extends RecipeSerializer<?>> T register(T recipe, String mod, String id) {
+    public <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id) {
+        recipe = CachedSupplier.of(recipe);
         RECIPE_SERIALIZER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, mod));
-        RECIPE_SERIALIZER_REGISTRIES.get(mod).register(id, () -> recipe);
+        RECIPE_SERIALIZER_REGISTRIES.get(mod).register(id, recipe);
         return recipe;
     }
 }

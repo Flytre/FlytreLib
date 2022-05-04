@@ -2,7 +2,7 @@ package net.flytre.flytre_lib.api.config.reference.entity;
 
 import net.flytre.flytre_lib.api.config.reference.TagReference;
 import net.minecraft.entity.EntityType;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -17,9 +17,10 @@ public final class EntityTagReference extends TagReference<EntityType<?>> implem
         super(namespace, path);
     }
 
-    public EntityTagReference(Tag.Identified<EntityType<?>> tag) {
+    public EntityTagReference(TagKey<EntityType<?>> tag) {
         super(tag);
     }
+
 
     @Override
     public RegistryKey<Registry<EntityType<?>>> getRegistry() {

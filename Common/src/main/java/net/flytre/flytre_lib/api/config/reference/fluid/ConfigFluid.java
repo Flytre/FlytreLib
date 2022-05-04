@@ -1,7 +1,6 @@
 package net.flytre.flytre_lib.api.config.reference.fluid;
 
 import net.minecraft.fluid.Fluid;
-import net.minecraft.tag.Tag;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -22,9 +21,9 @@ public interface ConfigFluid {
             if (fluid instanceof FluidReference) {
                 result.add(((FluidReference) fluid).getValue(world));
             } else {
-                Tag<Fluid> list = ((FluidTagReference) fluid).getValue(world);
+                Set<Fluid> list = ((FluidTagReference) fluid).getValue(world);
                 if (list != null)
-                    result.addAll(list.values());
+                    result.addAll(list);
             }
         }
         return result;
@@ -39,8 +38,8 @@ public interface ConfigFluid {
         return fluids.stream().anyMatch(i -> {
             if (!(i instanceof FluidTagReference))
                 return false;
-            Tag<Fluid> list = ((FluidTagReference) i).getValue(world);
-            return list != null && list.values().contains(fluid);
+            Set<Fluid> list = ((FluidTagReference) i).getValue(world);
+            return list != null && list.contains(fluid);
         });
     }
 
