@@ -6,9 +6,13 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -26,6 +30,9 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     private static final Map<String, DeferredRegister<ScreenHandlerType<?>>> SCREEN_HANDLER_REGISTRIES = new HashMap<>();
     private static final Map<String, DeferredRegister<BlockEntityType<?>>> BLOCK_ENTITY_REGISTRIES = new HashMap<>();
     private static final Map<String, DeferredRegister<RecipeSerializer<?>>> RECIPE_SERIALIZER_REGISTRIES = new HashMap<>();
+    private static final Map<String, DeferredRegister<RecipeType<?>>> RECIPE_TYPE_REGISTRIES = new HashMap<>();
+    private static final Map<String, DeferredRegister<ParticleType<?>>> PARTICLE_TYPE_REGISTRIES = new HashMap<>();
+    private static final Map<String, DeferredRegister<SoundEvent>> SOUND_EVENT_REGISTRIES = new HashMap<>();
     private static final Set<String> REGISTERED_MODS = new HashSet<>();
 
     private LoaderAgnosticRegistryImpl() {
@@ -43,7 +50,10 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
                 ENTITY_REGISTRIES,
                 SCREEN_HANDLER_REGISTRIES,
                 BLOCK_ENTITY_REGISTRIES,
-                RECIPE_SERIALIZER_REGISTRIES
+                RECIPE_TYPE_REGISTRIES,
+                RECIPE_SERIALIZER_REGISTRIES,
+                PARTICLE_TYPE_REGISTRIES,
+                SOUND_EVENT_REGISTRIES
         );
     }
 
@@ -74,7 +84,7 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     public <T extends Item> Supplier<T> registerItem(Supplier<T> item, String mod, String id) {
         item = CachedSupplier.of(item);
         ITEM_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.ITEMS, mod));
-        ITEM_REGISTRIES.get(mod).register(id,item);
+        ITEM_REGISTRIES.get(mod).register(id, item);
         return item;
     }
 
@@ -116,5 +126,29 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
         RECIPE_SERIALIZER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, mod));
         RECIPE_SERIALIZER_REGISTRIES.get(mod).register(id, recipe);
         return recipe;
+    }
+
+    @Override
+    public <T extends RecipeType<?>> Supplier<T> registerRecipeType(Supplier<T> recipeType, String mod, String id) {
+        recipeType = CachedSupplier.of(recipeType);
+        RECIPE_TYPE_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(Registry.RECIPE_TYPE_KEY, mod));
+        RECIPE_TYPE_REGISTRIES.get(mod).register(id, recipeType);
+        return recipeType;
+    }
+
+    @Override
+    public <T extends ParticleType<?>> Supplier<T> registerParticleType(Supplier<T> particleType, String mod, String id) {
+        particleType = CachedSupplier.of(particleType);
+        PARTICLE_TYPE_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(Registry.PARTICLE_TYPE_KEY, mod));
+        PARTICLE_TYPE_REGISTRIES.get(mod).register(id, particleType);
+        return particleType;
+    }
+
+    @Override
+    public <T extends SoundEvent> Supplier<T> registerSoundEvent(Supplier<T> soundEvent, String mod, String id) {
+        soundEvent = CachedSupplier.of(soundEvent);
+        SOUND_EVENT_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, mod));
+        SOUND_EVENT_REGISTRIES.get(mod).register(id, soundEvent);
+        return soundEvent;
     }
 }

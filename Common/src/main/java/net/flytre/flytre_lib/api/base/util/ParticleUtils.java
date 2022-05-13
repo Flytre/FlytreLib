@@ -4,6 +4,7 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
 
@@ -32,7 +33,9 @@ public final class ParticleUtils {
         }
     }
 
-    //PlayerLookup::tracking
+    //TODO: Remove in 1.19
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
     private static Collection<ServerPlayerEntity> tracking(ServerWorld world, BlockPos pos) {
         return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(new ChunkPos(pos), false);
 

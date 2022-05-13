@@ -7,9 +7,12 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -74,5 +77,26 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
         recipe = CachedSupplier.of(recipe);
         Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(mod, id), recipe.get());
         return recipe;
+    }
+
+    @Override
+    public <T extends RecipeType<?>> Supplier<T> registerRecipeType(Supplier<T> recipeType, String mod, String id) {
+        recipeType = CachedSupplier.of(recipeType);
+        Registry.register(Registry.RECIPE_TYPE, new Identifier(mod, id), recipeType.get());
+        return recipeType;
+    }
+
+    @Override
+    public <T extends ParticleType<?>> Supplier<T> registerParticleType(Supplier<T> particleType, String mod, String id) {
+        particleType = CachedSupplier.of(particleType);
+        Registry.register(Registry.PARTICLE_TYPE, new Identifier(mod, id), particleType.get());
+        return particleType;
+    }
+
+    @Override
+    public <T extends SoundEvent> Supplier<T> registerSoundEvent(Supplier<T> soundEvent, String mod, String id) {
+        soundEvent = CachedSupplier.of(soundEvent);
+        Registry.register(Registry.SOUND_EVENT, new Identifier(mod, id), soundEvent.get());
+        return soundEvent;
     }
 }

@@ -46,8 +46,5 @@ public interface FluidHandler extends UpgradeHandler {
     ItemStack simpleTransferSlot(PlayerEntity player, int index);
 
 
-    void addInventorySlots(PlayerInventory playerInventory);
-
-
     DefaultedList<FluidSlot> getFluidSlots();
 }

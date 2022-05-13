@@ -6,9 +6,12 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.sound.SoundEvent;
 
 import java.util.function.Supplier;
 
@@ -51,8 +54,21 @@ public final class LoaderAgnosticRegistry {
         return DELEGATE.registerBlockEntityType(type, mod, id);
     }
 
+    public static <T extends RecipeType<?>> Supplier<T> registerRecipeType(Supplier<T> recipeType, String mod, String id) {
+        return DELEGATE.registerRecipeType(recipeType, mod, id);
+    }
+
+    //TODO: rename recipe serializer
     public static <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id) {
         return DELEGATE.registerRecipe(recipe, mod, id);
+    }
+
+    public static <T extends ParticleType<?>> Supplier<T> registerParticleType(Supplier<T> particleType, String mod, String id) {
+        return DELEGATE.registerParticleType(particleType, mod, id);
+    }
+
+    public static <T extends SoundEvent> Supplier<T> registerSoundEvent(Supplier<T> soundEvent, String mod, String id) {
+        return DELEGATE.registerSoundEvent(soundEvent, mod, id);
     }
 
 
@@ -72,5 +88,10 @@ public final class LoaderAgnosticRegistry {
 
         <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id);
 
+        <T extends RecipeType<?>> Supplier<T> registerRecipeType(Supplier<T> recipeType, String mod, String id);
+
+        <T extends ParticleType<?>> Supplier<T> registerParticleType(Supplier<T> particleType, String mod, String id);
+
+        <T extends SoundEvent> Supplier<T> registerSoundEvent(Supplier<T> soundEvent, String mod, String id);
     }
 }

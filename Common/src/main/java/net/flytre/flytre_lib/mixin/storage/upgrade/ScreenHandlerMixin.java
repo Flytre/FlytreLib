@@ -77,6 +77,8 @@ abstract class ScreenHandlerMixin implements UpgradeHandler {
     @Shadow
     protected abstract boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast);
 
+    @Shadow protected abstract Slot addSlot(Slot slot);
+
     @Inject(method = "<init>*", at = @At("TAIL"))
     public void flytre_lib$init(ScreenHandlerType<?> type, int syncId, CallbackInfo ci) {
         upgradeSlots = DefaultedList.of();
@@ -415,6 +417,21 @@ abstract class ScreenHandlerMixin implements UpgradeHandler {
                 return ItemStack.EMPTY;
         }
         return stack;
+    }
+
+    @Override
+    public void addInventorySlots(PlayerInventory playerInventory) {
+        int o;
+        int n;
+        for (o = 0; o < 3; ++o) {
+            for (n = 0; n < 9; ++n) {
+                this.addSlot(new Slot(playerInventory, n + o * 9 + 9, 8 + n * 18, 84 + o * 18));
+            }
+        }
+
+        for (o = 0; o < 9; ++o) {
+            this.addSlot(new Slot(playerInventory, o, 8 + o * 18, 142));
+        }
     }
 
 
