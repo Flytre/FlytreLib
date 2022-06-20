@@ -118,7 +118,7 @@ project.publishing {
         }
     }
 }
-
+//
 //build {
 //    finalizedBy('finalizeObfuscatedJar')
 //}

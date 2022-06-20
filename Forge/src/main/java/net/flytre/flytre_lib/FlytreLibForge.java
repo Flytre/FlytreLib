@@ -47,7 +47,8 @@ public final class FlytreLibForge {
 
 
     @SubscribeEvent
-    public static void onLoadComplete(FMLLoadCompleteEvent event) {
+    public static void onLoadComplete(FMLLoadCompleteEvent event)
+    {
     }
 
 

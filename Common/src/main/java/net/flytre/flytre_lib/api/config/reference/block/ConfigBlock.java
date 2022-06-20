@@ -7,12 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//Unofficial sealed class (preview features are beta)
 
-/**
- * Marker interface
- */
-public interface ConfigBlock {
+sealed public interface ConfigBlock permits BlockReference, BlockTagReference {
 
 
     /**

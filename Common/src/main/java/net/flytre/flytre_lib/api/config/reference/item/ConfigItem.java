@@ -7,12 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//Unofficial sealed class (preview features are beta)
 
-/**
- * Marker interface
- */
-public interface ConfigItem {
+sealed public interface ConfigItem permits ItemReference, ItemTagReference {
 
 
     static Set<Item> values(Set<ConfigItem> items, World world) {

@@ -6,6 +6,7 @@ import net.flytre.flytre_lib.api.base.util.reflection.FieldMatch;
 import net.flytre.flytre_lib.api.config.ConfigHandler;
 import net.flytre.flytre_lib.api.config.annotation.Description;
 import net.flytre.flytre_lib.api.config.annotation.DisplayName;
+import net.flytre.flytre_lib.api.config.annotation.MemberLocalizationFunction;
 import net.flytre.flytre_lib.api.config.annotation.Range;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
@@ -13,6 +14,8 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -36,6 +39,23 @@ public final class ConfigHelper {
             throw new AssertionError("Enum value " + val + " was remapped. Tell the developer to modify obfuscation settings."); //will never happen
         }
 
+        if (useDisplayName) {
+            Method[] methods = val.getClass().getMethods();
+            for (Method method : methods) {
+                MemberLocalizationFunction anno = method.getAnnotation(MemberLocalizationFunction.class);
+                if (anno != null) {
+                    method.setAccessible(true);
+                    try {
+                        Object result = method.invoke(val);
+                        return result.toString();
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new AssertionError("Member Localization Function " + method.getName() + " in class " + val.getClass().getName() + " failed");
+                    }
+                }
+            }
+        }
+
+
         DisplayName display = field.getAnnotation(DisplayName.class);
         if (display != null && useDisplayName)
             return display.translationKey() ? I18n.translate(display.value()) : display.value();
@@ -43,6 +63,7 @@ public final class ConfigHelper {
         SerializedName serializedName = field.getAnnotation(SerializedName.class);
         if (serializedName != null)
             return serializedName.value();
+
 
         return val.name();
     }

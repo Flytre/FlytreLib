@@ -66,6 +66,11 @@ public abstract class GenericConfigScreen extends Screen {
         return false;
     }
 
+    @Override
+    public void close() {
+        onClose();
+    }
+
     public void onClose() {
         assert this.client != null;
         this.client.setScreen(parent);

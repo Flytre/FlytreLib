@@ -14,8 +14,8 @@
   "client": [
     "base.EntityRenderersInvoker", "base.GameOptionsMixin", "base.KeyBindingAccessor", "base.LivingEntityRendererMixin",
     "config.ClientPlayNetworkHandlerMixin", "config.EntryListWidgetAccessor", "config.KeyboardMixin",
-    "config.MainMixin", "config.MinecraftClientMixin", "config.SliderWidgetAccessor",
-    "event.ClientWorldMixin", "event.InGameHudMixin", "gui.EntryListWidgetAccessor",
+    "config.MainMixin", "config.MinecraftClientMixin", "config.SliderWidgetAccessor", "event.ClientWorldMixin",
+    "event.InGameHudMixin", "event.MinecraftClientMixin", "gui.EntryListWidgetAccessor",
     "storage.upgrade.HandledScreenMixin"
   ],
   "server": ["base.DedicatedServerWatchdogMixin"],

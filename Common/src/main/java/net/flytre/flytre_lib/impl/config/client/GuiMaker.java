@@ -233,7 +233,7 @@ public final class GuiMaker {
             TranslucentCyclingOption<?> option = TranslucentCyclingOption.create(
                     "flytre_lib.gui.value",
                     constants,
-                    enumVal -> Text.of(ConfigHelper.getEnumName(enumVal, true)),
+                    enumVal -> new TranslatableText(ConfigHelper.getEnumName(enumVal, true)),
                     options -> (Enum<?>) getValue(fieldMatch, state.obj),
                     (game, opt, val) -> setValue(fieldMatch, state.obj, val)
             );

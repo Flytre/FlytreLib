@@ -1,5 +1,7 @@
 package net.flytre.flytre_lib.api.base.util;
 
+import net.flytre.flytre_lib.api.config.reference.block.ConfigBlock;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -7,6 +9,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,20 +27,46 @@ public final class EntityUtils {
     }
 
     /**
+     * @param entity
+     * @param maxDistance
+     * @param thruBlocks  These blocks are ignored by the raycast, it will go through them.
+     * @return
+     */
+    public static HitResult raycastNoFluid(Entity entity, double maxDistance, Set<ConfigBlock> thruBlocks) {
+        Vec3d origin = new Vec3d(entity.getX(), entity.getY() + entity.getEyeHeight(entity.getPose()), entity.getZ());
+        Set<Block> filtered = ConfigBlock.values(thruBlocks, entity.getEntityWorld());
+        return entity.getEntityWorld().raycast(new FilteredRaycastContext(origin, origin.add(entity.getRotationVector().normalize().multiply(maxDistance)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity, filtered));
+    }
+
+    /**
+     * @return ALL entities that the player is currently looking at (a line out from the crosshair would intersect with the entity)
+     */
+    public static Set<Entity> getEntitiesLookedAt(Entity looker, double maxDistance, Set<ConfigBlock> thruBlocks) {
+        return getEntityLookedAtHelper(looker, maxDistance, thruBlocks).all;
+    }
+
+    /**
+     * @return The entity that the player's crosshair is directly over
+     */
+    public static Entity getEntityLookedAt(Entity looker, double maxDistance, Set<ConfigBlock> thruBlocks) {
+        return getEntityLookedAtHelper(looker, maxDistance, thruBlocks).main;
+    }
+
+    /**
      * @return ALL entities that the player is currently looking at (a line out from the crosshair would intersect with the entity)
      */
     public static Set<Entity> getEntitiesLookedAt(Entity looker, double maxDistance) {
-        return getEntityLookedAtHelper(looker, maxDistance).all;
+        return getEntityLookedAtHelper(looker, maxDistance, null).all;
     }
 
     /**
      * @return The entity that the player's crosshair is directly over
      */
     public static Entity getEntityLookedAt(Entity looker, double maxDistance) {
-        return getEntityLookedAtHelper(looker, maxDistance).main;
+        return getEntityLookedAtHelper(looker, maxDistance, null).main;
     }
 
-    private static LookedAtEntities getEntityLookedAtHelper(Entity looker, double maxDistance) {
+    private static LookedAtEntities getEntityLookedAtHelper(Entity looker, double maxDistance, @Nullable Set<ConfigBlock> thruBlocks) {
 
         HitResult hitResult = EntityUtils.raycastNoFluid(looker, maxDistance);
         Vec3d lookerPosition = looker.getPos().add(0, looker.getEyeHeight(looker.getPose()), 0);
@@ -93,6 +122,7 @@ public final class EntityUtils {
         float i = MathHelper.wrapDegrees((float) (MathHelper.atan2(f, d) * 57.2957763671875D) - 90.0F);
         return new Vec2f(h, i);
     }
+
 
     private record LookedAtEntities(Entity main, Set<Entity> all) {
 

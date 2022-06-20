@@ -2,14 +2,10 @@ package net.flytre.flytre_lib.mixin.config;
 
 
 import com.google.gson.GsonBuilder;
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.UserType;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
-import com.mojang.util.UUIDTypeAdapter;
 import net.flytre.flytre_lib.api.config.ConfigHandler;
 import net.flytre.flytre_lib.api.config.ConfigRegistry;
+import net.flytre.flytre_lib.impl.config.auth.MicrosoftAuthenticationUtils;
+import net.flytre.flytre_lib.impl.config.auth.MinecraftAccountInfo;
 import net.flytre.flytre_lib.impl.config.init.FlytreLibConfig;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.minecraft.client.main.Main;
@@ -21,10 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.net.Proxy;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Mixin(value = Main.class)
@@ -32,13 +25,9 @@ class MainMixin {
 
 
     @Unique
-    private static String name;
+    private static MinecraftAccountInfo accountInfo;
+
     @Unique
-    private static String uuid;
-    @Unique
-    private static String token;
-    @Unique
-    private static String type;
     private static boolean successful = false;
 
 
@@ -53,30 +42,24 @@ class MainMixin {
         }
 
 
-        YggdrasilUserAuthentication userAuth = (YggdrasilUserAuthentication) new YggdrasilAuthenticationService(Proxy.NO_PROXY,
-                UUID.randomUUID().toString()).createUserAuthentication(Agent.MINECRAFT);
-        userAuth.setUsername(LoaderProperties.HANDLER.getConfig().login.username);
-        userAuth.setPassword(LoaderProperties.HANDLER.getConfig().login.password);
         try {
-            userAuth.logIn();
-        } catch (AuthenticationException e) {
+            accountInfo = MicrosoftAuthenticationUtils.login(
+                    LoaderProperties.HANDLER.getConfig().login.username,
+                    LoaderProperties.HANDLER.getConfig().login.password
+            );
+            successful = true;
+        } catch (Exception e) {
             e.printStackTrace();
-            return;
         }
-
-        successful = true;
-
-        name = userAuth.getSelectedProfile().getName();
-        uuid = UUIDTypeAdapter.fromUUID(userAuth.getSelectedProfile().getId());
-        token = userAuth.getAuthenticatedToken();
-        type = userAuth.getUserType().getName();
     }
 
     @Redirect(method = "main", at = @At(value = "NEW", target = "net/minecraft/client/util/Session"))
     private static Session flytre_lib$auth_me(String username, String uuid2, String accessToken, Optional<String> xuid, Optional<String> clientId, Session.AccountType accountType) {
 
         if (successful)
-            return new Session(name, uuid, token, Optional.empty(), Optional.empty(), Objects.equals(type, UserType.LEGACY.getName()) ? Session.AccountType.LEGACY : Session.AccountType.MOJANG);
+            return new Session(accountInfo.name(), accountInfo.uuid(),
+                    accountInfo.token(), Optional.empty(), Optional.empty(),
+                    Session.AccountType.MOJANG);
         else
             return new Session(username, uuid2, accessToken, xuid, clientId, accountType);
     }
