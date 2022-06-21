@@ -23,10 +23,6 @@ dependencies {
     modCompileOnly("net.fabricmc:fabric-loader:${fabric_loader_version}")
 }
 
-task prepareWorkspace {
-
-}
-
 processResources {
 
     def buildProps = project.properties.clone()

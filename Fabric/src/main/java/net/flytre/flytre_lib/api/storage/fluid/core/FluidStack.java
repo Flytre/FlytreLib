@@ -234,10 +234,10 @@ public class FluidStack {
             FlowableFluid fluid = ((FluidBlockAccessor) block).getFluid();
             if (fluid == getFluid()) {
                 if (multiline) {
-                    MutableText line = new TranslatableText(block.getTranslationKey());
+                    MutableText line = Text.translatable(block.getTranslationKey());
                     line = line.setStyle(Style.EMPTY.withColor(Formatting.WHITE));
                     tooltip.add(line);
-                    line = new LiteralText(Formatter.formatNumber((double) getAmount() / UNITS_PER_BUCKET, "B "));
+                    line = Text.literal(Formatter.formatNumber((double) getAmount() / UNITS_PER_BUCKET, "B "));
                     line = line.setStyle(Style.EMPTY.withColor(Formatting.GRAY));
                     tooltip.add(line);
 
@@ -246,13 +246,13 @@ public class FluidStack {
 
                     if (MinecraftClient.getInstance().options.advancedItemTooltips) {
                         Identifier id = Registry.FLUID.getId(fluid);
-                        line = new LiteralText(id.toString());
+                        line = Text.literal(id.toString());
                         line = line.setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
                         tooltip.add(line);
                     }
                     tooltip.add(Formatter.getModNameToolTip(Registry.FLUID.getId(getFluid()).getNamespace()));
                 } else {
-                    MutableText line = new LiteralText(Formatter.formatNumber((double) getAmount() / UNITS_PER_BUCKET, "B ")).append(new TranslatableText(block.getTranslationKey()));
+                    MutableText line = Text.literal(Formatter.formatNumber((double) getAmount() / UNITS_PER_BUCKET, "B ")).append(Text.translatable(block.getTranslationKey()));
                     line = line.setStyle(Style.EMPTY.withColor(Formatting.GRAY));
                     tooltip.add(line);
                 }

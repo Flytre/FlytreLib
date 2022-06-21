@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import net.flytre.flytre_lib.loader.LoaderProperties;
 import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -176,7 +175,7 @@ public final class Formatter {
      * @return Human-readable text formatted name of the mod
      */
     public static Text getModNameToolTip(String modId) {
-        MutableText name = new LiteralText(getModFromModId(modId)).append(new LiteralText(""));
+        MutableText name = Text.literal(getModFromModId(modId)).append(Text.empty());
         name.setStyle(Style.EMPTY.withColor(Formatting.BLUE).withItalic(true));
         return name;
     }

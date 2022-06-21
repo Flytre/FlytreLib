@@ -1,3 +1,5 @@
 accessWidener   v1  named
 accessible  class   net/minecraft/client/particle/ParticleManager$SpriteAwareFactory
 extendable	class	net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+extendable  class   net/minecraft/client/option/SimpleOption$Callbacks
+accessible  field   net/minecraft/client/option/SimpleOption    textGetter  Ljava/util/function/Function;

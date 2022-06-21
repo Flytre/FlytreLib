@@ -2,6 +2,7 @@ package net.flytre.flytre_lib.mixin.event;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.flytre.flytre_lib.api.event.CommandRegistrationEvent;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import org.spongepowered.asm.mixin.Final;
@@ -20,8 +21,8 @@ public abstract class CommandManagerMixin {
     /**
      * Requires Fabric fork of mixin to run; Can replace with TAIL, but will calculate after ambiguities
      */
-    @Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
-    private void flytre_lib$registerCommands(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/AdvancementCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V"), method = "<init>")
+    private void flytre_lib$registerCommands(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess commandRegistryAccess, CallbackInfo ci) {
         CommandRegistrationEvent.EVENT.getListeners().forEach(i -> i.onCommandsRegistered(this.dispatcher, environment == CommandManager.RegistrationEnvironment.DEDICATED));
     }
 }

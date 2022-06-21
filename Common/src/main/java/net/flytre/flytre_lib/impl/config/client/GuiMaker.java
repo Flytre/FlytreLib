@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.serialization.Codec;
 import net.flytre.flytre_lib.api.base.util.reflection.FieldMatch;
 import net.flytre.flytre_lib.api.base.util.reflection.ReflectionUtils;
 import net.flytre.flytre_lib.api.config.ConfigColor;
@@ -19,7 +20,7 @@ import net.flytre.flytre_lib.api.config.reference.fluid.ConfigFluid;
 import net.flytre.flytre_lib.api.config.reference.item.ConfigItem;
 import net.flytre.flytre_lib.api.gui.TranslucentSliderWidget;
 import net.flytre.flytre_lib.api.gui.button.TranslucentButton;
-import net.flytre.flytre_lib.api.gui.button.TranslucentCyclingOption;
+import net.flytre.flytre_lib.api.gui.button.TranslucentCyclingButtonWidget;
 import net.flytre.flytre_lib.api.gui.text_field.*;
 import net.flytre.flytre_lib.impl.config.ConfigHelper;
 import net.minecraft.block.Block;
@@ -28,13 +29,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.text.LiteralText;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,14 +46,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 @ApiStatus.Internal
@@ -148,7 +145,7 @@ public final class GuiMaker {
             addMap(state, fieldMatch, name, description);
         } else if (entry.getValue().isJsonObject()) {
             JsonObject entryValue = (JsonObject) entry.getValue();
-            ClickableWidget button = new TranslucentButton(0, 0, width(), 20, new TranslatableText("flytre_lib.gui.open"), (but) -> {
+            ClickableWidget button = new TranslucentButton(0, 0, width(), 20, Text.translatable("flytre_lib.gui.open"), (but) -> {
                 IndividualConfigScreen<K> innerScreen = new IndividualConfigScreen<>(state.screen, null, state.handler);
                 createGuiHelper(new ParentData<>(innerScreen, state.handler, fieldClass, entryValue, getValue(fieldMatch, state.obj), (JsonObject) defaultValue, getValue(fieldMatch, state.defObj)));
                 MinecraftClient.getInstance().setScreen(innerScreen);
@@ -173,11 +170,11 @@ public final class GuiMaker {
 
         if (range != null && range.max() - range.min() < 1000) {
             double range2 = range.max() - range.min();
-            ClickableWidget widget = new TranslucentSliderWidget(0, 0, width(), 20, LiteralText.EMPTY, ((Number) getValue(fieldMatch, state.obj)).doubleValue() / range2) {
+            ClickableWidget widget = new TranslucentSliderWidget(0, 0, width(), 20, Text.empty(), ((Number) getValue(fieldMatch, state.obj)).doubleValue() / range2) {
                 @Override
                 protected void updateMessage() {
                     String format = restrictToInt ? "%f" : "%.3f";
-                    this.setMessage(new TranslatableText("flytre_lib.gui.slider", String.format(format, ((Number) getValue(fieldMatch, state.obj)).doubleValue())));
+                    this.setMessage(Text.translatable("flytre_lib.gui.slider", String.format(format, ((Number) getValue(fieldMatch, state.obj)).doubleValue())));
                 }
 
                 @Override
@@ -191,7 +188,7 @@ public final class GuiMaker {
             state.screen.addEntry(new ConfigListWidget.ConfigEntry(widget, name, description));
         } else {
             NumberBox.ValueRange valueRange = range == null ? null : new NumberBox.ValueRange(range.min(), range.max());
-            NumberBox widget = new NumberBox(0, 0, Math.min(230, ConfigHelper.getWidth() - 20), 20, LiteralText.EMPTY, restrictToInt, ((Number) getValue(fieldMatch, state.obj)).doubleValue(), valueRange);
+            NumberBox widget = new NumberBox(0, 0, Math.min(230, ConfigHelper.getWidth() - 20), 20, Text.empty(), restrictToInt, ((Number) getValue(fieldMatch, state.obj)).doubleValue(), valueRange);
             widget.setListener(str -> setValue(fieldMatch, state.obj, ConfigHelper.convertDouble(fieldClass, Double.parseDouble(str))));
             state.screen.addEntry(new ConfigListWidget.ConfigEntry(widget, name, description));
         }
@@ -218,11 +215,15 @@ public final class GuiMaker {
     }
 
     private static void addBoolean(ParentData<?> state, FieldMatch fieldMatch, String name, String description) {
-        TranslucentCyclingOption<Boolean> option = TranslucentCyclingOption.create(
+        SimpleOption<Boolean> option = new SimpleOption<>(
                 "flytre_lib.gui.value",
-                (options) -> (Boolean) getValue(fieldMatch, state.obj),
-                (game, opt, bool) -> setValue(fieldMatch, state.obj, bool)
+                SimpleOption.emptyTooltip(),
+                (optionText, value) -> value ? ScreenTexts.ON : ScreenTexts.OFF,
+                new BooleanCallback(),
+                (boolean) getValue(fieldMatch, state.obj),
+                (bool) -> setValue(fieldMatch, state.obj, bool)
         );
+
         ClickableWidget button = option.createButton(MinecraftClient.getInstance().options, 0, 0, width());
         state.screen.addEntry(new ConfigListWidget.ConfigEntry(button, name, description));
     }
@@ -230,12 +231,13 @@ public final class GuiMaker {
     private static void addEnum(ParentData<?> state, Class<?> fieldClass, FieldMatch fieldMatch, JsonElement element, String name, String description) {
         Enum<?>[] constants = (Enum<?>[]) fieldClass.getEnumConstants();
         if (constants.length <= 6) {
-            TranslucentCyclingOption<?> option = TranslucentCyclingOption.create(
+            SimpleOption<?> option = new SimpleOption<>(
                     "flytre_lib.gui.value",
-                    constants,
-                    enumVal -> new TranslatableText(ConfigHelper.getEnumName(enumVal, true)),
-                    options -> (Enum<?>) getValue(fieldMatch, state.obj),
-                    (game, opt, val) -> setValue(fieldMatch, state.obj, val)
+                    SimpleOption.emptyTooltip(),
+                    (__, enumVal) -> Text.translatable(ConfigHelper.getEnumName(enumVal, true)),
+                    new EnumCallback(constants),
+                    (Enum<?>) getValue(fieldMatch, state.obj),
+                    (val) -> setValue(fieldMatch, state.obj, val)
             );
             ClickableWidget button = option.createButton(MinecraftClient.getInstance().options, 0, 0, width());
             state.screen.addEntry(new ConfigListWidget.ConfigEntry(button, name, description));
@@ -260,7 +262,7 @@ public final class GuiMaker {
         };
         Supplier<TranslucentTextField> adder = adder(TypeToken.get(valueType).getRawType());
 
-        ClickableWidget button = new TranslucentButton(0, 0, width(), 20, new TranslatableText("flytre_lib.gui.edit"), (but) -> {
+        ClickableWidget button = new TranslucentButton(0, 0, width(), 20, Text.translatable("flytre_lib.gui.edit"), (but) -> {
             List<String> parsed;
             try {
                 parsed = state.handler.getGson().fromJson(state.handler.getGson().toJsonTree(getValue(fieldMatch, state.obj)), new TypeToken<List<String>>() {
@@ -281,14 +283,12 @@ public final class GuiMaker {
 
     }
 
-
     private static int width() {
         return Math.min(250, ConfigHelper.getWidth());
     }
 
-
     private static void addMap(ParentData<?> state, FieldMatch fieldMatch, String name, String description) {
-        ClickableWidget button = new TranslucentButton(0, 0, width(), 20, new TranslatableText("flytre_lib.gui.edit"), (but) -> {
+        ClickableWidget button = new TranslucentButton(0, 0, width(), 20, Text.translatable("flytre_lib.gui.edit"), (but) -> {
             //Generates the map every time its opened rather than just once for custom button tweaking
             MinecraftClient.getInstance().setScreen(mapScreenMaker(state, fieldMatch, (Map<?, ?>) getValue(fieldMatch, state.obj), but));
         });
@@ -331,7 +331,7 @@ public final class GuiMaker {
             String key = state.handler.getGson().fromJson(state.handler.getGson().toJson(mapEntry.getKey()), String.class);
             JsonElement element = state.handler.getGson().toJsonTree(mapEntry.getValue());
             if (element instanceof JsonObject) {
-                ClickableWidget button = new TranslucentButton(0, 0, width(), 20, new TranslatableText("flytre_lib.gui.open"), (but) -> {
+                ClickableWidget button = new TranslucentButton(0, 0, width(), 20, Text.translatable("flytre_lib.gui.open"), (but) -> {
                     IndividualConfigScreen<K> simulator = new IndividualConfigScreen<>(mapEditor, but, state.handler);
                     createGuiHelper(new ParentData<>(simulator, state.handler, mapEntry.getValue().getClass(), (JsonObject) element, mapEntry.getValue(), (JsonObject) element, mapEntry.getValue()));
                     MinecraftClient.getInstance().setScreen(simulator);
@@ -364,7 +364,6 @@ public final class GuiMaker {
         return new ObjectWrapper<>(clazz.cast(wrappedValue));
     }
 
-
     private static Supplier<TranslucentTextField> adder(Class<?> clazz) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         if (IS_ITEM.test(clazz))
@@ -377,7 +376,7 @@ public final class GuiMaker {
             return () -> DropdownUtils.createEntityDropdown(0, 0);
         if (IS_IDENTIFIER.test(clazz)) {
             return () -> {
-                TranslucentTextField searchField = new TranslucentTextField(0, 0, Math.min(250, width), 20, new TranslatableText("null"));
+                TranslucentTextField searchField = new TranslucentTextField(0, 0, Math.min(250, width), 20, Text.translatable("null"));
                 searchField.setRenderer(DropdownUtils::identifierTextFieldRenderer);
                 return searchField;
             };
@@ -385,14 +384,14 @@ public final class GuiMaker {
         if (Number.class.isAssignableFrom(clazz))
             return () -> {
                 boolean integers = Long.class.isAssignableFrom(clazz) || Integer.class.isAssignableFrom(clazz) || BigInteger.class.isAssignableFrom(clazz);
-                return new NumberBox(0, 0, Math.min(230, width - 20), 20, LiteralText.EMPTY, integers, 0, null);
+                return new NumberBox(0, 0, Math.min(230, width - 20), 20, Text.empty(), integers, 0, null);
             };
         if (Enum.class.isAssignableFrom(clazz)) {
             Enum<?>[] constants = (Enum<?>[]) clazz.getEnumConstants();
             return () -> DropdownUtils.createGenericDropdown(Arrays.stream(constants).map(Enum::name).collect(Collectors.toList()));
 
         }
-        return () -> new TranslucentTextField(0, 0, width(), 20, new TranslatableText("null"));
+        return () -> new TranslucentTextField(0, 0, width(), 20, Text.translatable("null"));
     }
 
     public static Runnable getRunnable(@Nullable Button button) {
@@ -417,6 +416,56 @@ public final class GuiMaker {
             return field.field().get(objectWithTheField);
         } catch (IllegalAccessException e) {
             throw new ConfigError(e);
+        }
+    }
+
+    private static class BooleanCallback implements SimpleOption.Callbacks<Boolean> {
+        @Override
+        public Function<SimpleOption<Boolean>, ClickableWidget> getButtonCreator(SimpleOption.TooltipFactory<Boolean> tooltipFactory, GameOptions gameOptions, int x, int y, int width) {
+            return option -> TranslucentCyclingButtonWidget.builder(option.textGetter).values(Boolean.TRUE, Boolean.FALSE).tooltip(tooltipFactory::apply).initially(option.getValue()).build(x, y, width, 20, Text.translatable("flytre_lib.gui.value"), (button, value) -> {
+                option.setValue(value);
+                gameOptions.write();
+            });
+        }
+
+        @Override
+        public Optional<Boolean> validate(Boolean value) {
+            return SimpleOption.BOOLEAN.validate(value);
+        }
+
+        @Override
+        public Codec<Boolean> codec() {
+            return SimpleOption.BOOLEAN.codec();
+        }
+    }
+
+    private static class EnumCallback implements SimpleOption.Callbacks<Enum<?>> {
+
+
+        private final Codec<Enum<?>> codec;
+        private final List<Enum<?>> values;
+
+        public EnumCallback(Enum<?>[] constants) {
+            codec = Codec.INT.xmap(id -> constants[id], cnst -> ArrayUtils.indexOf(constants, cnst));
+            values = List.of(constants);
+        }
+
+        @Override
+        public Function<SimpleOption<Enum<?>>, ClickableWidget> getButtonCreator(SimpleOption.TooltipFactory<Enum<?>> tooltipFactory, GameOptions gameOptions, int x, int y, int width) {
+            return option -> TranslucentCyclingButtonWidget.builder(option.textGetter).values(values).tooltip(tooltipFactory::apply).initially(option.getValue()).build(x, y, width, 20, Text.translatable("flytre_lib.gui.value"), (button, value) -> {
+                option.setValue(value);
+                gameOptions.write();
+            });
+        }
+
+        @Override
+        public Optional<Enum<?>> validate(Enum<?> value) {
+            return this.values.contains(value) ? Optional.of(value) : Optional.empty();
+        }
+
+        @Override
+        public Codec<Enum<?>> codec() {
+            return codec;
         }
     }
 

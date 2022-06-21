@@ -2,18 +2,17 @@ package net.flytre.flytre_lib.api.base.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.processor.BlockRotStructureProcessor;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -31,22 +30,22 @@ public final class BlockManipulator {
     /**
      * Spawn a structure at a position
      */
-    public static void place(ServerWorld world, Structure structure, BlockPos pos) {
+    public static void place(ServerWorld world, StructureTemplate structure, BlockPos pos) {
         place(world, structure, pos, 1.0f, BlockMirror.NONE, BlockRotation.NONE, false);
     }
 
     /**
      * Spawn a structure at a position
      */
-    public static void place(ServerWorld world, Structure structure, BlockPos pos, float integrity, BlockMirror mirror, BlockRotation rotation, boolean ignoreEntities) {
+    public static void place(ServerWorld world, StructureTemplate structure, BlockPos pos, float integrity, BlockMirror mirror, BlockRotation rotation, boolean ignoreEntities) {
 
 
         StructurePlacementData structurePlacementData = (new StructurePlacementData()).setMirror(mirror).setRotation(rotation).setIgnoreEntities(ignoreEntities);
         if (integrity < 1.0F) {
-            structurePlacementData.clearProcessors().addProcessor(new BlockRotStructureProcessor(MathHelper.clamp(integrity, 0.0F, 1.0F))).setRandom(new Random(Util.getMeasuringTimeMs()));
+            structurePlacementData.clearProcessors().addProcessor(new BlockRotStructureProcessor(MathHelper.clamp(integrity, 0.0F, 1.0F))).setRandom(Random.create());
         }
 
-        structure.place(world, pos, pos, structurePlacementData, new Random(Util.getMeasuringTimeMs()), Block.NOTIFY_LISTENERS);
+        structure.place(world, pos, pos, structurePlacementData, Random.create(), Block.NOTIFY_LISTENERS);
     }
 
 

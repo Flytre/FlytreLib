@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +45,7 @@ class ConfigListerScreen extends GenericConfigScreen {
                 .flatMap(Collection::stream).toList();
 
         for (ConfigHandler<?> handler : handlers) {
-            ClickableWidget button = new TranslucentButton(0, 0, Math.min(250, width), 20, new TranslatableText("flytre_lib.gui.open"), (but) -> {
+            ClickableWidget button = new TranslucentButton(0, 0, Math.min(250, width), 20, Text.translatable("flytre_lib.gui.open"), (but) -> {
                 MinecraftClient.getInstance().setScreen(GuiMaker.createGui(this, but, handler));
             });
             list.addEntry(getName(handler.getAssumed().getClass().getAnnotation(DisplayName.class), handler.getName()), button);
@@ -55,7 +55,7 @@ class ConfigListerScreen extends GenericConfigScreen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
-        drawCenteredText(matrices, textRenderer, new TranslatableText("flytre_lib.gui.client_message"), width / 2, height - 60, 0xFFFFFFFF);
+        drawCenteredText(matrices, textRenderer, Text.translatable("flytre_lib.gui.client_message"), width / 2, height - 60, 0xFFFFFFFF);
     }
 
     @Override

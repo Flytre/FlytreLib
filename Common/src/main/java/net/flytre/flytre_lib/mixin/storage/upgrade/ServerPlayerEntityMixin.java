@@ -6,12 +6,14 @@ import net.flytre.flytre_lib.api.storage.upgrade.UpgradeHandler;
 import net.flytre.flytre_lib.impl.storage.upgrade.gui.UpgradeHandlerListener;
 import net.flytre.flytre_lib.impl.storage.upgrade.gui.UpgradeHandlerSyncHandler;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.encryption.PlayerPublicKey;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,12 +31,12 @@ abstract class ServerPlayerEntityMixin extends PlayerEntity implements UpgradeHa
     @Unique
     private UpgradeHandlerSyncHandler upgradeHandlerSyncHandler;
 
-    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
-        super(world, pos, yaw, profile);
+    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, @Nullable PlayerPublicKey publicKey) {
+        super(world, pos, yaw, gameProfile, publicKey);
     }
 
     @Inject(method = "<init>*", at = @At("TAIL"))
-    public void flytre_lib$listeners(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
+    public void flytre_lib$listeners(MinecraftServer server, ServerWorld world, GameProfile profile, PlayerPublicKey publicKey, CallbackInfo ci) {
         upgradeHandlerSyncHandler = new UpgradeHandlerSyncHandler.Impl((ServerPlayerEntity) (Object) this);
     }
 

@@ -5,7 +5,7 @@ import net.flytre.flytre_lib.api.config.ConfigRegistry;
 import net.flytre.flytre_lib.impl.config.client.ConfigListerScreen;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -53,8 +53,8 @@ abstract class KeyboardMixin {
 
     @Inject(method = "processF3", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getChatHud()Lnet/minecraft/client/gui/hud/ChatHud;", ordinal = 1, shift = At.Shift.AFTER))
     public void flytre_lib$addReloadConfigHelpMessage(int key, CallbackInfoReturnable<Boolean> cir) {
-        this.client.inGameHud.getChatHud().addMessage(new TranslatableText("flytre_lib.debug.reload_client_configs.help"));
-        this.client.inGameHud.getChatHud().addMessage(new TranslatableText("flytre_lib.debug.load_config_screen.help"));
+        this.client.inGameHud.getChatHud().addMessage(Text.translatable("flytre_lib.debug.reload_client_configs.help"));
+        this.client.inGameHud.getChatHud().addMessage(Text.translatable("flytre_lib.debug.load_config_screen.help"));
 
     }
 }

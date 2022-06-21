@@ -9,9 +9,8 @@ import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
-
-import java.util.Random;
 
 /**
  * An OutputProvider provides the output of a slot of a recipe. OutputProviders can provide
@@ -184,7 +183,7 @@ public abstract class OutputProvider {
     }
 
     private static class EnchantmentOutputProvider extends StackOutputProvider {
-        private static final Random RANDOM = new Random();
+        private static final Random RANDOM = Random.create();
         private final int level;
         private final boolean treasure;
 

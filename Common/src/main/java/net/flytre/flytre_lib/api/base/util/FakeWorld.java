@@ -7,6 +7,7 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Difficulty;
@@ -21,7 +22,7 @@ import java.util.OptionalLong;
  */
 public class FakeWorld extends ClientWorld {
 
-    private static final DimensionType DIMENSION_TYPE = DimensionType.create(OptionalLong.empty(), true, false, false, true, 1, true, true, true, true, false, 0, 256, 256, TagKey.of(Registry.BLOCK_KEY, new Identifier("null")), new Identifier("null"), 15f);
+    private static final DimensionType DIMENSION_TYPE = new DimensionType(OptionalLong.empty(),true,false,false,true,1,true,true,0,256,256,TagKey.of(Registry.BLOCK_KEY, new Identifier("null")),new Identifier("null"),15f, new DimensionType.MonsterSettings(false,false, UniformIntProvider.create(1,100),1));
     private static final RegistryEntry.Direct<DimensionType> DIMENSION_TYPE_KEY = new RegistryEntry.Direct<>(DIMENSION_TYPE);
 
     private static final ClientPlayNetworkHandler NETWORK_HANDLER = new ClientPlayNetworkHandler(MinecraftClient.getInstance(), null, new ClientConnection(NetworkSide.CLIENTBOUND), MinecraftClient.getInstance().getSession().getProfile(), MinecraftClient.getInstance().createTelemetrySender());

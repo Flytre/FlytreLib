@@ -99,7 +99,7 @@ public class TranslucentTextField extends ClickableWidget {
 
     @Override
     protected MutableText getNarrationMessage() {
-        return new TranslatableText("gui.narrate.editBox", text, this.getMessage());
+        return Text.translatable("gui.narrate.editBox", text, this.getMessage());
     }
 
     @Override
@@ -203,7 +203,7 @@ public class TranslucentTextField extends ClickableWidget {
     }
 
     public int getWordSkipPosition(int wordOffset) { //Get the position of the word x words offset from the cursor
-        TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, new LiteralText(""));
+        TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.literal(""));
         widget.setText(getText());
         widget.setSelectionStart(selection.start);
         return widget.getWordSkipPosition(wordOffset);

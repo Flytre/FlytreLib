@@ -9,7 +9,6 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +30,7 @@ public abstract class AbstractCustomCategory<R extends Recipe<?>> implements Dis
 
     @Override
     public @NotNull Text getTitle() {
-        return new TranslatableText(getIdentifier().toString());
+        return Text.translatable(getIdentifier().toString());
     }
 
     @Override

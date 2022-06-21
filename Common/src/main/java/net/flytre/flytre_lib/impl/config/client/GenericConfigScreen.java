@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.ApiStatus;
@@ -28,7 +28,7 @@ public abstract class GenericConfigScreen extends Screen {
 
 
     public GenericConfigScreen(@Nullable Screen parent, @Nullable ButtonWidget reopen) {
-        super(new TranslatableText("flytre_lib.gui.config_screen"));
+        super(Text.translatable("flytre_lib.gui.config_screen"));
         this.parent = parent;
         this.reopen = reopen;
     }

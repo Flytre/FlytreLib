@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,20 +74,20 @@ class ListEditorScreen<T extends ClickableWidget> extends GenericConfigScreen {
 
         int offset = width / 8 + (customButtonFunc == null ? 0 : width / 5);
 
-        TranslucentButton entryAdder = new TranslucentButton(width / 2 - width / 10 - offset, height - 30, width / 5, 20, new TranslatableText("flytre_lib.gui.add"), (button) -> {
+        TranslucentButton entryAdder = new TranslucentButton(width / 2 - width / 10 - offset, height - 30, width / 5, 20, Text.translatable("flytre_lib.gui.add"), (button) -> {
             list.addEntry(adder.get());
         });
 
         addDrawableChild(entryAdder);
 
-        TranslucentButton done = new TranslucentButton(width / 2 - width / 10 + offset, height - 30, width / 5, 20, new TranslatableText("flytre_lib.gui.done"), (button) -> {
+        TranslucentButton done = new TranslucentButton(width / 2 - width / 10 + offset, height - 30, width / 5, 20, Text.translatable("flytre_lib.gui.done"), (button) -> {
             onClose();
         });
         addDrawableChild(done);
 
 
         if (customButtonFunc != null) {
-            @Nullable TranslucentButton customButton = new TranslucentButton(width / 2 - width / 10, height - 30, width / 5, 20, new TranslatableText(buttonAnnotation.translationKey()), (x) -> {
+            @Nullable TranslucentButton customButton = new TranslucentButton(width / 2 - width / 10, height - 30, width / 5, 20, Text.translatable(buttonAnnotation.translationKey()), (x) -> {
                 onClose();
                 customButtonFunc.run();
                 reopenAction();

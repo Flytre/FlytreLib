@@ -4,16 +4,15 @@ import com.google.common.collect.ImmutableList;
 import net.flytre.flytre_lib.api.base.util.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.OrderableTooltip;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,11 +24,7 @@ import java.util.function.Function;
 
 public class TranslucentCyclingButtonWidget<T> extends PressableWidget implements OrderableTooltip {
     static final BooleanSupplier HAS_ALT_DOWN = Screen::hasAltDown;
-    private static final List<Boolean> BOOLEAN_VALUES;
-
-    static {
-        BOOLEAN_VALUES = ImmutableList.of(Boolean.TRUE, Boolean.FALSE);
-    }
+    private static final List<Boolean> BOOLEAN_VALUES = ImmutableList.of(Boolean.TRUE, Boolean.FALSE);
 
     private final Text optionText;
     private final Values<T> values;
@@ -169,9 +164,9 @@ public class TranslucentCyclingButtonWidget<T> extends PressableWidget implement
             T object = this.getValue(1);
             Text text = this.composeText(object);
             if (this.isFocused()) {
-                builder.put(NarrationPart.USAGE, new TranslatableText("narration.cycle_button.usage.focused", text));
+                builder.put(NarrationPart.USAGE, Text.translatable("narration.cycle_button.usage.focused", text));
             } else {
-                builder.put(NarrationPart.USAGE, new TranslatableText("narration.cycle_button.usage.hovered", text));
+                builder.put(NarrationPart.USAGE, Text.translatable("narration.cycle_button.usage.hovered", text));
             }
         }
 

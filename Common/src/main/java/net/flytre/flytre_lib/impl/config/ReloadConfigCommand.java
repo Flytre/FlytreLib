@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.flytre.flytre_lib.api.config.ConfigRegistry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
@@ -20,7 +20,7 @@ public final class ReloadConfigCommand {
                 .literal("reloadconfig")
                 .executes(i -> {
                     int x = ConfigRegistry.reloadServerConfigs(i.getSource().getServer().getPlayerManager());
-                    i.getSource().sendFeedback(new LiteralText("Reloaded " + x + " configs."), true);
+                    i.getSource().sendFeedback(Text.literal("Reloaded " + x + " configs."), true);
                     return x;
                 });
 

@@ -45,7 +45,7 @@ public class ClientForgeEventBus {
         MatrixStack matrices = event.getPoseStack();
         int height = event.getScreen().height;
         int width = event.getScreen().width;
-        float delta = event.getPartialTicks();
+        float delta = event.getPartialTick();
 
         if (!LoaderProperties.HANDLER.getConfig().displayTitleScreenConfigButton)
             return;

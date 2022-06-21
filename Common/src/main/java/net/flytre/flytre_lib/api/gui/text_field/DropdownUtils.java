@@ -16,8 +16,8 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
@@ -48,7 +48,7 @@ public final class DropdownUtils {
 
     public static DropdownMenu createItemDropdown(int xLoc, int yLoc) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), Registry.ITEM.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
+        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, Text.translatable("null"), Registry.ITEM.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
         searchField.setRenderer(identifierRenderer(Registry.ITEM, i -> Registry.ITEM.get(i).getDefaultStack()));
         searchField.setMatcher(DropdownUtils::identifierMatch);
         searchField.setTextXOffset(25);
@@ -63,7 +63,7 @@ public final class DropdownUtils {
 
     public static DropdownMenu createBlockDropdown(int xLoc, int yLoc) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), Registry.BLOCK.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
+        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, Text.translatable("null"), Registry.BLOCK.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
         searchField.setRenderer(identifierRenderer(Registry.BLOCK, i -> Registry.BLOCK.get(i).asItem().getDefaultStack()));
         searchField.setMatcher(DropdownUtils::identifierMatch);
         searchField.setTextXOffset(25);
@@ -78,7 +78,7 @@ public final class DropdownUtils {
 
     public static DropdownMenu createGenericDropdown(int xLoc, int yLoc, List<String> entries) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), entries);
+        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, Text.translatable("null"), entries);
         searchField.setEntryWidth(200);
         return searchField;
     }
@@ -96,7 +96,7 @@ public final class DropdownUtils {
             entityMap.put(type, type.create(FakeWorld.getInstance()));
         }
 
-        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), Registry.ENTITY_TYPE.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
+        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, Text.translatable("null"), Registry.ENTITY_TYPE.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
         searchField.setRenderer(identifierRenderer(Registry.ENTITY_TYPE, (textRenderer, matrices, text, fullText, x, y, color, cursor) -> {
             boolean valid = identifierPredicate(fullText, Registry.ENTITY_TYPE);
             if (valid) {
@@ -130,7 +130,7 @@ public final class DropdownUtils {
 
     public static DropdownMenu createFluidDropdown(int xLoc, int yLoc) {
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, new TranslatableText("null"), Registry.FLUID.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
+        DropdownMenu searchField = new DropdownMenu(xLoc, yLoc, Math.min(250, width), 20, Text.translatable("null"), Registry.FLUID.getIds().stream().map(Identifier::toString).sorted().collect(Collectors.toList()));
 
         if (RenderUtilsImpl.isFluidRenderingSupported()) {
             searchField.setRenderer(identifierRenderer(Registry.FLUID, (textRenderer, matrices, text, fullText, x, y, color, cursor) -> {

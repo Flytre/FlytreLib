@@ -60,7 +60,7 @@ public class FilterInventory implements Inventory {
             Set<Item> filter = inv.getFilterItems();
             sz = filter.size();
             for (Item i : filter) {
-                tooltip.add((new TranslatableText(i.getTranslationKey())).setStyle(itemStyle));
+                tooltip.add((Text.translatable(i.getTranslationKey())).setStyle(itemStyle));
                 if (++len > 8)
                     break;
             }
@@ -68,33 +68,33 @@ public class FilterInventory implements Inventory {
             Set<String> mods = inv.items.stream().map(i -> Formatter.getModFromModId(Registry.ITEM.getId(i.getItem()).getNamespace())).collect(Collectors.toSet());
             sz = mods.size();
             for (String mod : mods) {
-                tooltip.add((new LiteralText(mod)).setStyle(itemStyle));
+                tooltip.add((Text.literal(mod)).setStyle(itemStyle));
                 if (++len > 8)
                     break;
             }
         }
 
         if (len >= 9) {
-            tooltip.add((new LiteralText("§7§o"))
-                    .append(new TranslatableText("flytre_lib.filter.tooltip", sz - 9).setStyle(itemStyle)));
+            tooltip.add((Text.literal("§7§o"))
+                    .append(Text.translatable("flytre_lib.filter.tooltip", sz - 9).setStyle(itemStyle)));
         }
 
 
         Style red_text = Style.EMPTY.withColor(Formatting.RED);
         Style green_text = Style.EMPTY.withColor(Formatting.GREEN);
-        MutableText whitelist = new TranslatableText("flytre_lib.filter.whitelist").setStyle(green_text);
-        MutableText blacklist = new TranslatableText("flytre_lib.filter.blacklist").setStyle(red_text);
+        MutableText whitelist = Text.translatable("flytre_lib.filter.whitelist").setStyle(green_text);
+        MutableText blacklist = Text.translatable("flytre_lib.filter.blacklist").setStyle(red_text);
 
-        MutableText matchMod = new TranslatableText("flytre_lib.filter.mod_match.true").setStyle(green_text);
-        MutableText ignoreMod = new TranslatableText("flytre_lib.filter.mod_match.false").setStyle(red_text);
+        MutableText matchMod = Text.translatable("flytre_lib.filter.mod_match.true").setStyle(green_text);
+        MutableText ignoreMod = Text.translatable("flytre_lib.filter.mod_match.false").setStyle(red_text);
 
-        MutableText matchNbt = new TranslatableText("flytre_lib.filter.nbt_match.true").setStyle(green_text);
-        MutableText ignoreNbt = new TranslatableText("flytre_lib.filter.nbt_match.false").setStyle(red_text);
+        MutableText matchNbt = Text.translatable("flytre_lib.filter.nbt_match.true").setStyle(green_text);
+        MutableText ignoreNbt = Text.translatable("flytre_lib.filter.nbt_match.false").setStyle(red_text);
 
 
-        tooltip.add(new LiteralText("").append(inv.getFilterType() == 0 ? whitelist : blacklist));
-        tooltip.add(new LiteralText("").append(inv.isMatchMod() ? matchMod : ignoreMod));
-        tooltip.add(new LiteralText("").append(inv.isMatchNbt() ? matchNbt : ignoreNbt));
+        tooltip.add(Text.literal("").append(inv.getFilterType() == 0 ? whitelist : blacklist));
+        tooltip.add(Text.literal("").append(inv.isMatchMod() ? matchMod : ignoreMod));
+        tooltip.add(Text.literal("").append(inv.isMatchNbt() ? matchNbt : ignoreNbt));
     }
 
     @Override

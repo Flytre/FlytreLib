@@ -8,6 +8,7 @@ import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.SaveLoader;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
+import net.minecraft.util.ApiServices;
 import net.minecraft.util.UserCache;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ import java.net.Proxy;
 class MinecraftServerMixin {
 
     @Inject(method = "<init>*", at = @At("TAIL"))
-    public void flytre_lib$reloadConfigs(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, @Nullable MinecraftSessionService sessionService, @Nullable GameProfileRepository gameProfileRepo, @Nullable UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
+    public void flytre_lib$reloadConfigs(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
         ConfigRegistry.reloadServerConfigs(null);
     }
 }

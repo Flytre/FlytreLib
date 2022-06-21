@@ -7,7 +7,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -60,7 +59,7 @@ public class MultistateButton extends ButtonWidget {
      * @param id      text to overlay on button
      */
     public MultistateButton(int x, int y, int width, int height, int state, int states, Identifier texture, PressAction onPress, String id) {
-        super(x, y, width, height, LiteralText.EMPTY, onPress);
+        super(x, y, width, height, Text.empty(), onPress);
         this.textureHeight = height * states * 2;
         this.textureWidth = width;
         this.texture = texture;

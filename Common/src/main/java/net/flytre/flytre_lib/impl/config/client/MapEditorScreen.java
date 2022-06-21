@@ -8,7 +8,7 @@ import net.flytre.flytre_lib.api.gui.button.TranslucentButton;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,13 +79,13 @@ class MapEditorScreen extends GenericConfigScreen {
 
         int doneOffset = customButtonFunc == null ? 0 : width / 8;
 
-        TranslucentButton done = new TranslucentButton(width / 2 - width / 10 + doneOffset, height - 30, width / 5, 20, new TranslatableText("flytre_lib.gui.done"), (button) -> {
+        TranslucentButton done = new TranslucentButton(width / 2 - width / 10 + doneOffset, height - 30, width / 5, 20, Text.translatable("flytre_lib.gui.done"), (button) -> {
             onClose();
         });
         addDrawableChild(done);
 
         if (customButtonFunc != null) {
-            @Nullable TranslucentButton customButton = new TranslucentButton(width / 2 - width / 10 - width / 8, height - 30, width / 5, 20, new TranslatableText(buttonAnnotation.translationKey()), (x) -> {
+            @Nullable TranslucentButton customButton = new TranslucentButton(width / 2 - width / 10 - width / 8, height - 30, width / 5, 20, Text.translatable(buttonAnnotation.translationKey()), (x) -> {
                 onClose();
                 customButtonFunc.run();
                 reopenAction();

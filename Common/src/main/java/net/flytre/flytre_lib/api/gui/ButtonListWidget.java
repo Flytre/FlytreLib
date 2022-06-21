@@ -7,7 +7,7 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.Option;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidget<ButtonListWidget.ButtonEntry<K>> {
+
 
     protected final int buttonWidth;
     protected final int buttonLeft;
@@ -37,7 +38,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
         this.buttonPadding = buttonPadding / 2;
     }
 
-    public void addEntry(Option option) {
+    public void addEntry(SimpleOption<?> option) {
         this.addEntry(ButtonEntry.create(this.client.options, buttonLeft, buttonWidth, option, buttonPadding));
     }
 
@@ -55,7 +56,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
     }
 
     @Nullable
-    public K getButtonFor(Option option) {
+    public K getButtonFor(SimpleOption<?> option) {
 
         for (ButtonEntry<K> element : this.children())
             if (element.option == option && option != null)
@@ -127,7 +128,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
 
     protected static class ButtonEntry<K extends ClickableWidget> extends Entry<ButtonEntry<K>> {
         public final K button;
-        public final Option option;
+        public final SimpleOption<?> option;
         public final int padding;
 
 
@@ -137,7 +138,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
             this.padding = padding;
         }
 
-        protected ButtonEntry(K button, Option option, int padding) {
+        protected ButtonEntry(K button, SimpleOption<?> option, int padding) {
             this.button = button;
             this.option = option;
             this.padding = padding;
@@ -146,7 +147,7 @@ public class ButtonListWidget<K extends ClickableWidget> extends ElementListWidg
         /**
          * Contract: option.createButton produces an instance of K
          */
-        public static <K extends ClickableWidget> ButtonEntry<K> create(GameOptions options, int startX, int buttonWidth, Option option, int buttonPadding) {
+        public static <K extends ClickableWidget> ButtonEntry<K> create(GameOptions options, int startX, int buttonWidth, SimpleOption<?> option, int buttonPadding) {
             //noinspection unchecked
             return new ButtonEntry<>((K) option.createButton(options, startX, 0, buttonWidth), option, buttonPadding);
         }

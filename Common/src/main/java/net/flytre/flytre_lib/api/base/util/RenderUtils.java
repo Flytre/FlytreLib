@@ -20,10 +20,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import net.minecraft.util.math.*;
@@ -442,7 +442,7 @@ public final class RenderUtils {
             string = string.substring(0, string.length() - 1);
         }
         MinecraftClient client = MinecraftClient.getInstance();
-        List<StringVisitable> strings = client.textRenderer.getTextHandler().wrapLines(new LiteralText(string), wrapWidth, Style.EMPTY);
+        List<StringVisitable> strings = client.textRenderer.getTextHandler().wrapLines(Text.literal(string), wrapWidth, Style.EMPTY);
         int i;
         for (i = 0; i < strings.size(); i++) {
             if (i >= maxLines) {
@@ -472,7 +472,7 @@ public final class RenderUtils {
             string = string.substring(0, string.length() - 1);
         }
         MinecraftClient client = MinecraftClient.getInstance();
-        List<StringVisitable> strings = client.textRenderer.getTextHandler().wrapLines(new LiteralText(string), wrapWidth, Style.EMPTY);
+        List<StringVisitable> strings = client.textRenderer.getTextHandler().wrapLines(Text.literal(string), wrapWidth, Style.EMPTY);
         return Math.min(strings.size(), maxLines) * client.textRenderer.fontHeight;
     }
 
