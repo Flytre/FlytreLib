@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * A filtered inventory - blacklist and whitelist options!
  */
-public class FilterInventory implements Inventory {
+public class FilterInventory implements Inventory, ResourceFilter<ItemStack> {
     private final int height;
     public DefaultedList<ItemStack> items;
     private boolean matchNbt;
