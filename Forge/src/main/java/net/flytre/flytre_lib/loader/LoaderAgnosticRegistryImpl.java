@@ -3,6 +3,7 @@ package net.flytre.flytre_lib.loader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -33,6 +34,7 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     private static final Map<String, DeferredRegister<RecipeType<?>>> RECIPE_TYPE_REGISTRIES = new HashMap<>();
     private static final Map<String, DeferredRegister<ParticleType<?>>> PARTICLE_TYPE_REGISTRIES = new HashMap<>();
     private static final Map<String, DeferredRegister<SoundEvent>> SOUND_EVENT_REGISTRIES = new HashMap<>();
+    private static final Map<String, DeferredRegister<Enchantment>> ENCHANTMENT_REGISTRIES = new HashMap<>();
     private static final Set<String> REGISTERED_MODS = new HashSet<>();
 
     private LoaderAgnosticRegistryImpl() {
@@ -53,7 +55,8 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
                 RECIPE_TYPE_REGISTRIES,
                 RECIPE_SERIALIZER_REGISTRIES,
                 PARTICLE_TYPE_REGISTRIES,
-                SOUND_EVENT_REGISTRIES
+                SOUND_EVENT_REGISTRIES,
+                ENCHANTMENT_REGISTRIES
         );
     }
 
@@ -121,7 +124,7 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     }
 
     @Override
-    public <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id) {
+    public <T extends RecipeSerializer<?>> Supplier<T> registerRecipeSerializer(Supplier<T> recipe, String mod, String id) {
         recipe = CachedSupplier.of(recipe);
         RECIPE_SERIALIZER_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, mod));
         RECIPE_SERIALIZER_REGISTRIES.get(mod).register(id, recipe);
@@ -150,5 +153,13 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
         SOUND_EVENT_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, mod));
         SOUND_EVENT_REGISTRIES.get(mod).register(id, soundEvent);
         return soundEvent;
+    }
+
+    @Override
+    public <T extends Enchantment> Supplier<T> registerEnchantment(Supplier<T> enchantment, String mod, String id) {
+        enchantment = CachedSupplier.of(enchantment);
+        ENCHANTMENT_REGISTRIES.putIfAbsent(mod, DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, mod));
+        ENCHANTMENT_REGISTRIES.get(mod).register(id, enchantment);
+        return enchantment;
     }
 }

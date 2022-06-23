@@ -15,7 +15,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "FlytreLib"
+rootProject.name = "Flytre Lib"
 include('Common', 'Fabric', 'Forge', 'Test-Common', 'Test-Fabric', 'Test-Forge')
 
 startParameter.excludedTaskNames << ':Common:build'

@@ -3,6 +3,7 @@ package net.flytre.flytre_lib.loader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -12,6 +13,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
@@ -58,9 +60,14 @@ public final class LoaderAgnosticRegistry {
         return DELEGATE.registerRecipeType(recipeType, mod, id);
     }
 
-    //TODO: rename recipe serializer
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.20")
     public static <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id) {
-        return DELEGATE.registerRecipe(recipe, mod, id);
+        return DELEGATE.registerRecipeSerializer(recipe, mod, id);
+    }
+
+    public static <T extends RecipeSerializer<?>> Supplier<T> registerRecipeSerializer(Supplier<T> recipe, String mod, String id) {
+        return DELEGATE.registerRecipeSerializer(recipe, mod, id);
     }
 
     public static <T extends ParticleType<?>> Supplier<T> registerParticleType(Supplier<T> particleType, String mod, String id) {
@@ -71,6 +78,10 @@ public final class LoaderAgnosticRegistry {
         return DELEGATE.registerSoundEvent(soundEvent, mod, id);
     }
 
+
+    public static <T extends Enchantment> Supplier<T> registerEnchantment(Supplier<T> enchantment, String mod, String id) {
+        return DELEGATE.registerEnchantment(enchantment,mod,id);
+    }
 
     interface Delegate {
 
@@ -86,12 +97,14 @@ public final class LoaderAgnosticRegistry {
 
         <K extends BlockEntity> Supplier<BlockEntityType<K>> registerBlockEntityType(Supplier<BlockEntityType<K>> type, String mod, String id);
 
-        <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id);
+        <T extends RecipeSerializer<?>> Supplier<T> registerRecipeSerializer(Supplier<T> recipe, String mod, String id);
 
         <T extends RecipeType<?>> Supplier<T> registerRecipeType(Supplier<T> recipeType, String mod, String id);
 
         <T extends ParticleType<?>> Supplier<T> registerParticleType(Supplier<T> particleType, String mod, String id);
 
         <T extends SoundEvent> Supplier<T> registerSoundEvent(Supplier<T> soundEvent, String mod, String id);
+
+        <T extends Enchantment> Supplier<T> registerEnchantment(Supplier<T> enchantment, String mod, String id);
     }
 }

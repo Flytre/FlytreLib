@@ -4,6 +4,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -73,7 +74,7 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
     }
 
     @Override
-    public <T extends RecipeSerializer<?>> Supplier<T> registerRecipe(Supplier<T> recipe, String mod, String id) {
+    public <T extends RecipeSerializer<?>> Supplier<T> registerRecipeSerializer(Supplier<T> recipe, String mod, String id) {
         recipe = CachedSupplier.of(recipe);
         Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(mod, id), recipe.get());
         return recipe;
@@ -98,5 +99,12 @@ final class LoaderAgnosticRegistryImpl implements LoaderAgnosticRegistry.Delegat
         soundEvent = CachedSupplier.of(soundEvent);
         Registry.register(Registry.SOUND_EVENT, new Identifier(mod, id), soundEvent.get());
         return soundEvent;
+    }
+
+    @Override
+    public <T extends Enchantment> Supplier<T> registerEnchantment(Supplier<T> enchantment, String mod, String id) {
+        enchantment = CachedSupplier.of(enchantment);
+        Registry.register(Registry.ENCHANTMENT, new Identifier(mod, id), enchantment.get());
+        return enchantment;
     }
 }
