@@ -20,6 +20,7 @@ import java.util.OptionalLong;
  * A fake world can be used to access a world when not in-game, i.e. the title screen
  * Useful for things like rendering entities, which usually need a world to be rendered
  */
+//TODO: RENAME TO FAKE CLIENT WORLD
 public class FakeWorld extends ClientWorld {
 
     private static final DimensionType DIMENSION_TYPE = new DimensionType(OptionalLong.empty(),true,false,false,true,1,true,true,0,256,256,TagKey.of(Registry.BLOCK_KEY, new Identifier("null")),new Identifier("null"),15f, new DimensionType.MonsterSettings(false,false, UniformIntProvider.create(1,100),1));
