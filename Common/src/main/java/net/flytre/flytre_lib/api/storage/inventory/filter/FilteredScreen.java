@@ -10,12 +10,16 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.20")
+//Use ScreenWithFilter
 public abstract class FilteredScreen<T extends ScreenHandler> extends HandledScreen<T> implements CoordinateProvider {
 
     protected static final Identifier MODE_BUTTON = new Identifier("flytre_lib:textures/gui/button/check_ex.png");

@@ -28,6 +28,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -68,12 +69,86 @@ public final class RenderUtils {
      * @return the sprite
      */
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.20")
     public static Sprite textureName(World world, BlockPos pos, Fluid fluid) {
         return RenderUtilsImpl.getSprite(world, pos, fluid);
     }
 
+
+    /**
+     * Used to render a fluid 2-dimensionally. Use renderBlockSprite for 3-dimensions.
+     */
     public static void renderFluidInGui(MatrixStack matrixStack, Fluid fluid, int drawHeight, int x, int y, int width, int height) {
         RenderUtilsImpl.renderFluidInGui(matrixStack, fluid, drawHeight, x, y, width, height);
+    }
+
+    /**
+     * Used to render a fluid 2-dimensionally. Use renderBlockSprite for 3-dimensions.
+     */
+    public static void renderFluidInGui(Fluid fluid, MatrixStack matrices, int x0, int y0, int width, int height, int zOffset) {
+        if (!RenderUtils.isFluidRenderingSupported())
+            return;
+
+        Sprite sprite = RenderUtils.getSprite(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid);
+        int color = RenderUtils.getColor(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid);
+        int a = 255;
+        int r = (color >> 16 & 255);
+        int g = (color >> 8 & 255);
+        int b = (color & 255);
+        MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder bb = tess.getBuffer();
+        Matrix4f matrix = matrices.peek().getPositionMatrix();
+        if (height / width >= 1) {
+            int times = (int) Math.ceil((double) height / width);
+            for (int i = 0; i < times; i++) {
+                int newY0 = y0 + i * width;
+                int newY1 = Math.min(newY0 + width, y0 + height);
+                bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+                bb.vertex(matrix, x0 + width, newY0, zOffset).texture(sprite.getMaxU(), sprite.getMinV()).color(r, g, b, a).next();
+                bb.vertex(matrix, x0, newY0, zOffset).texture(sprite.getMinU(), sprite.getMinV()).color(r, g, b, a).next();
+                bb.vertex(matrix, x0, newY1, zOffset).texture(sprite.getMinU(), sprite.getMaxV()).color(r, g, b, a).next();
+                bb.vertex(matrix, x0 + width, newY1, zOffset).texture(sprite.getMaxU(), sprite.getMaxV()).color(r, g, b, a).next();
+                tess.draw();
+            }
+        } else {
+            int times = Math.min((int) Math.ceil((double) width / height), 3);
+            for (int i = 0; i < times; i++) {
+                int newX0 = x0 + i * Math.max(height, width / 3);
+                int newX1 = Math.min(newX0 + Math.max(height, width / 3 + 1), x0 + width);
+                bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+                bb.vertex(matrix, newX1, y0, zOffset).texture(sprite.getMaxU(), sprite.getMinV()).color(r, g, b, a).next();
+                bb.vertex(matrix, newX0, y0, zOffset).texture(sprite.getMinU(), sprite.getMinV()).color(r, g, b, a).next();
+                bb.vertex(matrix, newX0, y0 + height, zOffset).texture(sprite.getMinU(), sprite.getMaxV()).color(r, g, b, a).next();
+                bb.vertex(matrix, newX1, y0 + height, zOffset).texture(sprite.getMaxU(), sprite.getMaxV()).color(r, g, b, a).next();
+                tess.draw();
+            }
+        }
+    }
+
+
+    /**
+     * Whether fluids can be rendered in GUIs using this class or not
+     */
+    public static boolean isFluidRenderingSupported() {
+        return RenderUtilsImpl.isFluidRenderingSupported();
+    }
+
+    /**
+     * Get the sprite for a fluid.
+     *
+     * @param world the world
+     * @param pos   the pos
+     * @param fluid the fluid
+     * @return the sprite
+     */
+    public static Sprite getSprite(World world, BlockPos pos, Fluid fluid) {
+        return RenderUtilsImpl.getSprite(world, pos, fluid);
+    }
+
+    public static int getColor(World world, BlockPos pos, Fluid fluid) {
+        return RenderUtilsImpl.getColor(world, pos, fluid);
     }
 
 

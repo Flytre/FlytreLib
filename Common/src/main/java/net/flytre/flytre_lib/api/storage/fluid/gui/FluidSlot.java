@@ -1,13 +1,10 @@
 package net.flytre.flytre_lib.api.storage.fluid.gui;
 
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidInventory;
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 public class FluidSlot {
 
@@ -82,8 +79,6 @@ public class FluidSlot {
         return this.inventory.slotCapacity();
     }
 
-    @Nullable
-    @Environment(EnvType.CLIENT)
     public Pair<Identifier, Identifier> getBackgroundSprite() {
         return null;
     }
@@ -96,7 +91,6 @@ public class FluidSlot {
         return true;
     }
 
-    @Environment(EnvType.CLIENT)
     public boolean doDrawHoveringEffect() {
         return true;
     }

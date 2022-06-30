@@ -50,14 +50,14 @@ public interface FluidInventory extends Clearable {
      * Save a Fluid Inventory to a compound tag. You can use the root tag, no need to put a custom key and then
      * call this method on that.
      */
-    static NbtCompound toTag(NbtCompound tag, DefaultedList<FluidStack> stacks) {
-        return toTag(tag, stacks, true);
+    static NbtCompound writeNbt(NbtCompound tag, DefaultedList<FluidStack> stacks) {
+        return writeNbt(tag, stacks, true);
     }
 
     /**
-     * Same as other toTag.
+     * Same as other writeNbt.
      */
-    static NbtCompound toTag(NbtCompound tag, DefaultedList<FluidStack> stacks, boolean setIfEmpty) {
+    static NbtCompound writeNbt(NbtCompound tag, DefaultedList<FluidStack> stacks, boolean setIfEmpty) {
         NbtList listTag = new NbtList();
 
         for (int i = 0; i < stacks.size(); ++i) {
@@ -65,7 +65,7 @@ public interface FluidInventory extends Clearable {
             if (!fluidStack.isEmpty()) {
                 NbtCompound compoundTag = new NbtCompound();
                 compoundTag.putByte("Slot", (byte) i);
-                fluidStack.toTag(compoundTag);
+                fluidStack.writeNbt(compoundTag);
                 listTag.add(compoundTag);
             }
         }
@@ -80,7 +80,7 @@ public interface FluidInventory extends Clearable {
     /**
      * Fluid Inventory from a tag
      */
-    static void fromTag(NbtCompound tag, DefaultedList<FluidStack> stacks) {
+    static void readNbt(NbtCompound tag, DefaultedList<FluidStack> stacks) {
 
         NbtList listTag = tag.getList("Fluids", 10);
 
@@ -90,7 +90,7 @@ public interface FluidInventory extends Clearable {
             NbtCompound compoundTag = listTag.getCompound(i);
             int j = compoundTag.getByte("Slot") & 255;
             if (j < stacks.size()) {
-                stacks.set(j, FluidStack.fromTag(compoundTag));
+                stacks.set(j, FluidStack.readNbt(compoundTag));
                 visited.add(j);
             }
         }
@@ -118,7 +118,7 @@ public interface FluidInventory extends Clearable {
 
         NbtCompound blockEntityTag = stack.getNbt().getCompound("BlockEntityTag");
         DefaultedList<FluidStack> stacks = DefaultedList.ofSize(blockEntityTag.getList("Fluids", 10).size(), FluidStack.EMPTY);
-        fromTag(blockEntityTag, stacks);
+        readNbt(blockEntityTag, stacks);
 
         for (FluidStack fluidStack : stacks) {
             List<Text> list = fluidStack.toTooltip(false);

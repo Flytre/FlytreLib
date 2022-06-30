@@ -1,7 +1,6 @@
 package net.flytre.flytre_lib.impl.storage.fluid.network;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.flytre.flytre_lib.api.base.util.PacketUtils;
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidStack;
 import net.flytre.flytre_lib.api.storage.fluid.gui.FluidHandler;
 import net.minecraft.client.MinecraftClient;
@@ -9,43 +8,45 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
+
 @ApiStatus.Internal
-public class FluidSlotUpdateS2CPacket implements Packet<ClientPlayPacketListener> {
+public class FluidInventoryS2CPacket implements Packet<ClientPlayPacketListener> {
 
     private final int syncId;
-    private final int slot;
-    private final FluidStack stack;
+    private final DefaultedList<FluidStack> stacks;
 
-    public FluidSlotUpdateS2CPacket(int syncId, int slot, FluidStack stack) {
+    public FluidInventoryS2CPacket(int syncId, DefaultedList<FluidStack> stacks) {
         this.syncId = syncId;
-        this.slot = slot;
-        this.stack = stack;
+        this.stacks = stacks;
     }
 
-    public FluidSlotUpdateS2CPacket(PacketByteBuf buf) {
+    public FluidInventoryS2CPacket(PacketByteBuf buf) {
         this.syncId = buf.readInt();
-        this.slot = buf.readInt();
-        this.stack = FluidStack.fromPacket(buf);
+        List<FluidStack> temp = PacketUtils.listFromPacket(buf, FluidStack::fromPacket);
+        this.stacks = DefaultedList.ofSize(temp.size(), FluidStack.EMPTY);
+        for (int j = 0; j < stacks.size(); ++j)
+            stacks.set(j, temp.get(j));
     }
 
     @Override
     public void write(PacketByteBuf buf) {
         buf.writeInt(syncId);
-        buf.writeInt(slot);
-        stack.toPacket(buf);
+        PacketUtils.toPacket(buf, stacks, FluidStack::toPacket);
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void apply(ClientPlayPacketListener listener) {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity playerEntity = client.player;
         client.execute(() -> {
-            assert playerEntity != null;
+            if (playerEntity == null)
+                return;
             if (syncId == playerEntity.currentScreenHandler.syncId && playerEntity.currentScreenHandler instanceof FluidHandler) {
-                ((FluidHandler) playerEntity.currentScreenHandler).setFluidStackInSlot(slot, stack);
+                ((FluidHandler) playerEntity.currentScreenHandler).updateFluidSlotStacks(stacks);
             }
         });
     }

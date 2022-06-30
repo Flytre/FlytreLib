@@ -1,8 +1,6 @@
 package net.flytre.flytre_lib.mixin.storage.fluid;
 
 import com.google.common.base.Suppliers;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidStack;
 import net.flytre.flytre_lib.api.storage.fluid.gui.FluidHandler;
 import net.flytre.flytre_lib.api.storage.fluid.gui.FluidSlot;
@@ -174,7 +172,6 @@ public abstract class ScreenHandlerMixin implements FluidHandler {
         this.getFluidSlot(slot).setStack(stack);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void updateFluidSlotStacks(List<FluidStack> stacks) {
         for (int i = 0; i < stacks.size(); ++i) {
@@ -206,8 +203,7 @@ public abstract class ScreenHandlerMixin implements FluidHandler {
             } while (actionType == SlotActionType.QUICK_MOVE && !cursorStack.isEmpty() && slotStack.getAmount() >= FluidStack.UNITS_PER_BUCKET & slotStack.getFluid() != Fluids.EMPTY);
             slot.markDirty();
             return slotStack;
-        } else if (cursorStack.getItem() instanceof BucketItem) {
-            BucketItem item = (BucketItem) cursorStack.getItem();
+        } else if (cursorStack.getItem() instanceof BucketItem item) {
             Fluid fluid = ((BucketItemAccessor) item).getFluid();
 
 

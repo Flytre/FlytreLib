@@ -4,6 +4,7 @@ package net.flytre.flytre_lib;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.flytre.flytre_lib.api.base.math.Rectangle;
+import net.flytre.flytre_lib.impl.base.SetupRenderUtils;
 import net.flytre.flytre_lib.impl.config.client.ConfigListerScreen;
 import net.flytre.flytre_lib.impl.config.client.GenericConfigScreen;
 import net.flytre.flytre_lib.loader.LoaderProperties;
@@ -35,6 +36,7 @@ public class ClientForgeEventBus {
 
     public ClientForgeEventBus() {
         MinecraftForge.EVENT_BUS.register(this);
+        SetupRenderUtils.setup();
     }
 
     @SubscribeEvent

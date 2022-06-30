@@ -3,8 +3,10 @@ package net.flytre.flytre_lib.api.base.util;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.*;
-import org.jetbrains.annotations.ApiStatus;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Collection;
 
@@ -21,8 +23,8 @@ public final class ParticleUtils {
     public static void drawLineTo(Vec3d a, Vec3d b, ParticleEffect particle, ServerWorld world, int count, boolean force) {
         double dist = a.distanceTo(b);
 
-        Collection<ServerPlayerEntity> players = tracking(world, new BlockPos(a.x, a.y, a.z));
-        players.addAll(tracking(world, new BlockPos(b.x, b.y, b.z)));
+        Collection<ServerPlayerEntity> players = PlayerSearchUtils.tracking(world, new BlockPos(a.x, a.y, a.z));
+        players.addAll(PlayerSearchUtils.tracking(world, new BlockPos(b.x, b.y, b.z)));
 
         for (double i = 0; i < 1; i += Math.min(0.1, 1 / (dist * 2))) {
             double x = a.getX() + (b.getX() - a.getX()) * i;
@@ -31,14 +33,6 @@ public final class ParticleUtils {
             for (ServerPlayerEntity playerEntity : players)
                 world.spawnParticles(playerEntity, particle, force, x, y, z, count, 0, 0, 0, 0);
         }
-    }
-
-    //TODO: Remove in 1.19
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    private static Collection<ServerPlayerEntity> tracking(ServerWorld world, BlockPos pos) {
-        return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(new ChunkPos(pos), false);
-
     }
 
     public static Vec3d caretToAbsolute(Vec3d caretValues, Vec2f rotation, Vec3d anchorPosition) {

@@ -34,9 +34,8 @@ public class HandledScreenMixin<T extends ScreenHandler> extends Screen {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawForeground(Lnet/minecraft/client/util/math/MatrixStack;II)V", shift = At.Shift.BEFORE))
     public void flytre_lib$fluidHandledScreenRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if ((Object) this instanceof FluidHandledScreen) {
+        if ((Object) this instanceof FluidHandledScreen<?> me) {
             FluidHandler handler = (FluidHandler) this.handler;
-            FluidHandledScreen<?> me = (FluidHandledScreen<?>) (Object) this;
             int r;
             for (int m = 0; m < handler.getFluidSlots().size(); ++m) {
                 FluidSlot slot = handler.getFluidSlots().get(m);

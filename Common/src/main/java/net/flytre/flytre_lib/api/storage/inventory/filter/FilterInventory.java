@@ -10,7 +10,9 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.*;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * A filtered inventory - blacklist and whitelist options!
  */
-public class FilterInventory implements Inventory, ResourceFilter<ItemStack> {
+public class FilterInventory implements Inventory, ResourceFilter<ItemStack>, FilterSettings {
     private final int height;
     public DefaultedList<ItemStack> items;
     private boolean matchNbt;

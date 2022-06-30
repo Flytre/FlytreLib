@@ -9,14 +9,16 @@
     "base.MinecraftServerAccessor", "base.MinecraftServerMixin", "base.MiningToolItemAccessor",
     "base.ServerPropertiesHandlerMixin", "base.ThreadedAnvilChunkStorageAccessor", "config.MinecraftServerMixin",
     "config.PlayerManagerMixin", "config.ReloadableResourceManagerImplMixin", "storage.LootConditionTypesMixin",
-    "storage.upgrade.ScreenHandlerMixin", "storage.upgrade.ServerPlayerEntityMixin"
+    "storage.fluid.BucketItemAccessor", "storage.fluid.FluidBlockAccessor", "storage.fluid.ScreenHandlerMixin",
+    "storage.fluid.ServerPlayerEntityMixin", "storage.upgrade.ScreenHandlerMixin",
+    "storage.upgrade.ServerPlayerEntityMixin"
   ],
   "client": [
     "base.EntityRenderersInvoker", "base.GameOptionsMixin", "base.KeyBindingAccessor", "base.LivingEntityRendererMixin",
     "config.ClientPlayNetworkHandlerMixin", "config.EntryListWidgetAccessor", "config.KeyboardMixin",
     "config.MainMixin", "config.MinecraftClientMixin", "config.SliderWidgetAccessor", "event.ClientWorldMixin",
     "event.InGameHudMixin", "event.MinecraftClientMixin", "gui.EntryListWidgetAccessor",
-    "storage.upgrade.HandledScreenMixin"
+    "storage.fluid.HandledScreenMixin", "storage.upgrade.HandledScreenMixin"
   ],
   "server": ["base.DedicatedServerWatchdogMixin"],
   "injectors": {

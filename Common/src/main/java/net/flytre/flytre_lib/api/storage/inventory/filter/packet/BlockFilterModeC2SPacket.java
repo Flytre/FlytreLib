@@ -1,6 +1,6 @@
 package net.flytre.flytre_lib.api.storage.inventory.filter.packet;
 
-import net.flytre.flytre_lib.api.storage.inventory.filter.Filtered;
+import net.flytre.flytre_lib.api.storage.inventory.filter.HasFilterSettings;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -41,8 +41,8 @@ public class BlockFilterModeC2SPacket implements Packet<ServerPlayPacketListener
                 return;
 
             BlockEntity entity = world.getBlockEntity(pos);
-            if (entity instanceof Filtered)
-                ((Filtered) entity).getFilter().setFilterType(mode);
+            if (entity instanceof HasFilterSettings)
+                ((HasFilterSettings) entity).getFilterSettings().setFilterType(mode);
             if (entity instanceof FilterEventHandler) {
                 ((FilterEventHandler) entity).onPacketReceived();
             }

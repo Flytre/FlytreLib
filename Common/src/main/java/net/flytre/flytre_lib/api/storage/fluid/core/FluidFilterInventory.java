@@ -2,13 +2,14 @@ package net.flytre.flytre_lib.api.storage.fluid.core;
 
 
 import net.flytre.flytre_lib.api.storage.inventory.IOType;
+import net.flytre.flytre_lib.api.storage.inventory.filter.FilterSettings;
+import net.flytre.flytre_lib.api.storage.inventory.filter.ResourceFilter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
@@ -22,28 +23,32 @@ import java.util.stream.Collectors;
 /**
  * Parallel to filter inventories, for fluids
  */
-public class FluidFilterInventory implements FluidInventory {
+
+public class FluidFilterInventory implements FluidInventory, ResourceFilter<FluidStack>, FilterSettings {
 
     private final int height;
     public DefaultedList<FluidStack> fluids;
+    private boolean matchNbt;
     private boolean matchMod;
     private int filterType;
 
 
-    public FluidFilterInventory(DefaultedList<FluidStack> fluids, int filterType, int height, boolean matchMod) {
+    public FluidFilterInventory(DefaultedList<FluidStack> fluids, int filterType, int height, boolean matchNbt, boolean matchMod) {
         this.fluids = fluids;
         this.filterType = filterType;
         this.height = height;
+        this.matchNbt = matchNbt;
         this.matchMod = matchMod;
     }
 
-    public static FluidFilterInventory fromTag(NbtCompound tag, int defaultHeight) {
+    public static FluidFilterInventory readNbt(NbtCompound tag, int defaultHeight) {
         int height = tag.contains("height") ? tag.getInt("height") : defaultHeight;
         int filterType = tag.getInt("type");
+        boolean matchNbt = tag.getBoolean("nbtMatch");
         boolean matchMod = tag.getBoolean("modMatch");
         DefaultedList<FluidStack> fluids = DefaultedList.ofSize(height * 9, FluidStack.EMPTY);
-        FluidInventory.fromTag(tag, fluids);
-        return new FluidFilterInventory(fluids, filterType, height, matchMod);
+        FluidInventory.readNbt(tag, fluids);
+        return new FluidFilterInventory(fluids, filterType, height, matchNbt, matchMod);
     }
 
     /**
@@ -101,12 +106,32 @@ public class FluidFilterInventory implements FluidInventory {
         Set<Fluid> filterItems = getFilterFluids();
 
         if (matchMod) {
-            Set<String> mods = filterItems.stream().map(Registry.FLUID::getId).map(Identifier::getNamespace).collect(Collectors.toSet());
-            String itemId = Registry.FLUID.getId(stack.getFluid()).getNamespace();
-            return (filterType == 0) == mods.contains(itemId);
+            String stackMod = Registry.FLUID.getId(stack.getFluid()).getNamespace();
+
+
+            if (matchNbt) {
+                return (filterType == 0) == fluids.stream().anyMatch(test -> stackMod.equals(Registry.FLUID.getId(test.getFluid()).getNamespace()) && FluidStack.areNbtEqual(test, stack));
+            } else {
+                return (filterType == 0) == filterItems.stream().anyMatch(test -> stackMod.equals(Registry.FLUID.getId(test).getNamespace()));
+            }
         }
 
-        return (filterType == 0) == filterItems.contains(stack.getFluid());
+        boolean bl = (filterType == 0) == filterItems.contains(stack.getFluid());
+        if (!matchNbt) {
+            return bl;
+        }
+
+        //match nbt and item
+        if (!bl)
+            return false;
+
+        Set<FluidStack> stacks = fluids.stream().filter(i -> !i.isEmpty()).collect(Collectors.toSet());
+        for (FluidStack test : stacks) {
+            if (test.getFluid() == stack.getFluid() && FluidStack.areNbtEqual(test, stack))
+                return true;
+        }
+
+        return false;
 
     }
 
@@ -116,6 +141,14 @@ public class FluidFilterInventory implements FluidInventory {
 
     public void setFilterType(int filterType) {
         this.filterType = filterType;
+    }
+
+    public boolean isMatchNbt() {
+        return matchNbt;
+    }
+
+    public void setMatchNbt(boolean matchNbt) {
+        this.matchNbt = matchNbt;
     }
 
     public boolean isMatchMod() {
@@ -134,11 +167,12 @@ public class FluidFilterInventory implements FluidInventory {
         this.filterType = (this.filterType == 1 ? 0 : 1);
     }
 
-    public NbtCompound toTag() {
+    public NbtCompound writeNbt() {
         NbtCompound tag = new NbtCompound();
-        FluidInventory.toTag(tag, this.fluids);
+        FluidInventory.writeNbt(tag, this.fluids);
         tag.putInt("type", this.filterType);
         tag.putInt("height", this.height);
+        tag.putBoolean("nbtMatch", this.matchNbt);
         tag.putBoolean("modMatch", this.matchMod);
         return tag;
     }
@@ -150,6 +184,11 @@ public class FluidFilterInventory implements FluidInventory {
     public void onClose(PlayerEntity player) {
         player.playSound(SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.PLAYERS, 1f, 1f);
         player.playSound(SoundEvents.BLOCK_METAL_HIT, SoundCategory.PLAYERS, 1f, 1f);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.fluids.stream().allMatch(FluidStack::isEmpty);
     }
 
 }
