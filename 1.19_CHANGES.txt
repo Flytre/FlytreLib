@@ -1,4 +1,0 @@
-TODO:
--Disable music in dev by default
--Mute Couldn't look up profile properties for com.mojang.authlib.GameProfile@6fc98c70[id=380df991-f603-344c-a090-369bad2a924a,name=Dev,properties={},legacy=false]
-       com.mojang.authlib.exceptions.AuthenticationUnavailableException: Cannot contact authentication server

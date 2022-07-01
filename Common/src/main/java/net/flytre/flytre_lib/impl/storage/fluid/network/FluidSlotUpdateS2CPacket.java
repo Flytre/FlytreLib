@@ -1,9 +1,6 @@
 package net.flytre.flytre_lib.impl.storage.fluid.network;
 
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidStack;
-import net.flytre.flytre_lib.api.storage.fluid.gui.FluidHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -37,13 +34,18 @@ public class FluidSlotUpdateS2CPacket implements Packet<ClientPlayPacketListener
 
     @Override
     public void apply(ClientPlayPacketListener listener) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        PlayerEntity playerEntity = client.player;
-        client.execute(() -> {
-            assert playerEntity != null;
-            if (syncId == playerEntity.currentScreenHandler.syncId && playerEntity.currentScreenHandler instanceof FluidHandler) {
-                ((FluidHandler) playerEntity.currentScreenHandler).setFluidStackInSlot(slot, stack);
-            }
-        });
+        ClientHelper.apply(this);
+    }
+
+    public int getSyncId() {
+        return syncId;
+    }
+
+    public FluidStack getStack() {
+        return stack;
+    }
+
+    public int getSlot() {
+        return slot;
     }
 }

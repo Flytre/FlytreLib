@@ -2,9 +2,6 @@ package net.flytre.flytre_lib.impl.storage.fluid.network;
 
 import net.flytre.flytre_lib.api.base.util.PacketUtils;
 import net.flytre.flytre_lib.api.storage.fluid.core.FluidStack;
-import net.flytre.flytre_lib.api.storage.fluid.gui.FluidHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -40,14 +37,14 @@ public class FluidInventoryS2CPacket implements Packet<ClientPlayPacketListener>
 
     @Override
     public void apply(ClientPlayPacketListener listener) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        PlayerEntity playerEntity = client.player;
-        client.execute(() -> {
-            if (playerEntity == null)
-                return;
-            if (syncId == playerEntity.currentScreenHandler.syncId && playerEntity.currentScreenHandler instanceof FluidHandler) {
-                ((FluidHandler) playerEntity.currentScreenHandler).updateFluidSlotStacks(stacks);
-            }
-        });
+        ClientHelper.apply(this);
+    }
+
+    public int getSyncId() {
+        return syncId;
+    }
+
+    public DefaultedList<FluidStack> getStacks() {
+        return stacks;
     }
 }
